@@ -1,0 +1,1584 @@
+{
+  "download": {
+    "requests_by_account": {
+      "luan": 13,
+      "main": 13,
+      "tan": 20,
+      "team3": 9,
+      "team4": 8,
+      "team5": 4
+    },
+    "requests_total": 67,
+    "accounts": 6,
+    "median_request_hours": 1.1,
+    "zip_files": 68,
+    "raw_gb": 4.72
+  },
+  "cells": {
+    "n": 493,
+    "old_provinces": 63,
+    "new_provinces": 34,
+    "by_region": {
+      "Bac": 177,
+      "Nam": 93,
+      "BacTrungBo": 78,
+      "TayNguyen": 78,
+      "NamTrungBo": 67
+    },
+    "cells_per_new_province": {
+      "min": 3,
+      "max": 35
+    },
+    "examples": {
+      "Lâm Đồng": 35,
+      "Gia Lai": 31,
+      "Hà Nội": 6,
+      "Hưng Yên": 3,
+      "Nghệ An": 25
+    }
+  },
+  "silver": {
+    "bronze_rows": 47552808,
+    "silver_rows": 47540976,
+    "duplicate_cell_hours": 0,
+    "cells": 493,
+    "cells_in_map": 493,
+    "first_ts_vn": "2015-01-01 00:00:00",
+    "last_ts_vn": "2025-12-31 23:00:00",
+    "cell_years": 5423,
+    "cell_years_incomplete": 0,
+    "nulls_after_rules": {
+      "precipitation": 0,
+      "temperature_2m": 0,
+      "relative_humidity_2m": 0,
+      "dew_point_2m": 0,
+      "pressure_msl": 0,
+      "cloud_cover": 0,
+      "wind_speed_10m": 0,
+      "wind_direction_10m": 0,
+      "tcwv": 0,
+      "ivt_east": 0,
+      "ivt_north": 0,
+      "vimd": 0,
+      "cape": 2,
+      "k_index": 243
+    }
+  },
+  "gold": {
+    "rows": 47540976,
+    "locations": 493,
+    "duplicate_keys": 0,
+    "split_rows": {
+      "excluded": 35496,
+      "train": 34561272,
+      "test": 8637360,
+      "validation": 4306848
+    },
+    "positive_rate": {
+      "excluded": 0.0,
+      "train": 0.00906,
+      "test": 0.01209,
+      "validation": 0.00666
+    }
+  },
+  "volume": {
+    "silver_rows": 47540976,
+    "cells": 493,
+    "first_ts_vn": "2015-01-01 00:00:00",
+    "last_ts_vn": "2025-12-31 23:00:00",
+    "gold_rows": 47540976,
+    "gold_columns": 51,
+    "size_gb": {
+      "bronze": 1.81,
+      "silver": 2.9,
+      "gold": 5.24
+    },
+    "raw_gb": 4.74,
+    "crosscheck_openmeteo": {
+      "points": 63,
+      "median_daily_precip_corr": 0.999782279109754,
+      "median_hourly_precip_corr": 0.999561025245241,
+      "median_temp_bias_c": -0.03028115196092841,
+      "corr_lag_-1h": 0.6980424209068045,
+      "corr_lag_+0h": 0.9889350466064715,
+      "corr_lag_+1h": 0.6983759422981075
+    }
+  },
+  "split": {
+    "excluded": {
+      "rows": 23664,
+      "positives": 0,
+      "rate": 0.0
+    },
+    "test": {
+      "rows": 8637360,
+      "positives": 104439,
+      "rate": 0.012091541860012782
+    },
+    "train": {
+      "rows": 34561272,
+      "positives": 313169,
+      "rate": 0.009061269504201119
+    },
+    "validation": {
+      "rows": 4306848,
+      "positives": 28683,
+      "rate": 0.006659858903773711
+    }
+  },
+  "top_corr": [
+    {
+      "feature": "rain_3h",
+      "group": "M1",
+      "corr_with_label": 0.27864225083180105,
+      "null_rate": 2.8529042565331506e-05
+    },
+    {
+      "feature": "vimd_sum_6h",
+      "group": "M4",
+      "corr_with_label": -0.259214746761677,
+      "null_rate": 7.132260641332876e-05
+    },
+    {
+      "feature": "rain_24h",
+      "group": "M1",
+      "corr_with_label": 0.23577674757347145,
+      "null_rate": 0.00032808398950131233
+    },
+    {
+      "feature": "rain_72h",
+      "group": "M1",
+      "corr_with_label": 0.16708182444703157,
+      "null_rate": 0.0010127810110692685
+    },
+    {
+      "feature": "ivt",
+      "group": "M4",
+      "corr_with_label": 0.160721279405787,
+      "null_rate": 0.0
+    },
+    {
+      "feature": "rain_max_1h_24h",
+      "group": "M1",
+      "corr_with_label": 0.1426036931239722,
+      "null_rate": 0.00032808398950131233
+    },
+    {
+      "feature": "rain_hours_24h",
+      "group": "M1",
+      "corr_with_label": 0.13612900517971221,
+      "null_rate": 0.00032808398950131233
+    },
+    {
+      "feature": "tcwv",
+      "group": "M4",
+      "corr_with_label": 0.10049418498738014,
+      "null_rate": 0.0
+    }
+  ],
+  "top_provinces": [
+    {
+      "new_province": "Huế",
+      "positive_rate": 0.02864314757518641
+    },
+    {
+      "new_province": "Đà Nẵng",
+      "positive_rate": 0.022881918512986474
+    },
+    {
+      "new_province": "Hà Tĩnh",
+      "positive_rate": 0.022457795111516795
+    },
+    {
+      "new_province": "Quảng Trị",
+      "positive_rate": 0.020785174911388503
+    },
+    {
+      "new_province": "Phú Thọ",
+      "positive_rate": 0.015370785273697896
+    }
+  ],
+  "precip": [
+    {
+      "quantile": "0.5",
+      "hourly_mm": 0.007152557373046875,
+      "next_24h_mm": 1.758575439453125
+    },
+    {
+      "quantile": "0.75",
+      "hourly_mm": 0.1239776611328125,
+      "next_24h_mm": 7.102012634277344
+    },
+    {
+      "quantile": "0.9",
+      "hourly_mm": 0.5812644958496094,
+      "next_24h_mm": 15.487194061279297
+    },
+    {
+      "quantile": "0.95",
+      "hourly_mm": 1.2598037719726562,
+      "next_24h_mm": 22.59206771850586
+    },
+    {
+      "quantile": "0.99",
+      "hourly_mm": 3.692626953125,
+      "next_24h_mm": 48.09379577636719
+    },
+    {
+      "quantile": "0.999",
+      "hourly_mm": 8.508682250976562,
+      "next_24h_mm": 118.07870864868164
+    },
+    {
+      "quantile": "max",
+      "hourly_mm": 59.76676940917969,
+      "next_24h_mm": 537.1222496032715
+    },
+    {
+      "quantile": "share_hours_below_0.1mm",
+      "hourly_mm": 0.7253798491642242,
+      "next_24h_mm": null
+    }
+  ],
+  "ablation": {
+    "results": [
+      {
+        "model": "persistence_rain24h",
+        "split": "validation",
+        "n": 4219486,
+        "positives": 28146,
+        "pr_auc": 0.06384,
+        "roc_auc": 0.85365,
+        "threshold": 37.37307,
+        "tp": 6030,
+        "fp": 51133,
+        "fn": 22116,
+        "tn": 4140207,
+        "precision": 0.10549,
+        "recall": 0.21424,
+        "f1": 0.14137,
+        "pr_auc_ci_lo": null,
+        "pr_auc_ci_hi": null
+      },
+      {
+        "model": "persistence_rain24h",
+        "split": "test",
+        "n": 8462129,
+        "positives": 102878,
+        "pr_auc": 0.1467,
+        "roc_auc": 0.87226,
+        "threshold": 37.37307,
+        "tp": 35332,
+        "fp": 145520,
+        "fn": 67546,
+        "tn": 8213731,
+        "precision": 0.19536,
+        "recall": 0.34344,
+        "f1": 0.24905,
+        "pr_auc_ci_lo": null,
+        "pr_auc_ci_hi": null
+      },
+      {
+        "model": "M1",
+        "split": "validation",
+        "n": 4219486,
+        "positives": 28146,
+        "pr_auc": 0.17175,
+        "roc_auc": 0.9281,
+        "threshold": 0.91783,
+        "tp": 7522,
+        "fp": 24399,
+        "fn": 20624,
+        "tn": 4166941,
+        "precision": 0.23564,
+        "recall": 0.26725,
+        "f1": 0.25045,
+        "pr_auc_ci_lo": null,
+        "pr_auc_ci_hi": null
+      },
+      {
+        "model": "M1",
+        "split": "test",
+        "n": 8462129,
+        "positives": 102878,
+        "pr_auc": 0.36105,
+        "roc_auc": 0.94146,
+        "threshold": 0.91783,
+        "tp": 45914,
+        "fp": 72659,
+        "fn": 56964,
+        "tn": 8286592,
+        "precision": 0.38722,
+        "recall": 0.4463,
+        "f1": 0.41467,
+        "pr_auc_ci_lo": 0.28922,
+        "pr_auc_ci_hi": 0.43339
+      },
+      {
+        "model": "M2",
+        "split": "validation",
+        "n": 4219486,
+        "positives": 28146,
+        "pr_auc": 0.17562,
+        "roc_auc": 0.92945,
+        "threshold": 0.91592,
+        "tp": 7770,
+        "fp": 25732,
+        "fn": 20376,
+        "tn": 4165608,
+        "precision": 0.23193,
+        "recall": 0.27606,
+        "f1": 0.25208,
+        "pr_auc_ci_lo": null,
+        "pr_auc_ci_hi": null
+      },
+      {
+        "model": "M2",
+        "split": "test",
+        "n": 8462129,
+        "positives": 102878,
+        "pr_auc": 0.36289,
+        "roc_auc": 0.94226,
+        "threshold": 0.91592,
+        "tp": 46450,
+        "fp": 76016,
+        "fn": 56428,
+        "tn": 8283235,
+        "precision": 0.37929,
+        "recall": 0.45151,
+        "f1": 0.41226,
+        "pr_auc_ci_lo": 0.29255,
+        "pr_auc_ci_hi": 0.43581
+      },
+      {
+        "model": "M3",
+        "split": "validation",
+        "n": 4219486,
+        "positives": 28146,
+        "pr_auc": 0.17086,
+        "roc_auc": 0.92879,
+        "threshold": 0.91979,
+        "tp": 7618,
+        "fp": 24962,
+        "fn": 20528,
+        "tn": 4166378,
+        "precision": 0.23382,
+        "recall": 0.27066,
+        "f1": 0.2509,
+        "pr_auc_ci_lo": null,
+        "pr_auc_ci_hi": null
+      },
+      {
+        "model": "M3",
+        "split": "test",
+        "n": 8462129,
+        "positives": 102878,
+        "pr_auc": 0.36297,
+        "roc_auc": 0.94264,
+        "threshold": 0.91979,
+        "tp": 45566,
+        "fp": 74105,
+        "fn": 57312,
+        "tn": 8285146,
+        "precision": 0.38076,
+        "recall": 0.44291,
+        "f1": 0.40949,
+        "pr_auc_ci_lo": 0.28917,
+        "pr_auc_ci_hi": 0.43468
+      },
+      {
+        "model": "M4",
+        "split": "validation",
+        "n": 4219486,
+        "positives": 28146,
+        "pr_auc": 0.21005,
+        "roc_auc": 0.93961,
+        "threshold": 0.93214,
+        "tp": 8001,
+        "fp": 19381,
+        "fn": 20145,
+        "tn": 4171959,
+        "precision": 0.2922,
+        "recall": 0.28427,
+        "f1": 0.28818,
+        "pr_auc_ci_lo": null,
+        "pr_auc_ci_hi": null
+      },
+      {
+        "model": "M4",
+        "split": "test",
+        "n": 8462129,
+        "positives": 102878,
+        "pr_auc": 0.41969,
+        "roc_auc": 0.95534,
+        "threshold": 0.93214,
+        "tp": 47714,
+        "fp": 60688,
+        "fn": 55164,
+        "tn": 8298563,
+        "precision": 0.44016,
+        "recall": 0.46379,
+        "f1": 0.45167,
+        "pr_auc_ci_lo": 0.34133,
+        "pr_auc_ci_hi": 0.48604
+      }
+    ],
+    "deltas": [
+      {
+        "comparison": "M2 - M1",
+        "delta_pr_auc": 0.00184,
+        "bootstrap_mean": 0.00182,
+        "ci_lo": -0.00313,
+        "ci_hi": 0.00587,
+        "share_resamples_le_0": 0.214
+      },
+      {
+        "comparison": "M3 - M1",
+        "delta_pr_auc": 0.00192,
+        "bootstrap_mean": 0.00164,
+        "ci_lo": -0.00525,
+        "ci_hi": 0.00816,
+        "share_resamples_le_0": 0.314
+      },
+      {
+        "comparison": "M4 - M1",
+        "delta_pr_auc": 0.05864,
+        "bootstrap_mean": 0.05909,
+        "ci_lo": 0.02918,
+        "ci_hi": 0.08605,
+        "share_resamples_le_0": 0.0
+      },
+      {
+        "comparison": "M3 - M2",
+        "delta_pr_auc": 8e-05,
+        "bootstrap_mean": -0.00018,
+        "ci_lo": -0.0064,
+        "ci_hi": 0.00619,
+        "share_resamples_le_0": 0.514
+      },
+      {
+        "comparison": "M4 - M2",
+        "delta_pr_auc": 0.0568,
+        "bootstrap_mean": 0.05727,
+        "ci_lo": 0.03004,
+        "ci_hi": 0.08361,
+        "share_resamples_le_0": 0.0
+      },
+      {
+        "comparison": "M4 - M3",
+        "delta_pr_auc": 0.05672,
+        "bootstrap_mean": 0.05745,
+        "ci_lo": 0.02827,
+        "ci_hi": 0.08336,
+        "share_resamples_le_0": 0.0
+      }
+    ],
+    "by_region": [
+      {
+        "model": "M1",
+        "region": "Bac",
+        "positives": 44312,
+        "pr_auc": 0.3612
+      },
+      {
+        "model": "M1",
+        "region": "BacTrungBo",
+        "positives": 28464,
+        "pr_auc": 0.4912
+      },
+      {
+        "model": "M1",
+        "region": "Nam",
+        "positives": 2516,
+        "pr_auc": 0.0227
+      },
+      {
+        "model": "M1",
+        "region": "NamTrungBo",
+        "positives": 16864,
+        "pr_auc": 0.3801
+      },
+      {
+        "model": "M1",
+        "region": "TayNguyen",
+        "positives": 10722,
+        "pr_auc": 0.1748
+      },
+      {
+        "model": "M2",
+        "region": "Bac",
+        "positives": 44312,
+        "pr_auc": 0.3605
+      },
+      {
+        "model": "M2",
+        "region": "BacTrungBo",
+        "positives": 28464,
+        "pr_auc": 0.4926
+      },
+      {
+        "model": "M2",
+        "region": "Nam",
+        "positives": 2516,
+        "pr_auc": 0.0232
+      },
+      {
+        "model": "M2",
+        "region": "NamTrungBo",
+        "positives": 16864,
+        "pr_auc": 0.3813
+      },
+      {
+        "model": "M2",
+        "region": "TayNguyen",
+        "positives": 10722,
+        "pr_auc": 0.1804
+      },
+      {
+        "model": "M3",
+        "region": "Bac",
+        "positives": 44312,
+        "pr_auc": 0.3591
+      },
+      {
+        "model": "M3",
+        "region": "BacTrungBo",
+        "positives": 28464,
+        "pr_auc": 0.4992
+      },
+      {
+        "model": "M3",
+        "region": "Nam",
+        "positives": 2516,
+        "pr_auc": 0.0222
+      },
+      {
+        "model": "M3",
+        "region": "NamTrungBo",
+        "positives": 16864,
+        "pr_auc": 0.3747
+      },
+      {
+        "model": "M3",
+        "region": "TayNguyen",
+        "positives": 10722,
+        "pr_auc": 0.1814
+      },
+      {
+        "model": "M4",
+        "region": "Bac",
+        "positives": 44312,
+        "pr_auc": 0.3707
+      },
+      {
+        "model": "M4",
+        "region": "BacTrungBo",
+        "positives": 28464,
+        "pr_auc": 0.5756
+      },
+      {
+        "model": "M4",
+        "region": "Nam",
+        "positives": 2516,
+        "pr_auc": 0.029
+      },
+      {
+        "model": "M4",
+        "region": "NamTrungBo",
+        "positives": 16864,
+        "pr_auc": 0.4569
+      },
+      {
+        "model": "M4",
+        "region": "TayNguyen",
+        "positives": 10722,
+        "pr_auc": 0.2601
+      }
+    ],
+    "importance": [
+      {
+        "model": "M1",
+        "feature": "rain_3h",
+        "importance": 0.2301
+      },
+      {
+        "model": "M1",
+        "feature": "rain_24h",
+        "importance": 0.0884
+      },
+      {
+        "model": "M1",
+        "feature": "rain_72h",
+        "importance": 0.0525
+      },
+      {
+        "model": "M1",
+        "feature": "rain_max_1h_24h",
+        "importance": 0.0441
+      },
+      {
+        "model": "M1",
+        "feature": "rain_hours_24h",
+        "importance": 0.0598
+      },
+      {
+        "model": "M1",
+        "feature": "rh",
+        "importance": 0.0128
+      },
+      {
+        "model": "M1",
+        "feature": "rh_mean_6h",
+        "importance": 0.0094
+      },
+      {
+        "model": "M1",
+        "feature": "dew_point",
+        "importance": 0.0182
+      },
+      {
+        "model": "M1",
+        "feature": "dewpoint_depression",
+        "importance": 0.0082
+      },
+      {
+        "model": "M1",
+        "feature": "pressure_msl",
+        "importance": 0.0404
+      },
+      {
+        "model": "M1",
+        "feature": "pressure_change_3h",
+        "importance": 0.0014
+      },
+      {
+        "model": "M1",
+        "feature": "pressure_change_24h",
+        "importance": 0.0291
+      },
+      {
+        "model": "M1",
+        "feature": "wind_speed",
+        "importance": 0.0066
+      },
+      {
+        "model": "M1",
+        "feature": "wind_speed_change_24h",
+        "importance": 0.0058
+      },
+      {
+        "model": "M1",
+        "feature": "wind_dir_sin",
+        "importance": 0.0069
+      },
+      {
+        "model": "M1",
+        "feature": "wind_dir_cos",
+        "importance": 0.0364
+      },
+      {
+        "model": "M1",
+        "feature": "temperature",
+        "importance": 0.0114
+      },
+      {
+        "model": "M1",
+        "feature": "temp_change_24h",
+        "importance": 0.0086
+      },
+      {
+        "model": "M1",
+        "feature": "cloud_cover",
+        "importance": 0.0926
+      },
+      {
+        "model": "M1",
+        "feature": "cloud_mean_6h",
+        "importance": 0.1795
+      },
+      {
+        "model": "M1",
+        "feature": "month_sin",
+        "importance": 0.0439
+      },
+      {
+        "model": "M1",
+        "feature": "month_cos",
+        "importance": 0.0096
+      },
+      {
+        "model": "M1",
+        "feature": "hour_sin",
+        "importance": 0.002
+      },
+      {
+        "model": "M1",
+        "feature": "hour_cos",
+        "importance": 0.0022
+      },
+      {
+        "model": "M2",
+        "feature": "rain_3h",
+        "importance": 0.2329
+      },
+      {
+        "model": "M2",
+        "feature": "rain_24h",
+        "importance": 0.0775
+      },
+      {
+        "model": "M2",
+        "feature": "rain_72h",
+        "importance": 0.0381
+      },
+      {
+        "model": "M2",
+        "feature": "rain_max_1h_24h",
+        "importance": 0.0587
+      },
+      {
+        "model": "M2",
+        "feature": "rain_hours_24h",
+        "importance": 0.0693
+      },
+      {
+        "model": "M2",
+        "feature": "rh",
+        "importance": 0.0065
+      },
+      {
+        "model": "M2",
+        "feature": "rh_mean_6h",
+        "importance": 0.0099
+      },
+      {
+        "model": "M2",
+        "feature": "dew_point",
+        "importance": 0.018
+      },
+      {
+        "model": "M2",
+        "feature": "dewpoint_depression",
+        "importance": 0.0083
+      },
+      {
+        "model": "M2",
+        "feature": "pressure_msl",
+        "importance": 0.0374
+      },
+      {
+        "model": "M2",
+        "feature": "pressure_change_3h",
+        "importance": 0.0012
+      },
+      {
+        "model": "M2",
+        "feature": "pressure_change_24h",
+        "importance": 0.0297
+      },
+      {
+        "model": "M2",
+        "feature": "wind_speed",
+        "importance": 0.0057
+      },
+      {
+        "model": "M2",
+        "feature": "wind_speed_change_24h",
+        "importance": 0.0051
+      },
+      {
+        "model": "M2",
+        "feature": "wind_dir_sin",
+        "importance": 0.0061
+      },
+      {
+        "model": "M2",
+        "feature": "wind_dir_cos",
+        "importance": 0.0357
+      },
+      {
+        "model": "M2",
+        "feature": "temperature",
+        "importance": 0.0128
+      },
+      {
+        "model": "M2",
+        "feature": "temp_change_24h",
+        "importance": 0.0084
+      },
+      {
+        "model": "M2",
+        "feature": "cloud_cover",
+        "importance": 0.134
+      },
+      {
+        "model": "M2",
+        "feature": "cloud_mean_6h",
+        "importance": 0.14
+      },
+      {
+        "model": "M2",
+        "feature": "month_sin",
+        "importance": 0.037
+      },
+      {
+        "model": "M2",
+        "feature": "month_cos",
+        "importance": 0.0099
+      },
+      {
+        "model": "M2",
+        "feature": "hour_sin",
+        "importance": 0.0018
+      },
+      {
+        "model": "M2",
+        "feature": "hour_cos",
+        "importance": 0.0022
+      },
+      {
+        "model": "M2",
+        "feature": "elevation_m",
+        "importance": 0.0036
+      },
+      {
+        "model": "M2",
+        "feature": "distance_to_coast_km",
+        "importance": 0.0072
+      },
+      {
+        "model": "M2",
+        "feature": "terrain_slope_deg",
+        "importance": 0.0032
+      },
+      {
+        "model": "M3",
+        "feature": "rain_3h",
+        "importance": 0.1686
+      },
+      {
+        "model": "M3",
+        "feature": "rain_24h",
+        "importance": 0.0452
+      },
+      {
+        "model": "M3",
+        "feature": "rain_72h",
+        "importance": 0.0281
+      },
+      {
+        "model": "M3",
+        "feature": "rain_max_1h_24h",
+        "importance": 0.0316
+      },
+      {
+        "model": "M3",
+        "feature": "rain_hours_24h",
+        "importance": 0.0517
+      },
+      {
+        "model": "M3",
+        "feature": "rh",
+        "importance": 0.0055
+      },
+      {
+        "model": "M3",
+        "feature": "rh_mean_6h",
+        "importance": 0.0066
+      },
+      {
+        "model": "M3",
+        "feature": "dew_point",
+        "importance": 0.0151
+      },
+      {
+        "model": "M3",
+        "feature": "dewpoint_depression",
+        "importance": 0.0072
+      },
+      {
+        "model": "M3",
+        "feature": "pressure_msl",
+        "importance": 0.0338
+      },
+      {
+        "model": "M3",
+        "feature": "pressure_change_3h",
+        "importance": 0.001
+      },
+      {
+        "model": "M3",
+        "feature": "pressure_change_24h",
+        "importance": 0.0204
+      },
+      {
+        "model": "M3",
+        "feature": "wind_speed",
+        "importance": 0.0048
+      },
+      {
+        "model": "M3",
+        "feature": "wind_speed_change_24h",
+        "importance": 0.004
+      },
+      {
+        "model": "M3",
+        "feature": "wind_dir_sin",
+        "importance": 0.0056
+      },
+      {
+        "model": "M3",
+        "feature": "wind_dir_cos",
+        "importance": 0.0319
+      },
+      {
+        "model": "M3",
+        "feature": "temperature",
+        "importance": 0.0107
+      },
+      {
+        "model": "M3",
+        "feature": "temp_change_24h",
+        "importance": 0.0068
+      },
+      {
+        "model": "M3",
+        "feature": "cloud_cover",
+        "importance": 0.0811
+      },
+      {
+        "model": "M3",
+        "feature": "cloud_mean_6h",
+        "importance": 0.1217
+      },
+      {
+        "model": "M3",
+        "feature": "month_sin",
+        "importance": 0.0325
+      },
+      {
+        "model": "M3",
+        "feature": "month_cos",
+        "importance": 0.0091
+      },
+      {
+        "model": "M3",
+        "feature": "hour_sin",
+        "importance": 0.0017
+      },
+      {
+        "model": "M3",
+        "feature": "hour_cos",
+        "importance": 0.002
+      },
+      {
+        "model": "M3",
+        "feature": "elevation_m",
+        "importance": 0.003
+      },
+      {
+        "model": "M3",
+        "feature": "distance_to_coast_km",
+        "importance": 0.0062
+      },
+      {
+        "model": "M3",
+        "feature": "terrain_slope_deg",
+        "importance": 0.0027
+      },
+      {
+        "model": "M3",
+        "feature": "neighbor_rain_sum_6h",
+        "importance": 0.1526
+      },
+      {
+        "model": "M3",
+        "feature": "neighbor_rain_sum_24h",
+        "importance": 0.0828
+      },
+      {
+        "model": "M3",
+        "feature": "neighbor_pressure_change_24h",
+        "importance": 0.0206
+      },
+      {
+        "model": "M3",
+        "feature": "neighbor_humidity_mean_6h",
+        "importance": 0.0055
+      },
+      {
+        "model": "M4",
+        "feature": "rain_3h",
+        "importance": 0.1487
+      },
+      {
+        "model": "M4",
+        "feature": "rain_24h",
+        "importance": 0.0439
+      },
+      {
+        "model": "M4",
+        "feature": "rain_72h",
+        "importance": 0.0292
+      },
+      {
+        "model": "M4",
+        "feature": "rain_max_1h_24h",
+        "importance": 0.0362
+      },
+      {
+        "model": "M4",
+        "feature": "rain_hours_24h",
+        "importance": 0.0601
+      },
+      {
+        "model": "M4",
+        "feature": "rh",
+        "importance": 0.0014
+      },
+      {
+        "model": "M4",
+        "feature": "rh_mean_6h",
+        "importance": 0.0047
+      },
+      {
+        "model": "M4",
+        "feature": "dew_point",
+        "importance": 0.006
+      },
+      {
+        "model": "M4",
+        "feature": "dewpoint_depression",
+        "importance": 0.0049
+      },
+      {
+        "model": "M4",
+        "feature": "pressure_msl",
+        "importance": 0.0164
+      },
+      {
+        "model": "M4",
+        "feature": "pressure_change_3h",
+        "importance": 0.0007
+      },
+      {
+        "model": "M4",
+        "feature": "pressure_change_24h",
+        "importance": 0.0126
+      },
+      {
+        "model": "M4",
+        "feature": "wind_speed",
+        "importance": 0.0027
+      },
+      {
+        "model": "M4",
+        "feature": "wind_speed_change_24h",
+        "importance": 0.0018
+      },
+      {
+        "model": "M4",
+        "feature": "wind_dir_sin",
+        "importance": 0.0048
+      },
+      {
+        "model": "M4",
+        "feature": "wind_dir_cos",
+        "importance": 0.0118
+      },
+      {
+        "model": "M4",
+        "feature": "temperature",
+        "importance": 0.005
+      },
+      {
+        "model": "M4",
+        "feature": "temp_change_24h",
+        "importance": 0.0032
+      },
+      {
+        "model": "M4",
+        "feature": "cloud_cover",
+        "importance": 0.0897
+      },
+      {
+        "model": "M4",
+        "feature": "cloud_mean_6h",
+        "importance": 0.1107
+      },
+      {
+        "model": "M4",
+        "feature": "month_sin",
+        "importance": 0.0152
+      },
+      {
+        "model": "M4",
+        "feature": "month_cos",
+        "importance": 0.0045
+      },
+      {
+        "model": "M4",
+        "feature": "hour_sin",
+        "importance": 0.0009
+      },
+      {
+        "model": "M4",
+        "feature": "hour_cos",
+        "importance": 0.0016
+      },
+      {
+        "model": "M4",
+        "feature": "tcwv",
+        "importance": 0.043
+      },
+      {
+        "model": "M4",
+        "feature": "tcwv_change_24h",
+        "importance": 0.0355
+      },
+      {
+        "model": "M4",
+        "feature": "ivt",
+        "importance": 0.0335
+      },
+      {
+        "model": "M4",
+        "feature": "ivt_dir_sin",
+        "importance": 0.0214
+      },
+      {
+        "model": "M4",
+        "feature": "ivt_dir_cos",
+        "importance": 0.06
+      },
+      {
+        "model": "M4",
+        "feature": "vimd_sum_6h",
+        "importance": 0.1546
+      },
+      {
+        "model": "M4",
+        "feature": "cape",
+        "importance": 0.0065
+      },
+      {
+        "model": "M4",
+        "feature": "cape_max_24h",
+        "importance": 0.0079
+      },
+      {
+        "model": "M4",
+        "feature": "k_index",
+        "importance": 0.0209
+      }
+    ],
+    "manifest": {
+      "run_id": "20261107T050443Z_official_ablation",
+      "note": "manifest ghi bù từ log (lần chạy dừng ở bước ghi manifest)",
+      "spark": "4.2.0",
+      "model": {
+        "type": "RandomForestClassifier",
+        "numTrees": 100,
+        "maxDepth": 12,
+        "minInstancesPerNode": 20,
+        "featureSubsetStrategy": "sqrt",
+        "subsamplingRate": 0.8,
+        "maxBins": 64,
+        "class_weight": "balanced"
+      },
+      "feature_sets": {
+        "M1": [
+          "rain_3h",
+          "rain_24h",
+          "rain_72h",
+          "rain_max_1h_24h",
+          "rain_hours_24h",
+          "rh",
+          "rh_mean_6h",
+          "dew_point",
+          "dewpoint_depression",
+          "pressure_msl",
+          "pressure_change_3h",
+          "pressure_change_24h",
+          "wind_speed",
+          "wind_speed_change_24h",
+          "wind_dir_sin",
+          "wind_dir_cos",
+          "temperature",
+          "temp_change_24h",
+          "cloud_cover",
+          "cloud_mean_6h",
+          "month_sin",
+          "month_cos",
+          "hour_sin",
+          "hour_cos"
+        ],
+        "M2": [
+          "rain_3h",
+          "rain_24h",
+          "rain_72h",
+          "rain_max_1h_24h",
+          "rain_hours_24h",
+          "rh",
+          "rh_mean_6h",
+          "dew_point",
+          "dewpoint_depression",
+          "pressure_msl",
+          "pressure_change_3h",
+          "pressure_change_24h",
+          "wind_speed",
+          "wind_speed_change_24h",
+          "wind_dir_sin",
+          "wind_dir_cos",
+          "temperature",
+          "temp_change_24h",
+          "cloud_cover",
+          "cloud_mean_6h",
+          "month_sin",
+          "month_cos",
+          "hour_sin",
+          "hour_cos",
+          "elevation_m",
+          "distance_to_coast_km",
+          "terrain_slope_deg"
+        ],
+        "M3": [
+          "rain_3h",
+          "rain_24h",
+          "rain_72h",
+          "rain_max_1h_24h",
+          "rain_hours_24h",
+          "rh",
+          "rh_mean_6h",
+          "dew_point",
+          "dewpoint_depression",
+          "pressure_msl",
+          "pressure_change_3h",
+          "pressure_change_24h",
+          "wind_speed",
+          "wind_speed_change_24h",
+          "wind_dir_sin",
+          "wind_dir_cos",
+          "temperature",
+          "temp_change_24h",
+          "cloud_cover",
+          "cloud_mean_6h",
+          "month_sin",
+          "month_cos",
+          "hour_sin",
+          "hour_cos",
+          "elevation_m",
+          "distance_to_coast_km",
+          "terrain_slope_deg",
+          "neighbor_rain_sum_6h",
+          "neighbor_rain_sum_24h",
+          "neighbor_pressure_change_24h",
+          "neighbor_humidity_mean_6h"
+        ],
+        "M4": [
+          "rain_3h",
+          "rain_24h",
+          "rain_72h",
+          "rain_max_1h_24h",
+          "rain_hours_24h",
+          "rh",
+          "rh_mean_6h",
+          "dew_point",
+          "dewpoint_depression",
+          "pressure_msl",
+          "pressure_change_3h",
+          "pressure_change_24h",
+          "wind_speed",
+          "wind_speed_change_24h",
+          "wind_dir_sin",
+          "wind_dir_cos",
+          "temperature",
+          "temp_change_24h",
+          "cloud_cover",
+          "cloud_mean_6h",
+          "month_sin",
+          "month_cos",
+          "hour_sin",
+          "hour_cos",
+          "tcwv",
+          "tcwv_change_24h",
+          "ivt",
+          "ivt_dir_sin",
+          "ivt_dir_cos",
+          "vimd_sum_6h",
+          "cape",
+          "cape_max_24h",
+          "k_index"
+        ]
+      },
+      "cells": 483,
+      "train_sample": {
+        "neg_frac": 0.03,
+        "rows": 1313246,
+        "positives": 308098,
+        "class_weight_positive": 3.26
+      },
+      "cohort": [
+        {
+          "split": "train",
+          "rows": 33825728,
+          "positives": 308098
+        },
+        {
+          "split": "validation",
+          "rows": 4219486,
+          "positives": 28146
+        },
+        {
+          "split": "test",
+          "rows": 8462129,
+          "positives": 102878
+        }
+      ],
+      "thresholds_from_validation": {
+        "persistence_rain24h": 37.37306594848633,
+        "M1": 0.9178345203399658,
+        "M2": 0.9159203767776489,
+        "M3": 0.9197864532470703,
+        "M4": 0.9321423768997192
+      },
+      "bootstrap": {
+        "block": "day",
+        "n_resamples": 500,
+        "ci": 0.95
+      },
+      "model_dir": "D:\\BDA501_data\\lake\\models\\official\\20261107T050443Z_official_ablation"
+    }
+  },
+  "e0": {
+    "noaa": {
+      "stations": [
+        {
+          "name": "Sơn La",
+          "corr": 0.463,
+          "ratio_total": 0.978,
+          "heavy_station": 43,
+          "hit": 6,
+          "hit_pm1": 8,
+          "false_alarm": 17,
+          "max_station": 220.0,
+          "max_era": 185.02,
+          "era_threshold_matched": 35.065
+        },
+        {
+          "name": "Cao Bằng",
+          "corr": 0.467,
+          "ratio_total": 1.209,
+          "heavy_station": 57,
+          "hit": 4,
+          "hit_pm1": 6,
+          "false_alarm": 17,
+          "max_station": 165.1,
+          "max_era": 110.043,
+          "era_threshold_matched": 32.686
+        },
+        {
+          "name": "Hà Nội (Hà Đông)",
+          "corr": 0.519,
+          "ratio_total": 1.015,
+          "heavy_station": 76,
+          "hit": 14,
+          "hit_pm1": 23,
+          "false_alarm": 27,
+          "max_station": 337.8,
+          "max_era": 196.513,
+          "era_threshold_matched": 36.395
+        },
+        {
+          "name": "Hải Phòng (Phù Liễn)",
+          "corr": 0.606,
+          "ratio_total": 1.115,
+          "heavy_station": 84,
+          "hit": 25,
+          "hit_pm1": 30,
+          "false_alarm": 27,
+          "max_station": 258.6,
+          "max_era": 160.0,
+          "era_threshold_matched": 37.358
+        },
+        {
+          "name": "Lạng Sơn",
+          "corr": 0.517,
+          "ratio_total": 1.269,
+          "heavy_station": 49,
+          "hit": 9,
+          "hit_pm1": 14,
+          "false_alarm": 15,
+          "max_station": 188.0,
+          "max_era": 155.255,
+          "era_threshold_matched": 35.555
+        },
+        {
+          "name": "Thanh Hóa",
+          "corr": 0.508,
+          "ratio_total": 1.001,
+          "heavy_station": 83,
+          "hit": 17,
+          "hit_pm1": 27,
+          "false_alarm": 19,
+          "max_station": 235.0,
+          "max_era": 171.091,
+          "era_threshold_matched": 33.759
+        },
+        {
+          "name": "Vinh",
+          "corr": 0.622,
+          "ratio_total": 0.705,
+          "heavy_station": 122,
+          "hit": 44,
+          "hit_pm1": 63,
+          "false_alarm": 23,
+          "max_station": 363.2,
+          "max_era": 169.866,
+          "era_threshold_matched": 30.443
+        },
+        {
+          "name": "Đồng Hới",
+          "corr": 0.716,
+          "ratio_total": 1.118,
+          "heavy_station": 126,
+          "hit": 59,
+          "hit_pm1": 77,
+          "false_alarm": 27,
+          "max_station": 370.6,
+          "max_era": 293.923,
+          "era_threshold_matched": 36.394
+        },
+        {
+          "name": "Đà Nẵng",
+          "corr": 0.623,
+          "ratio_total": 0.963,
+          "heavy_station": 136,
+          "hit": 57,
+          "hit_pm1": 77,
+          "false_alarm": 32,
+          "max_station": 408.7,
+          "max_era": 247.536,
+          "era_threshold_matched": 38.518
+        },
+        {
+          "name": "Quy Nhơn",
+          "corr": 0.623,
+          "ratio_total": 0.98,
+          "heavy_station": 90,
+          "hit": 25,
+          "hit_pm1": 33,
+          "false_alarm": 19,
+          "max_station": 253.2,
+          "max_era": 188.586,
+          "era_threshold_matched": 33.896
+        },
+        {
+          "name": "Nha Trang",
+          "corr": 0.546,
+          "ratio_total": 1.066,
+          "heavy_station": 71,
+          "hit": 19,
+          "hit_pm1": 29,
+          "false_alarm": 25,
+          "max_station": 381.3,
+          "max_era": 139.394,
+          "era_threshold_matched": 33.074
+        },
+        {
+          "name": "Phan Thiết",
+          "corr": 0.349,
+          "ratio_total": 1.677,
+          "heavy_station": 29,
+          "hit": 1,
+          "hit_pm1": 2,
+          "false_alarm": 5,
+          "max_station": 88.1,
+          "max_era": 82.916,
+          "era_threshold_matched": 30.569
+        },
+        {
+          "name": "Cà Mau",
+          "corr": 0.459,
+          "ratio_total": 1.104,
+          "heavy_station": 81,
+          "hit": 1,
+          "hit_pm1": 3,
+          "false_alarm": 4,
+          "max_station": 186.9,
+          "max_era": 68.214,
+          "era_threshold_matched": 30.198
+        },
+        {
+          "name": "Phú Quốc",
+          "corr": 0.467,
+          "ratio_total": 0.806,
+          "heavy_station": 138,
+          "hit": 11,
+          "hit_pm1": 24,
+          "false_alarm": 29,
+          "max_station": 357.9,
+          "max_era": 94.471,
+          "era_threshold_matched": 32.911
+        }
+      ],
+      "heavy_days": 1185,
+      "hit": 292,
+      "hit_pm1": 416,
+      "false_alarm": 286,
+      "median_corr_vn": 0.52,
+      "median_corr_utc": 0.44,
+      "median_ratio": 1.04,
+      "years": "2015–2025",
+      "n_years": 11
+    },
+    "samples": [
+      {
+        "station": "Da Nang",
+        "date": "2023-10-13",
+        "gauge_mm": 408.7,
+        "era5_mm": 74.7,
+        "era5_heavy": true
+      },
+      {
+        "station": "Da Nang",
+        "date": "2022-10-14",
+        "gauge_mm": 396.0,
+        "era5_mm": 171.3,
+        "era5_heavy": true
+      },
+      {
+        "station": "Da Nang",
+        "date": "2023-10-14",
+        "gauge_mm": 371.6,
+        "era5_mm": 46.0,
+        "era5_heavy": false
+      },
+      {
+        "station": "Ha Noi (Ha Dong)",
+        "date": "2016-05-25",
+        "gauge_mm": 337.8,
+        "era5_mm": 19.4,
+        "era5_heavy": false
+      },
+      {
+        "station": "Ha Noi (Ha Dong)",
+        "date": "2024-07-23",
+        "gauge_mm": 189.5,
+        "era5_mm": 98.7,
+        "era5_heavy": true
+      },
+      {
+        "station": "Ha Noi (Ha Dong)",
+        "date": "2018-07-21",
+        "gauge_mm": 183.9,
+        "era5_mm": 45.8,
+        "era5_heavy": false
+      }
+    ]
+  },
+  "hdfs": [
+    "4.4 G  4.4 G  /rain-forecast/raw/era5_cds",
+    "1.7 G  1.7 G  /rain-forecast/bronze/era5_cds_hourly"
+  ]
+}

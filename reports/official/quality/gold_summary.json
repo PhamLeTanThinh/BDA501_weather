@@ -1,0 +1,17 @@
+{
+  "rows": 47540976,
+  "locations": 493,
+  "duplicate_keys": 0,
+  "split_rows": {
+    "excluded": 35496,
+    "train": 34561272,
+    "test": 8637360,
+    "validation": 4306848
+  },
+  "positive_rate": {
+    "excluded": 0.0,
+    "train": 0.00906,
+    "test": 0.01209,
+    "validation": 0.00666
+  }
+}

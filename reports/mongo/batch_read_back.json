@@ -1,0 +1,41 @@
+{
+  "counts": {
+    "climatology": 144,
+    "daily_stats": 30684
+  },
+  "sample_climatology": {
+    "location_id": "HUE",
+    "month": 10,
+    "new_province_code": "HUE",
+    "new_province": "Huế",
+    "hours": 2976,
+    "heavy_hours": 517,
+    "heavy_rate": 0.173723,
+    "mean_rain_mm_h": 0.998522,
+    "max_rain_mm_h": 14.7,
+    "period": "train 2019–2022",
+    "source": "hadoop_mapreduce"
+  },
+  "top_provinces_heavy_days": [
+    {
+      "_id": "Huế",
+      "heavy_days": 95
+    },
+    {
+      "_id": "Quảng Ngãi",
+      "heavy_days": 75
+    },
+    {
+      "_id": "Nghệ An",
+      "heavy_days": 56
+    },
+    {
+      "_id": "Hà Nội",
+      "heavy_days": 29
+    },
+    {
+      "_id": "Quảng Ninh",
+      "heavy_days": 25
+    }
+  ]
+}

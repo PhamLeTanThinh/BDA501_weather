@@ -1,0 +1,22 @@
+# môi trường, cache
+.venv/
+.npm-cache/
+.uv-cache/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+deck/node_modules/
+# dữ liệu (raw/lake nằm ngoài repo; data/ quá lớn)
+data/
+*.parquet
+*.nc
+*.zip
+*.crc
+_SUCCESS
+# log và file tạm
+*.log
+*.out
+deck/~$*
+~$*
+.cdsapirc*
+.env

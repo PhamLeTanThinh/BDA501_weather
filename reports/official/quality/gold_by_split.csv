@@ -1,0 +1,5 @@
+split,rows,positives,positive_rate,label_null,null_rain_3h,null_rain_24h,null_rain_72h,null_rain_max_1h_24h,null_rain_hours_24h,null_rh,null_rh_mean_6h,null_dew_point,null_dewpoint_depression,null_pressure_msl,null_pressure_change_3h,null_pressure_change_24h,null_wind_speed,null_wind_speed_change_24h,null_wind_dir_sin,null_wind_dir_cos,null_temperature,null_temp_change_24h,null_cloud_cover,null_cloud_mean_6h,null_month_sin,null_month_cos,null_hour_sin,null_hour_cos,null_tcwv,null_tcwv_change_24h,null_ivt,null_ivt_dir_sin,null_ivt_dir_cos,null_vimd_sum_6h,null_cape,null_cape_max_24h,null_k_index
+excluded,35496,0.0,0.0,11832,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+train,34561272,313169.0,0.009061269504201119,0,986,11339,35003,11339,11339,0,2465,0,0,0,1479,11832,0,11832,0,0,0,11832,0,2465,0,0,0,0,0,11832,0,0,0,2465,1,11363,230
+test,8637360,104439.0,0.012091541860012782,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,24,11
+validation,4306848,28683.0,0.006659858903773711,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2

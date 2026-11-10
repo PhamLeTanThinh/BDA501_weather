@@ -1,0 +1,7 @@
+# Image Spark của bài lab (Spark 4.2.0, Python 3.11, Java 17) + thư viện cho pipeline ablation.
+FROM bda501-spark-lab-spark:latest
+USER root
+RUN python3 -m pip install --no-cache-dir numpy "pandas<3" pyarrow pyyaml pytest matplotlib pymongo
+# notebook EDA chạy trong container (Spark trên Windows cần winutils): Jupyter Lab + nbconvert
+RUN python3 -m pip install --no-cache-dir jupyterlab ipykernel nbconvert
+WORKDIR /app

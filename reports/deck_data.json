@@ -1,0 +1,6907 @@
+{
+ "noaa": {
+  "stations": [
+   {
+    "name": "Sơn La",
+    "corr": 0.462,
+    "ratio_total": 0.934,
+    "heavy_station": 43,
+    "hit": 6,
+    "hit_pm1": 8,
+    "false_alarm": 17,
+    "max_station": 220.0,
+    "max_era": 185.2,
+    "era_threshold_matched": 34.9
+   },
+   {
+    "name": "Cao Bằng",
+    "corr": 0.468,
+    "ratio_total": 1.167,
+    "heavy_station": 57,
+    "hit": 4,
+    "hit_pm1": 6,
+    "false_alarm": 17,
+    "max_station": 165.1,
+    "max_era": 110.2,
+    "era_threshold_matched": 32.5
+   },
+   {
+    "name": "Hà Nội (Hà Đông)",
+    "corr": 0.519,
+    "ratio_total": 0.987,
+    "heavy_station": 76,
+    "hit": 14,
+    "hit_pm1": 23,
+    "false_alarm": 26,
+    "max_station": 337.8,
+    "max_era": 196.6,
+    "era_threshold_matched": 36.2
+   },
+   {
+    "name": "Hải Phòng (Phù Liễn)",
+    "corr": 0.562,
+    "ratio_total": 0.99,
+    "heavy_station": 84,
+    "hit": 17,
+    "hit_pm1": 22,
+    "false_alarm": 21,
+    "max_station": 258.6,
+    "max_era": 123.9,
+    "era_threshold_matched": 33.0
+   },
+   {
+    "name": "Lạng Sơn",
+    "corr": 0.516,
+    "ratio_total": 1.222,
+    "heavy_station": 49,
+    "hit": 9,
+    "hit_pm1": 14,
+    "false_alarm": 15,
+    "max_station": 188.0,
+    "max_era": 155.4,
+    "era_threshold_matched": 35.6
+   },
+   {
+    "name": "Thanh Hóa",
+    "corr": 0.507,
+    "ratio_total": 0.971,
+    "heavy_station": 83,
+    "hit": 17,
+    "hit_pm1": 27,
+    "false_alarm": 19,
+    "max_station": 235.0,
+    "max_era": 171.0,
+    "era_threshold_matched": 33.7
+   },
+   {
+    "name": "Vinh",
+    "corr": 0.629,
+    "ratio_total": 0.676,
+    "heavy_station": 118,
+    "hit": 42,
+    "hit_pm1": 61,
+    "false_alarm": 20,
+    "max_station": 363.2,
+    "max_era": 159.8,
+    "era_threshold_matched": 29.9
+   },
+   {
+    "name": "Đồng Hới",
+    "corr": 0.716,
+    "ratio_total": 1.088,
+    "heavy_station": 126,
+    "hit": 58,
+    "hit_pm1": 75,
+    "false_alarm": 27,
+    "max_station": 370.6,
+    "max_era": 294.0,
+    "era_threshold_matched": 36.7
+   },
+   {
+    "name": "Đà Nẵng",
+    "corr": 0.624,
+    "ratio_total": 0.945,
+    "heavy_station": 131,
+    "hit": 57,
+    "hit_pm1": 75,
+    "false_alarm": 32,
+    "max_station": 408.7,
+    "max_era": 247.7,
+    "era_threshold_matched": 39.7
+   },
+   {
+    "name": "Quy Nhơn",
+    "corr": 0.626,
+    "ratio_total": 0.939,
+    "heavy_station": 90,
+    "hit": 25,
+    "hit_pm1": 33,
+    "false_alarm": 19,
+    "max_station": 253.2,
+    "max_era": 188.5,
+    "era_threshold_matched": 33.6
+   },
+   {
+    "name": "Nha Trang",
+    "corr": 0.473,
+    "ratio_total": 1.214,
+    "heavy_station": 70,
+    "hit": 17,
+    "hit_pm1": 24,
+    "false_alarm": 18,
+    "max_station": 381.3,
+    "max_era": 116.5,
+    "era_threshold_matched": 33.8
+   },
+   {
+    "name": "Phan Thiết",
+    "corr": 0.348,
+    "ratio_total": 1.625,
+    "heavy_station": 29,
+    "hit": 1,
+    "hit_pm1": 2,
+    "false_alarm": 5,
+    "max_station": 88.1,
+    "max_era": 82.8,
+    "era_threshold_matched": 30.5
+   },
+   {
+    "name": "Cà Mau",
+    "corr": 0.458,
+    "ratio_total": 1.077,
+    "heavy_station": 81,
+    "hit": 1,
+    "hit_pm1": 3,
+    "false_alarm": 4,
+    "max_station": 186.9,
+    "max_era": 68.2,
+    "era_threshold_matched": 30.2
+   },
+   {
+    "name": "Phú Quốc",
+    "corr": 0.464,
+    "ratio_total": 0.809,
+    "heavy_station": 119,
+    "hit": 10,
+    "hit_pm1": 22,
+    "false_alarm": 28,
+    "max_station": 357.9,
+    "max_era": 94.3,
+    "era_threshold_matched": 34.8
+   }
+  ],
+  "heavy_days": 1156,
+  "hit": 278,
+  "hit_pm1": 395,
+  "false_alarm": 268,
+  "median_corr_vn": 0.51,
+  "median_corr_utc": 0.43,
+  "median_ratio": 0.99
+ },
+ "quality": {
+  "silver": {
+   "bronze_rows": 3559344,
+   "duplicates_removed": 0,
+   "silver_rows": 3559344,
+   "grid_years": 406,
+   "grid_years_incomplete": 0,
+   "utc_offsets_seen": [
+    25200
+   ]
+  },
+  "gold": {
+   "rows": 736416,
+   "locations": 12,
+   "duplicate_keys": 0
+  },
+  "funnel": [
+   {
+    "step": "bronze_rows",
+    "rows": 3559344
+   },
+   {
+    "step": "duplicate_grid_hour_removed",
+    "rows": 0
+   },
+   {
+    "step": "silver_rows",
+    "rows": 3559344
+   }
+  ],
+  "exclusions": [
+   {
+    "split_excluded_reason": "purged_train_boundary",
+    "count": 288
+   },
+   {
+    "split_excluded_reason": "kept",
+    "count": 735552
+   },
+   {
+    "split_excluded_reason": "purged_test_boundary",
+    "count": 288
+   },
+   {
+    "split_excluded_reason": "purged_validation_boundary",
+    "count": 288
+   }
+  ]
+ },
+ "ingest": {
+  "raw_files": 406,
+  "raw_mb": 225.2,
+  "grids": 58,
+  "locations": 12,
+  "neighbors": 48,
+  "shared_grids": 2,
+  "years": [
+   2019,
+   2025
+  ]
+ },
+ "storage": {
+  "bronze": 37.7,
+  "silver": 51.6,
+  "gold": 31.2,
+  "models": 12.0,
+  "raw_json": 225.2,
+  "gold_files": 63
+ },
+ "geography": [
+  {
+   "location_id": "HNOI",
+   "elevation_m": 11.0,
+   "distance_to_coast_km": 81.802,
+   "terrain_slope_deg": 0.247
+  },
+  {
+   "location_id": "HUE",
+   "elevation_m": 10.0,
+   "distance_to_coast_km": 8.673,
+   "terrain_slope_deg": 0.225
+  },
+  {
+   "location_id": "LCHA",
+   "elevation_m": 924.0,
+   "distance_to_coast_km": 361.335,
+   "terrain_slope_deg": 2.491
+  },
+  {
+   "location_id": "QNIN",
+   "elevation_m": 12.0,
+   "distance_to_coast_km": 0.239,
+   "terrain_slope_deg": 0.234
+  },
+  {
+   "location_id": "NAN",
+   "elevation_m": 8.0,
+   "distance_to_coast_km": 7.565,
+   "terrain_slope_deg": 0.043
+  },
+  {
+   "location_id": "HGIA",
+   "elevation_m": 112.0,
+   "distance_to_coast_km": 262.803,
+   "terrain_slope_deg": 1.947
+  },
+  {
+   "location_id": "HPHO",
+   "elevation_m": 8.0,
+   "distance_to_coast_km": 3.51,
+   "terrain_slope_deg": 0.045
+  },
+  {
+   "location_id": "QNGA",
+   "elevation_m": 13.0,
+   "distance_to_coast_km": 8.383,
+   "terrain_slope_deg": 0.087
+  },
+  {
+   "location_id": "KTUM",
+   "elevation_m": 530.0,
+   "distance_to_coast_km": 116.692,
+   "terrain_slope_deg": 0.81
+  },
+  {
+   "location_id": "KHOA",
+   "elevation_m": 7.0,
+   "distance_to_coast_km": 1.025,
+   "terrain_slope_deg": 0.272
+  },
+  {
+   "location_id": "LDON",
+   "elevation_m": 1507.0,
+   "distance_to_coast_km": 70.061,
+   "terrain_slope_deg": 2.076
+  },
+  {
+   "location_id": "HCMC",
+   "elevation_m": 16.0,
+   "distance_to_coast_km": 12.423,
+   "terrain_slope_deg": 0.363
+  }
+ ],
+ "eda_region_month": [
+  {
+   "region": "Bac",
+   "month": 1,
+   "hours": 26040,
+   "heavy_hours": 24.0,
+   "heavy_pct": 0.09,
+   "mean_next24_mm": 1.81
+  },
+  {
+   "region": "Bac",
+   "month": 2,
+   "hours": 23760,
+   "heavy_hours": 35.0,
+   "heavy_pct": 0.15,
+   "mean_next24_mm": 2.21
+  },
+  {
+   "region": "Bac",
+   "month": 3,
+   "hours": 26040,
+   "heavy_hours": 43.0,
+   "heavy_pct": 0.17,
+   "mean_next24_mm": 2.45
+  },
+  {
+   "region": "Bac",
+   "month": 4,
+   "hours": 25200,
+   "heavy_hours": 105.0,
+   "heavy_pct": 0.42,
+   "mean_next24_mm": 3.78
+  },
+  {
+   "region": "Bac",
+   "month": 5,
+   "hours": 26040,
+   "heavy_hours": 314.0,
+   "heavy_pct": 1.21,
+   "mean_next24_mm": 7.07
+  },
+  {
+   "region": "Bac",
+   "month": 6,
+   "hours": 25200,
+   "heavy_hours": 279.0,
+   "heavy_pct": 1.11,
+   "mean_next24_mm": 9.73
+  },
+  {
+   "region": "Bac",
+   "month": 7,
+   "hours": 26040,
+   "heavy_hours": 372.0,
+   "heavy_pct": 1.43,
+   "mean_next24_mm": 9.36
+  },
+  {
+   "region": "Bac",
+   "month": 8,
+   "hours": 26040,
+   "heavy_hours": 655.0,
+   "heavy_pct": 2.52,
+   "mean_next24_mm": 11.73
+  },
+  {
+   "region": "Bac",
+   "month": 9,
+   "hours": 25200,
+   "heavy_hours": 756.0,
+   "heavy_pct": 3.0,
+   "mean_next24_mm": 9.97
+  },
+  {
+   "region": "Bac",
+   "month": 10,
+   "hours": 26040,
+   "heavy_hours": 383.0,
+   "heavy_pct": 1.47,
+   "mean_next24_mm": 4.93
+  },
+  {
+   "region": "Bac",
+   "month": 11,
+   "hours": 25200,
+   "heavy_hours": 16.0,
+   "heavy_pct": 0.06,
+   "mean_next24_mm": 1.61
+  },
+  {
+   "region": "Bac",
+   "month": 12,
+   "hours": 25920,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 0.93
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 1,
+   "hours": 10416,
+   "heavy_hours": 26.0,
+   "heavy_pct": 0.25,
+   "mean_next24_mm": 3.56
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 2,
+   "hours": 9504,
+   "heavy_hours": 29.0,
+   "heavy_pct": 0.31,
+   "mean_next24_mm": 2.68
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 3,
+   "hours": 10416,
+   "heavy_hours": 22.0,
+   "heavy_pct": 0.21,
+   "mean_next24_mm": 2.09
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 4,
+   "hours": 10080,
+   "heavy_hours": 71.0,
+   "heavy_pct": 0.7,
+   "mean_next24_mm": 2.74
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 5,
+   "hours": 10416,
+   "heavy_hours": 81.0,
+   "heavy_pct": 0.78,
+   "mean_next24_mm": 5.38
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 6,
+   "hours": 10080,
+   "heavy_hours": 92.0,
+   "heavy_pct": 0.91,
+   "mean_next24_mm": 4.79
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 7,
+   "hours": 10416,
+   "heavy_hours": 168.0,
+   "heavy_pct": 1.61,
+   "mean_next24_mm": 5.54
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 8,
+   "hours": 10416,
+   "heavy_hours": 219.0,
+   "heavy_pct": 2.1,
+   "mean_next24_mm": 7.08
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 9,
+   "hours": 10080,
+   "heavy_hours": 683.0,
+   "heavy_pct": 6.78,
+   "mean_next24_mm": 12.77
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 10,
+   "hours": 10416,
+   "heavy_hours": 1244.0,
+   "heavy_pct": 11.94,
+   "mean_next24_mm": 18.9
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 11,
+   "hours": 10080,
+   "heavy_hours": 623.0,
+   "heavy_pct": 6.18,
+   "mean_next24_mm": 10.34
+  },
+  {
+   "region": "BacTrungBo",
+   "month": 12,
+   "hours": 10368,
+   "heavy_hours": 251.0,
+   "heavy_pct": 2.42,
+   "mean_next24_mm": 6.72
+  },
+  {
+   "region": "Nam",
+   "month": 1,
+   "hours": 5208,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 0.72
+  },
+  {
+   "region": "Nam",
+   "month": 2,
+   "hours": 4752,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 0.5
+  },
+  {
+   "region": "Nam",
+   "month": 3,
+   "hours": 5208,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 0.75
+  },
+  {
+   "region": "Nam",
+   "month": 4,
+   "hours": 5040,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 2.23
+  },
+  {
+   "region": "Nam",
+   "month": 5,
+   "hours": 5208,
+   "heavy_hours": 1.0,
+   "heavy_pct": 0.02,
+   "mean_next24_mm": 6.23
+  },
+  {
+   "region": "Nam",
+   "month": 6,
+   "hours": 5040,
+   "heavy_hours": 3.0,
+   "heavy_pct": 0.06,
+   "mean_next24_mm": 7.85
+  },
+  {
+   "region": "Nam",
+   "month": 7,
+   "hours": 5208,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 8.9
+  },
+  {
+   "region": "Nam",
+   "month": 8,
+   "hours": 5208,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 7.88
+  },
+  {
+   "region": "Nam",
+   "month": 9,
+   "hours": 5040,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 10.21
+  },
+  {
+   "region": "Nam",
+   "month": 10,
+   "hours": 5208,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 8.32
+  },
+  {
+   "region": "Nam",
+   "month": 11,
+   "hours": 5040,
+   "heavy_hours": 18.0,
+   "heavy_pct": 0.36,
+   "mean_next24_mm": 4.85
+  },
+  {
+   "region": "Nam",
+   "month": 12,
+   "hours": 5184,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 1.9
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 1,
+   "hours": 10416,
+   "heavy_hours": 17.0,
+   "heavy_pct": 0.16,
+   "mean_next24_mm": 3.33
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 2,
+   "hours": 9504,
+   "heavy_hours": 21.0,
+   "heavy_pct": 0.22,
+   "mean_next24_mm": 2.26
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 3,
+   "hours": 10416,
+   "heavy_hours": 67.0,
+   "heavy_pct": 0.64,
+   "mean_next24_mm": 1.95
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 4,
+   "hours": 10080,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 1.73
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 5,
+   "hours": 10416,
+   "heavy_hours": 23.0,
+   "heavy_pct": 0.22,
+   "mean_next24_mm": 5.62
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 6,
+   "hours": 10080,
+   "heavy_hours": 66.0,
+   "heavy_pct": 0.65,
+   "mean_next24_mm": 5.03
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 7,
+   "hours": 10416,
+   "heavy_hours": 8.0,
+   "heavy_pct": 0.08,
+   "mean_next24_mm": 5.65
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 8,
+   "hours": 10416,
+   "heavy_hours": 37.0,
+   "heavy_pct": 0.36,
+   "mean_next24_mm": 6.74
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 9,
+   "hours": 10080,
+   "heavy_hours": 192.0,
+   "heavy_pct": 1.9,
+   "mean_next24_mm": 11.66
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 10,
+   "hours": 10416,
+   "heavy_hours": 350.0,
+   "heavy_pct": 3.36,
+   "mean_next24_mm": 12.18
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 11,
+   "hours": 10080,
+   "heavy_hours": 850.0,
+   "heavy_pct": 8.43,
+   "mean_next24_mm": 13.89
+  },
+  {
+   "region": "NamTrungBo",
+   "month": 12,
+   "hours": 10368,
+   "heavy_hours": 230.0,
+   "heavy_pct": 2.22,
+   "mean_next24_mm": 7.82
+  },
+  {
+   "region": "TayNguyen",
+   "month": 1,
+   "hours": 10416,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 0.62
+  },
+  {
+   "region": "TayNguyen",
+   "month": 2,
+   "hours": 9504,
+   "heavy_hours": 0.0,
+   "heavy_pct": 0.0,
+   "mean_next24_mm": 0.55
+  },
+  {
+   "region": "TayNguyen",
+   "month": 3,
+   "hours": 10416,
+   "heavy_hours": 44.0,
+   "heavy_pct": 0.42,
+   "mean_next24_mm": 1.49
+  },
+  {
+   "region": "TayNguyen",
+   "month": 4,
+   "hours": 10080,
+   "heavy_hours": 1.0,
+   "heavy_pct": 0.01,
+   "mean_next24_mm": 2.68
+  },
+  {
+   "region": "TayNguyen",
+   "month": 5,
+   "hours": 10416,
+   "heavy_hours": 40.0,
+   "heavy_pct": 0.38,
+   "mean_next24_mm": 7.7
+  },
+  {
+   "region": "TayNguyen",
+   "month": 6,
+   "hours": 10080,
+   "heavy_hours": 20.0,
+   "heavy_pct": 0.2,
+   "mean_next24_mm": 6.92
+  },
+  {
+   "region": "TayNguyen",
+   "month": 7,
+   "hours": 10416,
+   "heavy_hours": 125.0,
+   "heavy_pct": 1.2,
+   "mean_next24_mm": 9.09
+  },
+  {
+   "region": "TayNguyen",
+   "month": 8,
+   "hours": 10416,
+   "heavy_hours": 71.0,
+   "heavy_pct": 0.68,
+   "mean_next24_mm": 7.55
+  },
+  {
+   "region": "TayNguyen",
+   "month": 9,
+   "hours": 10080,
+   "heavy_hours": 200.0,
+   "heavy_pct": 1.98,
+   "mean_next24_mm": 11.31
+  },
+  {
+   "region": "TayNguyen",
+   "month": 10,
+   "hours": 10416,
+   "heavy_hours": 228.0,
+   "heavy_pct": 2.19,
+   "mean_next24_mm": 8.8
+  },
+  {
+   "region": "TayNguyen",
+   "month": 11,
+   "hours": 10080,
+   "heavy_hours": 203.0,
+   "heavy_pct": 2.01,
+   "mean_next24_mm": 5.83
+  },
+  {
+   "region": "TayNguyen",
+   "month": 12,
+   "hours": 10368,
+   "heavy_hours": 21.0,
+   "heavy_pct": 0.2,
+   "mean_next24_mm": 1.56
+  }
+ ],
+ "eda_province_year": [
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 98.1
+  },
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 18,
+   "max_day_mm": 159.9
+  },
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 12,
+   "max_day_mm": 103.1
+  },
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 14,
+   "max_day_mm": 137.8
+  },
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 19,
+   "max_day_mm": 106.5
+  },
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 13,
+   "max_day_mm": 181.9
+  },
+  {
+   "new_province": "Huế",
+   "elevation_m": 10.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 14,
+   "max_day_mm": 205.3
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 157.0
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 6,
+   "max_day_mm": 89.1
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 112.8
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 94.7
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 64.7
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 7,
+   "max_day_mm": 196.6
+  },
+  {
+   "new_province": "Hà Nội",
+   "elevation_m": 11.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 116.6
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 85.0
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 3,
+   "max_day_mm": 75.3
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 52.5
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 102.4
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 55.4
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 7,
+   "max_day_mm": 173.5
+  },
+  {
+   "new_province": "Hải Phòng",
+   "elevation_m": 8.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 81.6
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 98.3
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 4,
+   "max_day_mm": 93.9
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 7,
+   "max_day_mm": 100.6
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 116.5
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 0,
+   "max_day_mm": 48.6
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 3,
+   "max_day_mm": 73.7
+  },
+  {
+   "new_province": "Khánh Hòa",
+   "elevation_m": 7.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 97.4
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 57.4
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 2,
+   "max_day_mm": 64.1
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 81.2
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 66.1
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 63.7
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 7,
+   "max_day_mm": 131.1
+  },
+  {
+   "new_province": "Lai Châu",
+   "elevation_m": 924.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 94.8
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 83.6
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 2,
+   "max_day_mm": 96.4
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 106.5
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 98.4
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 0,
+   "max_day_mm": 39.8
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 0,
+   "max_day_mm": 38.7
+  },
+  {
+   "new_province": "Lâm Đồng",
+   "elevation_m": 1507.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 55.7
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 6,
+   "max_day_mm": 98.8
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 10,
+   "max_day_mm": 159.8
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 9,
+   "max_day_mm": 133.1
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 91.0
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 114.5
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 8,
+   "max_day_mm": 128.2
+  },
+  {
+   "new_province": "Nghệ An",
+   "elevation_m": 8.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 13,
+   "max_day_mm": 170.7
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 98.4
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 105.0
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 12,
+   "max_day_mm": 195.8
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 3,
+   "max_day_mm": 107.7
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 14,
+   "max_day_mm": 204.6
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 118.9
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 76.3
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 6,
+   "max_day_mm": 114.2
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 114.8
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 64.0
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 4,
+   "max_day_mm": 92.0
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 7,
+   "max_day_mm": 132.4
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 13.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 9,
+   "max_day_mm": 143.8
+  },
+  {
+   "new_province": "Quảng Ngãi",
+   "elevation_m": 530.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 72.4
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 137.8
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 4,
+   "max_day_mm": 87.3
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 52.1
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 120.4
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 57.2
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 6,
+   "max_day_mm": 160.3
+  },
+  {
+   "new_province": "Quảng Ninh",
+   "elevation_m": 12.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 4,
+   "max_day_mm": 102.6
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 0,
+   "max_day_mm": 37.6
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 0,
+   "max_day_mm": 37.2
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 0,
+   "max_day_mm": 39.8
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 1,
+   "max_day_mm": 56.6
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 0,
+   "max_day_mm": 37.3
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 0,
+   "max_day_mm": 43.2
+  },
+  {
+   "new_province": "TP. Hồ Chí Minh",
+   "elevation_m": 16.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 0,
+   "max_day_mm": 46.0
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2019,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 83.1
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2020,
+   "days": 366,
+   "heavy_days": 3,
+   "max_day_mm": 66.7
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2021,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 66.0
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2022,
+   "days": 365,
+   "heavy_days": 3,
+   "max_day_mm": 102.6
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2023,
+   "days": 365,
+   "heavy_days": 2,
+   "max_day_mm": 107.5
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2024,
+   "days": 366,
+   "heavy_days": 5,
+   "max_day_mm": 142.5
+  },
+  {
+   "new_province": "Tuyên Quang",
+   "elevation_m": 112.0,
+   "year": 2025,
+   "days": 365,
+   "heavy_days": 5,
+   "max_day_mm": 86.0
+  }
+ ],
+ "ablation": {
+  "results": [
+   {
+    "model": "M1",
+    "n": 104832,
+    "positives": 896,
+    "prevalence": 0.0085470085470085,
+    "pr_auc": 0.2260486519760477,
+    "roc_auc": 0.9313736284055985,
+    "threshold": 0.8477511583930617,
+    "tp": 241,
+    "fp": 402,
+    "fn": 655,
+    "tn": 103534,
+    "precision": 0.374805598755832,
+    "recall": 0.2689732142857143,
+    "f1": 0.313190383365822,
+    "split": "validation",
+    "role": "ablation",
+    "n_features": 24,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "M1",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.3746399161127048,
+    "roc_auc": 0.94515209969665,
+    "threshold": 0.8477511583930617,
+    "tp": 1103,
+    "fp": 1259,
+    "fn": 2124,
+    "tn": 205754,
+    "precision": 0.4669771380186283,
+    "recall": 0.3418035326929036,
+    "f1": 0.3947038826265879,
+    "split": "test",
+    "role": "ablation",
+    "n_features": 24,
+    "pr_auc_ci_lo": 0.2981184148655461,
+    "pr_auc_ci_hi": 0.4508977110045873
+   },
+   {
+    "model": "M2",
+    "n": 104832,
+    "positives": 896,
+    "prevalence": 0.0085470085470085,
+    "pr_auc": 0.2428246523358668,
+    "roc_auc": 0.9317928907487024,
+    "threshold": 0.8369317650999787,
+    "tp": 261,
+    "fp": 395,
+    "fn": 635,
+    "tn": 103541,
+    "precision": 0.3978658536585366,
+    "recall": 0.2912946428571428,
+    "f1": 0.336340206185567,
+    "split": "validation",
+    "role": "ablation",
+    "n_features": 27,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "M2",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.3619158128604307,
+    "roc_auc": 0.9459365611040378,
+    "threshold": 0.8369317650999787,
+    "tp": 1053,
+    "fp": 1288,
+    "fn": 2174,
+    "tn": 205725,
+    "precision": 0.4498077744553609,
+    "recall": 0.3263092655717384,
+    "f1": 0.3782327586206896,
+    "split": "test",
+    "role": "ablation",
+    "n_features": 27,
+    "pr_auc_ci_lo": 0.2866929332194849,
+    "pr_auc_ci_hi": 0.4348730426558699
+   },
+   {
+    "model": "M3",
+    "n": 104832,
+    "positives": 896,
+    "prevalence": 0.0085470085470085,
+    "pr_auc": 0.2415436804103558,
+    "roc_auc": 0.9363690993049294,
+    "threshold": 0.8245172198009628,
+    "tp": 281,
+    "fp": 497,
+    "fn": 615,
+    "tn": 103439,
+    "precision": 0.3611825192802056,
+    "recall": 0.3136160714285714,
+    "f1": 0.3357228195937873,
+    "split": "validation",
+    "role": "ablation",
+    "n_features": 31,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "M3",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.3756002860220352,
+    "roc_auc": 0.9461283531157824,
+    "threshold": 0.8245172198009628,
+    "tp": 1205,
+    "fp": 1504,
+    "fn": 2022,
+    "tn": 205509,
+    "precision": 0.444813584348468,
+    "recall": 0.3734118376200805,
+    "f1": 0.4059973045822102,
+    "split": "test",
+    "role": "ablation",
+    "n_features": 31,
+    "pr_auc_ci_lo": 0.2967236370883744,
+    "pr_auc_ci_hi": 0.4510286681951784
+   },
+   {
+    "model": "persistence_rain24h",
+    "n": 104832,
+    "positives": 896,
+    "prevalence": 0.0085470085470085,
+    "pr_auc": 0.0909697235330108,
+    "roc_auc": 0.872835963314306,
+    "threshold": 36.7,
+    "tp": 277,
+    "fp": 1702,
+    "fn": 619,
+    "tn": 102234,
+    "precision": 0.1399696816574027,
+    "recall": 0.3091517857142857,
+    "f1": 0.192695652173913,
+    "split": "validation",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "persistence_rain24h",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.1837075995659092,
+    "roc_auc": 0.8848609830355001,
+    "threshold": 36.7,
+    "tp": 1259,
+    "fp": 4397,
+    "fn": 1968,
+    "tn": 202616,
+    "precision": 0.2225954738330976,
+    "recall": 0.3901456461109389,
+    "f1": 0.283462794101092,
+    "split": "test",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "climatology_loc_month",
+    "n": 104832,
+    "positives": 896,
+    "prevalence": 0.0085470085470085,
+    "pr_auc": 0.0748124488849093,
+    "roc_auc": 0.7610573711569757,
+    "threshold": 0.1737231182795699,
+    "tp": 175,
+    "fp": 569,
+    "fn": 721,
+    "tn": 103367,
+    "precision": 0.2352150537634408,
+    "recall": 0.1953125,
+    "f1": 0.2134146341463415,
+    "split": "validation",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "climatology_loc_month",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.057948621278877,
+    "roc_auc": 0.7153132811955595,
+    "threshold": 0.1737231182795699,
+    "tp": 214,
+    "fp": 1274,
+    "fn": 3013,
+    "tn": 205739,
+    "precision": 0.1438172043010752,
+    "recall": 0.0663154632785869,
+    "f1": 0.0907741251325556,
+    "split": "test",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   }
+  ],
+  "deltas": [
+   {
+    "comparison": "M2 - M1",
+    "delta_pr_auc": -0.0127241032522741,
+    "bootstrap_mean": -0.0120409999409256,
+    "ci_lo": -0.0263552158407857,
+    "ci_hi": 0.005286292961435,
+    "share_resamples_le_0": 0.932,
+    "delta_recall": -0.0154942671211651,
+    "delta_precision": -0.0171693635632673,
+    "delta_f1": -0.0164711240058982
+   },
+   {
+    "comparison": "M3 - M1",
+    "delta_pr_auc": 0.0009603699093304,
+    "bootstrap_mean": 0.0011534903706314,
+    "ci_lo": -0.0114019057635836,
+    "ci_hi": 0.015429396855896,
+    "share_resamples_le_0": 0.442,
+    "delta_recall": 0.0316083049271769,
+    "delta_precision": -0.0221635536701602,
+    "delta_f1": 0.0112934219556222
+   },
+   {
+    "comparison": "M3 - M2",
+    "delta_pr_auc": 0.0136844731616045,
+    "bootstrap_mean": 0.013194490311557,
+    "ci_lo": 0.0007691554382374,
+    "ci_hi": 0.0256976202394448,
+    "share_resamples_le_0": 0.02,
+    "delta_recall": 0.0471025720483421,
+    "delta_precision": -0.0049941901068928,
+    "delta_f1": 0.0277645459615205
+   }
+  ],
+  "cohort": [
+   {
+    "split": "test",
+    "labelled_rows": 210240,
+    "M1_eligible": 210240,
+    "M1_positives": 3227,
+    "M2_eligible": 210240,
+    "M2_positives": 3227,
+    "M3_eligible": 210240,
+    "M3_positives": 3227
+   },
+   {
+    "split": "validation",
+    "labelled_rows": 104832,
+    "M1_eligible": 104832,
+    "M1_positives": 896,
+    "M2_eligible": 104832,
+    "M2_positives": 896,
+    "M3_eligible": 104832,
+    "M3_positives": 896
+   },
+   {
+    "split": "train",
+    "labelled_rows": 420480,
+    "M1_eligible": 419628,
+    "M1_positives": 5204,
+    "M2_eligible": 419628,
+    "M2_positives": 5204,
+    "M3_eligible": 419628,
+    "M3_positives": 5204
+   }
+  ],
+  "importance": [
+   {
+    "model": "M1",
+    "feature": "rain_3h",
+    "importance": 0.1821041310368686
+   },
+   {
+    "model": "M1",
+    "feature": "rain_24h",
+    "importance": 0.0680681968563663
+   },
+   {
+    "model": "M1",
+    "feature": "rain_72h",
+    "importance": 0.0537161704816313
+   },
+   {
+    "model": "M1",
+    "feature": "rain_max_1h_24h",
+    "importance": 0.0460797873832882
+   },
+   {
+    "model": "M1",
+    "feature": "rain_hours_24h",
+    "importance": 0.0677561620515989
+   },
+   {
+    "model": "M1",
+    "feature": "rh",
+    "importance": 0.0166551264908057
+   },
+   {
+    "model": "M1",
+    "feature": "rh_mean_6h",
+    "importance": 0.0173755205770946
+   },
+   {
+    "model": "M1",
+    "feature": "dew_point",
+    "importance": 0.0237421976042623
+   },
+   {
+    "model": "M1",
+    "feature": "dewpoint_depression",
+    "importance": 0.0138620518069389
+   },
+   {
+    "model": "M1",
+    "feature": "pressure_msl",
+    "importance": 0.0251054961309537
+   },
+   {
+    "model": "M1",
+    "feature": "pressure_change_3h",
+    "importance": 0.0068620608021193
+   },
+   {
+    "model": "M1",
+    "feature": "pressure_change_24h",
+    "importance": 0.0334705204838299
+   },
+   {
+    "model": "M1",
+    "feature": "wind_speed",
+    "importance": 0.0186049992926741
+   },
+   {
+    "model": "M1",
+    "feature": "wind_speed_change_24h",
+    "importance": 0.0176499608286113
+   },
+   {
+    "model": "M1",
+    "feature": "wind_dir_sin",
+    "importance": 0.0153658075740141
+   },
+   {
+    "model": "M1",
+    "feature": "wind_dir_cos",
+    "importance": 0.0357690540258379
+   },
+   {
+    "model": "M1",
+    "feature": "temperature",
+    "importance": 0.0192855806381614
+   },
+   {
+    "model": "M1",
+    "feature": "temp_change_24h",
+    "importance": 0.0131274797981786
+   },
+   {
+    "model": "M1",
+    "feature": "cloud_cover",
+    "importance": 0.0768711116916535
+   },
+   {
+    "model": "M1",
+    "feature": "cloud_mean_6h",
+    "importance": 0.1686940517943352
+   },
+   {
+    "model": "M1",
+    "feature": "month_sin",
+    "importance": 0.0483599314749163
+   },
+   {
+    "model": "M1",
+    "feature": "month_cos",
+    "importance": 0.0187005503854701
+   },
+   {
+    "model": "M1",
+    "feature": "hour_sin",
+    "importance": 0.0063577594912262
+   },
+   {
+    "model": "M1",
+    "feature": "hour_cos",
+    "importance": 0.0064162912991622
+   },
+   {
+    "model": "M2",
+    "feature": "rain_3h",
+    "importance": 0.1807977522238818
+   },
+   {
+    "model": "M2",
+    "feature": "rain_24h",
+    "importance": 0.0543980942407243
+   },
+   {
+    "model": "M2",
+    "feature": "rain_72h",
+    "importance": 0.0408439696850482
+   },
+   {
+    "model": "M2",
+    "feature": "rain_max_1h_24h",
+    "importance": 0.0614812570615423
+   },
+   {
+    "model": "M2",
+    "feature": "rain_hours_24h",
+    "importance": 0.0693987671719462
+   },
+   {
+    "model": "M2",
+    "feature": "rh",
+    "importance": 0.0107360796249666
+   },
+   {
+    "model": "M2",
+    "feature": "rh_mean_6h",
+    "importance": 0.0150251761418293
+   },
+   {
+    "model": "M2",
+    "feature": "dew_point",
+    "importance": 0.02198861475944
+   },
+   {
+    "model": "M2",
+    "feature": "dewpoint_depression",
+    "importance": 0.013343201732851
+   },
+   {
+    "model": "M2",
+    "feature": "pressure_msl",
+    "importance": 0.0218534770488427
+   },
+   {
+    "model": "M2",
+    "feature": "pressure_change_3h",
+    "importance": 0.0056107031606587
+   },
+   {
+    "model": "M2",
+    "feature": "pressure_change_24h",
+    "importance": 0.0312944420859545
+   },
+   {
+    "model": "M2",
+    "feature": "wind_speed",
+    "importance": 0.0182497930917312
+   },
+   {
+    "model": "M2",
+    "feature": "wind_speed_change_24h",
+    "importance": 0.0133621143085113
+   },
+   {
+    "model": "M2",
+    "feature": "wind_dir_sin",
+    "importance": 0.0136790456068105
+   },
+   {
+    "model": "M2",
+    "feature": "wind_dir_cos",
+    "importance": 0.0319363373386669
+   },
+   {
+    "model": "M2",
+    "feature": "temperature",
+    "importance": 0.0177323973850867
+   },
+   {
+    "model": "M2",
+    "feature": "temp_change_24h",
+    "importance": 0.0124894015086647
+   },
+   {
+    "model": "M2",
+    "feature": "cloud_cover",
+    "importance": 0.1161064512162096
+   },
+   {
+    "model": "M2",
+    "feature": "cloud_mean_6h",
+    "importance": 0.1334110438663981
+   },
+   {
+    "model": "M2",
+    "feature": "month_sin",
+    "importance": 0.045613368818269
+   },
+   {
+    "model": "M2",
+    "feature": "month_cos",
+    "importance": 0.0175081115260939
+   },
+   {
+    "model": "M2",
+    "feature": "hour_sin",
+    "importance": 0.0049899888772477
+   },
+   {
+    "model": "M2",
+    "feature": "hour_cos",
+    "importance": 0.0050834763112146
+   },
+   {
+    "model": "M2",
+    "feature": "elevation_m",
+    "importance": 0.011820429412965
+   },
+   {
+    "model": "M2",
+    "feature": "distance_to_coast_km",
+    "importance": 0.016334096270479
+   },
+   {
+    "model": "M2",
+    "feature": "terrain_slope_deg",
+    "importance": 0.0149124095239651
+   },
+   {
+    "model": "M3",
+    "feature": "rain_3h",
+    "importance": 0.1363291903651415
+   },
+   {
+    "model": "M3",
+    "feature": "rain_24h",
+    "importance": 0.0323108753637117
+   },
+   {
+    "model": "M3",
+    "feature": "rain_72h",
+    "importance": 0.0306997636368174
+   },
+   {
+    "model": "M3",
+    "feature": "rain_max_1h_24h",
+    "importance": 0.0386880602201386
+   },
+   {
+    "model": "M3",
+    "feature": "rain_hours_24h",
+    "importance": 0.0533069203192419
+   },
+   {
+    "model": "M3",
+    "feature": "rh",
+    "importance": 0.0085322750841423
+   },
+   {
+    "model": "M3",
+    "feature": "rh_mean_6h",
+    "importance": 0.0118571662707968
+   },
+   {
+    "model": "M3",
+    "feature": "dew_point",
+    "importance": 0.0195278821307589
+   },
+   {
+    "model": "M3",
+    "feature": "dewpoint_depression",
+    "importance": 0.0110187117632773
+   },
+   {
+    "model": "M3",
+    "feature": "pressure_msl",
+    "importance": 0.0199922843812836
+   },
+   {
+    "model": "M3",
+    "feature": "pressure_change_3h",
+    "importance": 0.0051690929353969
+   },
+   {
+    "model": "M3",
+    "feature": "pressure_change_24h",
+    "importance": 0.0213247045384978
+   },
+   {
+    "model": "M3",
+    "feature": "wind_speed",
+    "importance": 0.0157475948431717
+   },
+   {
+    "model": "M3",
+    "feature": "wind_speed_change_24h",
+    "importance": 0.0111118347594252
+   },
+   {
+    "model": "M3",
+    "feature": "wind_dir_sin",
+    "importance": 0.0127917970964674
+   },
+   {
+    "model": "M3",
+    "feature": "wind_dir_cos",
+    "importance": 0.0278416333679001
+   },
+   {
+    "model": "M3",
+    "feature": "temperature",
+    "importance": 0.0154131734092586
+   },
+   {
+    "model": "M3",
+    "feature": "temp_change_24h",
+    "importance": 0.0110974891390336
+   },
+   {
+    "model": "M3",
+    "feature": "cloud_cover",
+    "importance": 0.0775972575445155
+   },
+   {
+    "model": "M3",
+    "feature": "cloud_mean_6h",
+    "importance": 0.1134286922935454
+   },
+   {
+    "model": "M3",
+    "feature": "month_sin",
+    "importance": 0.0364385311991649
+   },
+   {
+    "model": "M3",
+    "feature": "month_cos",
+    "importance": 0.0166566577824182
+   },
+   {
+    "model": "M3",
+    "feature": "hour_sin",
+    "importance": 0.0048945735954737
+   },
+   {
+    "model": "M3",
+    "feature": "hour_cos",
+    "importance": 0.0049376050312899
+   },
+   {
+    "model": "M3",
+    "feature": "elevation_m",
+    "importance": 0.0100254768421404
+   },
+   {
+    "model": "M3",
+    "feature": "distance_to_coast_km",
+    "importance": 0.0136597935059242
+   },
+   {
+    "model": "M3",
+    "feature": "terrain_slope_deg",
+    "importance": 0.0136411263821241
+   },
+   {
+    "model": "M3",
+    "feature": "neighbor_rain_sum_6h",
+    "importance": 0.1296954583300399
+   },
+   {
+    "model": "M3",
+    "feature": "neighbor_rain_sum_24h",
+    "importance": 0.0617323896520983
+   },
+   {
+    "model": "M3",
+    "feature": "neighbor_pressure_change_24h",
+    "importance": 0.0226606137611503
+   },
+   {
+    "model": "M3",
+    "feature": "neighbor_humidity_mean_6h",
+    "importance": 0.0118713744556522
+   }
+  ],
+  "manifest": {
+   "run_id": "20261031T140936Z_pilot",
+   "profile": "pilot",
+   "years": [
+    2019,
+    2025
+   ],
+   "seed": 42,
+   "created_utc": "2026-10-31T14:12:48.492659+00:00",
+   "python": "3.11.18",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+   "spark": "4.2.0",
+   "model": {
+    "type": "RandomForestClassifier",
+    "numTrees": 100,
+    "maxDepth": 12,
+    "minInstancesPerNode": 20,
+    "featureSubsetStrategy": "sqrt",
+    "subsamplingRate": 0.8,
+    "maxBins": 64,
+    "class_weight": "balanced"
+   },
+   "class_weight_positive": 79.63566487317448,
+   "splits": {
+    "train": [
+     "2005-01-01 00:00",
+     "2022-12-31 23:00"
+    ],
+    "validation": [
+     "2023-01-01 00:00",
+     "2023-12-31 23:00"
+    ],
+    "test": [
+     "2024-01-01 00:00",
+     "2025-12-31 23:00"
+    ]
+   },
+   "label": {
+    "horizon_hours": 24,
+    "threshold_mm": 50.0
+   },
+   "feature_sets": {
+    "M1": [
+     "rain_3h",
+     "rain_24h",
+     "rain_72h",
+     "rain_max_1h_24h",
+     "rain_hours_24h",
+     "rh",
+     "rh_mean_6h",
+     "dew_point",
+     "dewpoint_depression",
+     "pressure_msl",
+     "pressure_change_3h",
+     "pressure_change_24h",
+     "wind_speed",
+     "wind_speed_change_24h",
+     "wind_dir_sin",
+     "wind_dir_cos",
+     "temperature",
+     "temp_change_24h",
+     "cloud_cover",
+     "cloud_mean_6h",
+     "month_sin",
+     "month_cos",
+     "hour_sin",
+     "hour_cos"
+    ],
+    "M2": [
+     "rain_3h",
+     "rain_24h",
+     "rain_72h",
+     "rain_max_1h_24h",
+     "rain_hours_24h",
+     "rh",
+     "rh_mean_6h",
+     "dew_point",
+     "dewpoint_depression",
+     "pressure_msl",
+     "pressure_change_3h",
+     "pressure_change_24h",
+     "wind_speed",
+     "wind_speed_change_24h",
+     "wind_dir_sin",
+     "wind_dir_cos",
+     "temperature",
+     "temp_change_24h",
+     "cloud_cover",
+     "cloud_mean_6h",
+     "month_sin",
+     "month_cos",
+     "hour_sin",
+     "hour_cos",
+     "elevation_m",
+     "distance_to_coast_km",
+     "terrain_slope_deg"
+    ],
+    "M3": [
+     "rain_3h",
+     "rain_24h",
+     "rain_72h",
+     "rain_max_1h_24h",
+     "rain_hours_24h",
+     "rh",
+     "rh_mean_6h",
+     "dew_point",
+     "dewpoint_depression",
+     "pressure_msl",
+     "pressure_change_3h",
+     "pressure_change_24h",
+     "wind_speed",
+     "wind_speed_change_24h",
+     "wind_dir_sin",
+     "wind_dir_cos",
+     "temperature",
+     "temp_change_24h",
+     "cloud_cover",
+     "cloud_mean_6h",
+     "month_sin",
+     "month_cos",
+     "hour_sin",
+     "hour_cos",
+     "elevation_m",
+     "distance_to_coast_km",
+     "terrain_slope_deg",
+     "neighbor_rain_sum_6h",
+     "neighbor_rain_sum_24h",
+     "neighbor_pressure_change_24h",
+     "neighbor_humidity_mean_6h"
+    ]
+   },
+   "thresholds_from_validation": {
+    "M1": 0.8477511583930617,
+    "M2": 0.8369317650999787,
+    "M3": 0.8245172198009628,
+    "persistence_rain24h": 36.699999999999996,
+    "climatology_loc_month": 0.1737231182795699
+   },
+   "cohort_counts": [
+    {
+     "split": "test",
+     "n": 210240,
+     "pos": 3227.0
+    },
+    {
+     "split": "validation",
+     "n": 104832,
+     "pos": 896.0
+    },
+    {
+     "split": "train",
+     "n": 419628,
+     "pos": 5204.0
+    }
+   ],
+   "locations": [
+    "HCMC",
+    "HGIA",
+    "HNOI",
+    "HPHO",
+    "HUE",
+    "KHOA",
+    "KTUM",
+    "LCHA",
+    "LDON",
+    "NAN",
+    "QNGA",
+    "QNIN"
+   ],
+   "config_sha256": "c8ae77fea48f47ecd46d776b9851c7c21b7218e5efb7ffa97a86de9d1e883da2",
+   "geography_sha256": "ff9863305ae5c71e7f120c6020fb052994bf677c0bd2b68246d4166c79ddd411",
+   "grid_plan_sha256": "f6459b39b6761842b0aab7ae7a90a7b2020fa6244ff14b6ea46d070218e59697",
+   "bootstrap": {
+    "block": "day",
+    "n_resamples": 500,
+    "ci": 0.95
+   },
+   "model_dir": "/app/data/lake/models/ablation/20261031T140936Z_pilot"
+  },
+  "lolo_results": [
+   {
+    "model": "M1",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.3628400399389429,
+    "roc_auc": 0.9397917971618056,
+    "threshold": null,
+    "tp": 1141,
+    "fp": 1246,
+    "fn": 2086,
+    "tn": 205767,
+    "precision": 0.4780058651026393,
+    "recall": 0.3535791757049891,
+    "f1": 0.4064837905236907,
+    "pr_auc_ci_lo": 0.2818726009286505,
+    "pr_auc_ci_hi": 0.4412228510750401
+   },
+   {
+    "model": "M2",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.3435220520203788,
+    "roc_auc": 0.9394458887878684,
+    "threshold": null,
+    "tp": 803,
+    "fp": 789,
+    "fn": 2424,
+    "tn": 206224,
+    "precision": 0.5043969849246231,
+    "recall": 0.2488379299659126,
+    "f1": 0.3332641626893546,
+    "pr_auc_ci_lo": 0.27263969165759,
+    "pr_auc_ci_hi": 0.4175156846911104
+   },
+   {
+    "model": "M3",
+    "n": 210240,
+    "positives": 3227,
+    "prevalence": 0.0153491248097412,
+    "pr_auc": 0.3517358098927113,
+    "roc_auc": 0.9392318829850146,
+    "threshold": null,
+    "tp": 895,
+    "fp": 869,
+    "fn": 2332,
+    "tn": 206144,
+    "precision": 0.5073696145124716,
+    "recall": 0.2773473814688565,
+    "f1": 0.3586455620116209,
+    "pr_auc_ci_lo": 0.2752798484012161,
+    "pr_auc_ci_hi": 0.4299902659440553
+   }
+  ],
+  "lolo_deltas": [
+   {
+    "comparison": "M2 - M1",
+    "delta_pr_auc": -0.0193179879185641,
+    "bootstrap_mean": -0.0198059031476456,
+    "ci_lo": -0.0377183815235336,
+    "ci_hi": -0.0010714532402782,
+    "share_resamples_le_0": 0.982
+   },
+   {
+    "comparison": "M3 - M1",
+    "delta_pr_auc": -0.0111042300462316,
+    "bootstrap_mean": -0.0114955495281588,
+    "ci_lo": -0.0282801955482607,
+    "ci_hi": 0.0064804521365224,
+    "share_resamples_le_0": 0.904
+   },
+   {
+    "comparison": "M3 - M2",
+    "delta_pr_auc": 0.0082137578723325,
+    "bootstrap_mean": 0.0083103536194867,
+    "ci_lo": -0.0005444322949105,
+    "ci_hi": 0.0180563898769545,
+    "share_resamples_le_0": 0.034
+   }
+  ],
+  "lolo_per_location": [
+   {
+    "location_id": "HCMC",
+    "model": "M1",
+    "positives": 1,
+    "pr_auc": 0.0001207292043945
+   },
+   {
+    "location_id": "HGIA",
+    "model": "M1",
+    "positives": 241,
+    "pr_auc": 0.330390371561849
+   },
+   {
+    "location_id": "HNOI",
+    "model": "M1",
+    "positives": 276,
+    "pr_auc": 0.3657843629858097
+   },
+   {
+    "location_id": "HPHO",
+    "model": "M1",
+    "positives": 245,
+    "pr_auc": 0.4273830196857698
+   },
+   {
+    "location_id": "HUE",
+    "model": "M1",
+    "positives": 690,
+    "pr_auc": 0.5582644408587258
+   },
+   {
+    "location_id": "KHOA",
+    "model": "M1",
+    "positives": 177,
+    "pr_auc": 0.2881478471517349
+   },
+   {
+    "location_id": "KTUM",
+    "model": "M1",
+    "positives": 225,
+    "pr_auc": 0.1481496120806736
+   },
+   {
+    "location_id": "LCHA",
+    "model": "M1",
+    "positives": 263,
+    "pr_auc": 0.338810451496955
+   },
+   {
+    "location_id": "LDON",
+    "model": "M1",
+    "positives": 58,
+    "pr_auc": 0.0861968556721464
+   },
+   {
+    "location_id": "NAN",
+    "model": "M1",
+    "positives": 418,
+    "pr_auc": 0.468195052561024
+   },
+   {
+    "location_id": "QNGA",
+    "model": "M1",
+    "positives": 369,
+    "pr_auc": 0.325312048541725
+   },
+   {
+    "location_id": "QNIN",
+    "model": "M1",
+    "positives": 264,
+    "pr_auc": 0.4235249529625977
+   },
+   {
+    "location_id": "HCMC",
+    "model": "M2",
+    "positives": 1,
+    "pr_auc": 0.0001149689583812
+   },
+   {
+    "location_id": "HGIA",
+    "model": "M2",
+    "positives": 241,
+    "pr_auc": 0.1988665798011833
+   },
+   {
+    "location_id": "HNOI",
+    "model": "M2",
+    "positives": 276,
+    "pr_auc": 0.263005423537036
+   },
+   {
+    "location_id": "HPHO",
+    "model": "M2",
+    "positives": 245,
+    "pr_auc": 0.4340900843265424
+   },
+   {
+    "location_id": "HUE",
+    "model": "M2",
+    "positives": 690,
+    "pr_auc": 0.549861503445685
+   },
+   {
+    "location_id": "KHOA",
+    "model": "M2",
+    "positives": 177,
+    "pr_auc": 0.2830967354637476
+   },
+   {
+    "location_id": "KTUM",
+    "model": "M2",
+    "positives": 225,
+    "pr_auc": 0.1314076081066578
+   },
+   {
+    "location_id": "LCHA",
+    "model": "M2",
+    "positives": 263,
+    "pr_auc": 0.314681343796432
+   },
+   {
+    "location_id": "LDON",
+    "model": "M2",
+    "positives": 58,
+    "pr_auc": 0.0824319733934383
+   },
+   {
+    "location_id": "NAN",
+    "model": "M2",
+    "positives": 418,
+    "pr_auc": 0.4543571732893542
+   },
+   {
+    "location_id": "QNGA",
+    "model": "M2",
+    "positives": 369,
+    "pr_auc": 0.2785598431921537
+   },
+   {
+    "location_id": "QNIN",
+    "model": "M2",
+    "positives": 264,
+    "pr_auc": 0.404382558124706
+   },
+   {
+    "location_id": "HCMC",
+    "model": "M3",
+    "positives": 1,
+    "pr_auc": 0.0001751313485113
+   },
+   {
+    "location_id": "HGIA",
+    "model": "M3",
+    "positives": 241,
+    "pr_auc": 0.3145475482217105
+   },
+   {
+    "location_id": "HNOI",
+    "model": "M3",
+    "positives": 276,
+    "pr_auc": 0.218169960441356
+   },
+   {
+    "location_id": "HPHO",
+    "model": "M3",
+    "positives": 245,
+    "pr_auc": 0.437899216033247
+   },
+   {
+    "location_id": "HUE",
+    "model": "M3",
+    "positives": 690,
+    "pr_auc": 0.545187723044405
+   },
+   {
+    "location_id": "KHOA",
+    "model": "M3",
+    "positives": 177,
+    "pr_auc": 0.3079838718660666
+   },
+   {
+    "location_id": "KTUM",
+    "model": "M3",
+    "positives": 225,
+    "pr_auc": 0.1270531013853613
+   },
+   {
+    "location_id": "LCHA",
+    "model": "M3",
+    "positives": 263,
+    "pr_auc": 0.3126323101907488
+   },
+   {
+    "location_id": "LDON",
+    "model": "M3",
+    "positives": 58,
+    "pr_auc": 0.108175642140663
+   },
+   {
+    "location_id": "NAN",
+    "model": "M3",
+    "positives": 418,
+    "pr_auc": 0.4497060097350513
+   },
+   {
+    "location_id": "QNGA",
+    "model": "M3",
+    "positives": 369,
+    "pr_auc": 0.3210464321042224
+   },
+   {
+    "location_id": "QNIN",
+    "model": "M3",
+    "positives": 264,
+    "pr_auc": 0.4267855099239646
+   }
+  ]
+ },
+ "selected_model": "M1",
+ "ablation_pilot8": {
+  "results": [
+   {
+    "model": "M1",
+    "n": 69888,
+    "positives": 743,
+    "prevalence": 0.0106312957875457,
+    "pr_auc": 0.2639747937112188,
+    "roc_auc": 0.9286919728150422,
+    "threshold": 0.7515806424596618,
+    "tp": 288,
+    "fp": 560,
+    "fn": 455,
+    "tn": 68585,
+    "precision": 0.3396226415094339,
+    "recall": 0.3876177658142665,
+    "f1": 0.3620364550597109,
+    "split": "validation",
+    "role": "ablation",
+    "n_features": 24,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "M1",
+    "n": 140160,
+    "positives": 2440,
+    "prevalence": 0.0174086757990867,
+    "pr_auc": 0.4395952685759342,
+    "roc_auc": 0.954394689807783,
+    "threshold": 0.7515806424596618,
+    "tp": 1249,
+    "fp": 1581,
+    "fn": 1191,
+    "tn": 136139,
+    "precision": 0.4413427561837456,
+    "recall": 0.5118852459016393,
+    "f1": 0.4740037950664136,
+    "split": "test",
+    "role": "ablation",
+    "n_features": 24,
+    "pr_auc_ci_lo": 0.351355315446033,
+    "pr_auc_ci_hi": 0.5237796873883055
+   },
+   {
+    "model": "M2",
+    "n": 69888,
+    "positives": 743,
+    "prevalence": 0.0106312957875457,
+    "pr_auc": 0.3032206503667897,
+    "roc_auc": 0.9401960126898952,
+    "threshold": 0.8690494194649772,
+    "tp": 244,
+    "fp": 249,
+    "fn": 499,
+    "tn": 68896,
+    "precision": 0.4949290060851927,
+    "recall": 0.3283983849259758,
+    "f1": 0.3948220064724919,
+    "split": "validation",
+    "role": "ablation",
+    "n_features": 27,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "M2",
+    "n": 140160,
+    "positives": 2440,
+    "prevalence": 0.0174086757990867,
+    "pr_auc": 0.4316569607835339,
+    "roc_auc": 0.9601801945501208,
+    "threshold": 0.8690494194649772,
+    "tp": 890,
+    "fp": 855,
+    "fn": 1550,
+    "tn": 136865,
+    "precision": 0.5100286532951289,
+    "recall": 0.3647540983606557,
+    "f1": 0.4253285543608124,
+    "split": "test",
+    "role": "ablation",
+    "n_features": 27,
+    "pr_auc_ci_lo": 0.3397537137785383,
+    "pr_auc_ci_hi": 0.5150520729783787
+   },
+   {
+    "model": "M3",
+    "n": 69888,
+    "positives": 743,
+    "prevalence": 0.0106312957875457,
+    "pr_auc": 0.2937900467223402,
+    "roc_auc": 0.9394518628660566,
+    "threshold": 0.8241444052491054,
+    "tp": 269,
+    "fp": 360,
+    "fn": 474,
+    "tn": 68785,
+    "precision": 0.4276629570747218,
+    "recall": 0.3620457604306864,
+    "f1": 0.3921282798833819,
+    "split": "validation",
+    "role": "ablation",
+    "n_features": 31,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "M3",
+    "n": 140160,
+    "positives": 2440,
+    "prevalence": 0.0174086757990867,
+    "pr_auc": 0.4395295179393572,
+    "roc_auc": 0.9598692494393471,
+    "threshold": 0.8241444052491054,
+    "tp": 1071,
+    "fp": 1140,
+    "fn": 1369,
+    "tn": 136580,
+    "precision": 0.4843962008141113,
+    "recall": 0.4389344262295082,
+    "f1": 0.460546119114169,
+    "split": "test",
+    "role": "ablation",
+    "n_features": 31,
+    "pr_auc_ci_lo": 0.3443241183194617,
+    "pr_auc_ci_hi": 0.5249140698712587
+   },
+   {
+    "model": "persistence_rain24h",
+    "n": 69888,
+    "positives": 743,
+    "prevalence": 0.0106312957875457,
+    "pr_auc": 0.1126265728144875,
+    "roc_auc": 0.8802772510651393,
+    "threshold": 51.2,
+    "tp": 151,
+    "fp": 527,
+    "fn": 592,
+    "tn": 68618,
+    "precision": 0.2227138643067846,
+    "recall": 0.2032301480484522,
+    "f1": 0.2125263898662913,
+    "split": "validation",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "persistence_rain24h",
+    "n": 140160,
+    "positives": 2440,
+    "prevalence": 0.0174086757990867,
+    "pr_auc": 0.1971786101440399,
+    "roc_auc": 0.8905275404360474,
+    "threshold": 51.2,
+    "tp": 705,
+    "fp": 1645,
+    "fn": 1735,
+    "tn": 136075,
+    "precision": 0.3,
+    "recall": 0.2889344262295082,
+    "f1": 0.2943632567849687,
+    "split": "test",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "climatology_loc_month",
+    "n": 69888,
+    "positives": 743,
+    "prevalence": 0.0106312957875457,
+    "pr_auc": 0.0885260845633715,
+    "roc_auc": 0.7881105664097343,
+    "threshold": 0.1737231182795699,
+    "tp": 175,
+    "fp": 569,
+    "fn": 568,
+    "tn": 68576,
+    "precision": 0.2352150537634408,
+    "recall": 0.2355316285329744,
+    "f1": 0.2353732347007397,
+    "split": "validation",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   },
+   {
+    "model": "climatology_loc_month",
+    "n": 140160,
+    "positives": 2440,
+    "prevalence": 0.0174086757990867,
+    "pr_auc": 0.0700088558969346,
+    "roc_auc": 0.7465117868043024,
+    "threshold": 0.1737231182795699,
+    "tp": 214,
+    "fp": 1274,
+    "fn": 2226,
+    "tn": 136446,
+    "precision": 0.1438172043010752,
+    "recall": 0.0877049180327868,
+    "f1": 0.1089613034623218,
+    "split": "test",
+    "role": "reference_baseline",
+    "n_features": 1,
+    "pr_auc_ci_lo": null,
+    "pr_auc_ci_hi": null
+   }
+  ],
+  "deltas": [
+   {
+    "comparison": "M2 - M1",
+    "delta_pr_auc": -0.0079383077924003,
+    "bootstrap_mean": -0.0069179647298612,
+    "ci_lo": -0.0230285728075571,
+    "ci_hi": 0.0091114728231236,
+    "share_resamples_le_0": 0.77,
+    "delta_recall": -0.1471311475409835,
+    "delta_precision": 0.0686858971113833,
+    "delta_f1": -0.0486752407056011
+   },
+   {
+    "comparison": "M3 - M1",
+    "delta_pr_auc": -6.575063657698887e-05,
+    "bootstrap_mean": 0.0008029582775966,
+    "ci_lo": -0.0174356972861274,
+    "ci_hi": 0.0172713226642684,
+    "share_resamples_le_0": 0.434,
+    "delta_recall": -0.0729508196721311,
+    "delta_precision": 0.0430534446303657,
+    "delta_f1": -0.0134576759522446
+   },
+   {
+    "comparison": "M3 - M2",
+    "delta_pr_auc": 0.0078725571558233,
+    "bootstrap_mean": 0.0077209230074578,
+    "ci_lo": -0.0026304532568735,
+    "ci_hi": 0.0186917622216325,
+    "share_resamples_le_0": 0.078,
+    "delta_recall": 0.0741803278688524,
+    "delta_precision": -0.0256324524810176,
+    "delta_f1": 0.0352175647533565
+   }
+  ],
+  "locations": [
+   "HCMC",
+   "HNOI",
+   "HPHO",
+   "HUE",
+   "KHOA",
+   "NAN",
+   "QNGA",
+   "QNIN"
+  ]
+ },
+ "pr_curves": {
+  "M1": [
+   {
+    "recall": 0.0,
+    "precision": 1.0
+   },
+   {
+    "recall": 0.025,
+    "precision": 0.822
+   },
+   {
+    "recall": 0.05,
+    "precision": 0.7529
+   },
+   {
+    "recall": 0.075,
+    "precision": 0.7404
+   },
+   {
+    "recall": 0.1,
+    "precision": 0.7374
+   },
+   {
+    "recall": 0.125,
+    "precision": 0.716
+   },
+   {
+    "recall": 0.15,
+    "precision": 0.6978
+   },
+   {
+    "recall": 0.175,
+    "precision": 0.6536
+   },
+   {
+    "recall": 0.2,
+    "precision": 0.6096
+   },
+   {
+    "recall": 0.225,
+    "precision": 0.5802
+   },
+   {
+    "recall": 0.25,
+    "precision": 0.5411
+   },
+   {
+    "recall": 0.275,
+    "precision": 0.5112
+   },
+   {
+    "recall": 0.3,
+    "precision": 0.4889
+   },
+   {
+    "recall": 0.325,
+    "precision": 0.4823
+   },
+   {
+    "recall": 0.35,
+    "precision": 0.4677
+   },
+   {
+    "recall": 0.375,
+    "precision": 0.4466
+   },
+   {
+    "recall": 0.4,
+    "precision": 0.4267
+   },
+   {
+    "recall": 0.425,
+    "precision": 0.4083
+   },
+   {
+    "recall": 0.45,
+    "precision": 0.3942
+   },
+   {
+    "recall": 0.475,
+    "precision": 0.3744
+   },
+   {
+    "recall": 0.5,
+    "precision": 0.355
+   },
+   {
+    "recall": 0.525,
+    "precision": 0.332
+   },
+   {
+    "recall": 0.55,
+    "precision": 0.315
+   },
+   {
+    "recall": 0.575,
+    "precision": 0.2981
+   },
+   {
+    "recall": 0.6,
+    "precision": 0.2778
+   },
+   {
+    "recall": 0.625,
+    "precision": 0.2563
+   },
+   {
+    "recall": 0.65,
+    "precision": 0.2366
+   },
+   {
+    "recall": 0.675,
+    "precision": 0.2124
+   },
+   {
+    "recall": 0.7,
+    "precision": 0.1916
+   },
+   {
+    "recall": 0.725,
+    "precision": 0.1724
+   },
+   {
+    "recall": 0.75,
+    "precision": 0.1607
+   },
+   {
+    "recall": 0.775,
+    "precision": 0.1494
+   },
+   {
+    "recall": 0.8,
+    "precision": 0.1379
+   },
+   {
+    "recall": 0.825,
+    "precision": 0.1222
+   },
+   {
+    "recall": 0.85,
+    "precision": 0.1088
+   },
+   {
+    "recall": 0.875,
+    "precision": 0.0957
+   },
+   {
+    "recall": 0.9,
+    "precision": 0.0836
+   },
+   {
+    "recall": 0.925,
+    "precision": 0.0704
+   },
+   {
+    "recall": 0.95,
+    "precision": 0.0561
+   },
+   {
+    "recall": 0.975,
+    "precision": 0.0414
+   },
+   {
+    "recall": 1.0,
+    "precision": 0.0184
+   }
+  ],
+  "M2": [
+   {
+    "recall": 0.0,
+    "precision": 1.0
+   },
+   {
+    "recall": 0.025,
+    "precision": 0.789
+   },
+   {
+    "recall": 0.05,
+    "precision": 0.7395
+   },
+   {
+    "recall": 0.075,
+    "precision": 0.723
+   },
+   {
+    "recall": 0.1,
+    "precision": 0.723
+   },
+   {
+    "recall": 0.125,
+    "precision": 0.6859
+   },
+   {
+    "recall": 0.15,
+    "precision": 0.6533
+   },
+   {
+    "recall": 0.175,
+    "precision": 0.6088
+   },
+   {
+    "recall": 0.2,
+    "precision": 0.583
+   },
+   {
+    "recall": 0.225,
+    "precision": 0.5675
+   },
+   {
+    "recall": 0.25,
+    "precision": 0.5423
+   },
+   {
+    "recall": 0.275,
+    "precision": 0.5109
+   },
+   {
+    "recall": 0.3,
+    "precision": 0.4799
+   },
+   {
+    "recall": 0.325,
+    "precision": 0.4527
+   },
+   {
+    "recall": 0.35,
+    "precision": 0.4263
+   },
+   {
+    "recall": 0.375,
+    "precision": 0.4022
+   },
+   {
+    "recall": 0.4,
+    "precision": 0.3867
+   },
+   {
+    "recall": 0.425,
+    "precision": 0.3727
+   },
+   {
+    "recall": 0.45,
+    "precision": 0.3568
+   },
+   {
+    "recall": 0.475,
+    "precision": 0.3448
+   },
+   {
+    "recall": 0.5,
+    "precision": 0.3287
+   },
+   {
+    "recall": 0.525,
+    "precision": 0.3193
+   },
+   {
+    "recall": 0.55,
+    "precision": 0.3094
+   },
+   {
+    "recall": 0.575,
+    "precision": 0.296
+   },
+   {
+    "recall": 0.6,
+    "precision": 0.2795
+   },
+   {
+    "recall": 0.625,
+    "precision": 0.2632
+   },
+   {
+    "recall": 0.65,
+    "precision": 0.2454
+   },
+   {
+    "recall": 0.675,
+    "precision": 0.2267
+   },
+   {
+    "recall": 0.7,
+    "precision": 0.2059
+   },
+   {
+    "recall": 0.725,
+    "precision": 0.1897
+   },
+   {
+    "recall": 0.75,
+    "precision": 0.172
+   },
+   {
+    "recall": 0.775,
+    "precision": 0.1578
+   },
+   {
+    "recall": 0.8,
+    "precision": 0.143
+   },
+   {
+    "recall": 0.825,
+    "precision": 0.1261
+   },
+   {
+    "recall": 0.85,
+    "precision": 0.1129
+   },
+   {
+    "recall": 0.875,
+    "precision": 0.1014
+   },
+   {
+    "recall": 0.9,
+    "precision": 0.0886
+   },
+   {
+    "recall": 0.925,
+    "precision": 0.0723
+   },
+   {
+    "recall": 0.95,
+    "precision": 0.056
+   },
+   {
+    "recall": 0.975,
+    "precision": 0.0403
+   },
+   {
+    "recall": 1.0,
+    "precision": 0.0156
+   }
+  ],
+  "M3": [
+   {
+    "recall": 0.0,
+    "precision": 1.0
+   },
+   {
+    "recall": 0.025,
+    "precision": 0.83
+   },
+   {
+    "recall": 0.05,
+    "precision": 0.7934
+   },
+   {
+    "recall": 0.075,
+    "precision": 0.7402
+   },
+   {
+    "recall": 0.1,
+    "precision": 0.7346
+   },
+   {
+    "recall": 0.125,
+    "precision": 0.7041
+   },
+   {
+    "recall": 0.15,
+    "precision": 0.6763
+   },
+   {
+    "recall": 0.175,
+    "precision": 0.6186
+   },
+   {
+    "recall": 0.2,
+    "precision": 0.6032
+   },
+   {
+    "recall": 0.225,
+    "precision": 0.5613
+   },
+   {
+    "recall": 0.25,
+    "precision": 0.5315
+   },
+   {
+    "recall": 0.275,
+    "precision": 0.5154
+   },
+   {
+    "recall": 0.3,
+    "precision": 0.4977
+   },
+   {
+    "recall": 0.325,
+    "precision": 0.4783
+   },
+   {
+    "recall": 0.35,
+    "precision": 0.4612
+   },
+   {
+    "recall": 0.375,
+    "precision": 0.4409
+   },
+   {
+    "recall": 0.4,
+    "precision": 0.423
+   },
+   {
+    "recall": 0.425,
+    "precision": 0.3936
+   },
+   {
+    "recall": 0.45,
+    "precision": 0.3784
+   },
+   {
+    "recall": 0.475,
+    "precision": 0.3686
+   },
+   {
+    "recall": 0.5,
+    "precision": 0.3511
+   },
+   {
+    "recall": 0.525,
+    "precision": 0.3387
+   },
+   {
+    "recall": 0.55,
+    "precision": 0.3209
+   },
+   {
+    "recall": 0.575,
+    "precision": 0.3016
+   },
+   {
+    "recall": 0.6,
+    "precision": 0.2785
+   },
+   {
+    "recall": 0.625,
+    "precision": 0.2598
+   },
+   {
+    "recall": 0.65,
+    "precision": 0.241
+   },
+   {
+    "recall": 0.675,
+    "precision": 0.2259
+   },
+   {
+    "recall": 0.7,
+    "precision": 0.2081
+   },
+   {
+    "recall": 0.725,
+    "precision": 0.1886
+   },
+   {
+    "recall": 0.75,
+    "precision": 0.1752
+   },
+   {
+    "recall": 0.775,
+    "precision": 0.1631
+   },
+   {
+    "recall": 0.8,
+    "precision": 0.1465
+   },
+   {
+    "recall": 0.825,
+    "precision": 0.1268
+   },
+   {
+    "recall": 0.85,
+    "precision": 0.1132
+   },
+   {
+    "recall": 0.875,
+    "precision": 0.0984
+   },
+   {
+    "recall": 0.9,
+    "precision": 0.0855
+   },
+   {
+    "recall": 0.925,
+    "precision": 0.0705
+   },
+   {
+    "recall": 0.95,
+    "precision": 0.0556
+   },
+   {
+    "recall": 0.975,
+    "precision": 0.0406
+   },
+   {
+    "recall": 1.0,
+    "precision": 0.0169
+   }
+  ],
+  "persistence_rain24h": [
+   {
+    "recall": 0.0,
+    "precision": 0.4096
+   },
+   {
+    "recall": 0.025,
+    "precision": 0.4096
+   },
+   {
+    "recall": 0.05,
+    "precision": 0.4096
+   },
+   {
+    "recall": 0.075,
+    "precision": 0.4096
+   },
+   {
+    "recall": 0.1,
+    "precision": 0.3961
+   },
+   {
+    "recall": 0.125,
+    "precision": 0.3613
+   },
+   {
+    "recall": 0.15,
+    "precision": 0.3451
+   },
+   {
+    "recall": 0.175,
+    "precision": 0.3361
+   },
+   {
+    "recall": 0.2,
+    "precision": 0.3088
+   },
+   {
+    "recall": 0.225,
+    "precision": 0.3005
+   },
+   {
+    "recall": 0.25,
+    "precision": 0.2946
+   },
+   {
+    "recall": 0.275,
+    "precision": 0.2811
+   },
+   {
+    "recall": 0.3,
+    "precision": 0.2769
+   },
+   {
+    "recall": 0.325,
+    "precision": 0.2714
+   },
+   {
+    "recall": 0.35,
+    "precision": 0.2565
+   },
+   {
+    "recall": 0.375,
+    "precision": 0.2359
+   },
+   {
+    "recall": 0.4,
+    "precision": 0.2172
+   },
+   {
+    "recall": 0.425,
+    "precision": 0.2033
+   },
+   {
+    "recall": 0.45,
+    "precision": 0.1883
+   },
+   {
+    "recall": 0.475,
+    "precision": 0.1743
+   },
+   {
+    "recall": 0.5,
+    "precision": 0.1641
+   },
+   {
+    "recall": 0.525,
+    "precision": 0.1494
+   },
+   {
+    "recall": 0.55,
+    "precision": 0.1403
+   },
+   {
+    "recall": 0.575,
+    "precision": 0.1306
+   },
+   {
+    "recall": 0.6,
+    "precision": 0.1222
+   },
+   {
+    "recall": 0.625,
+    "precision": 0.1153
+   },
+   {
+    "recall": 0.65,
+    "precision": 0.1102
+   },
+   {
+    "recall": 0.675,
+    "precision": 0.1034
+   },
+   {
+    "recall": 0.7,
+    "precision": 0.0942
+   },
+   {
+    "recall": 0.725,
+    "precision": 0.0866
+   },
+   {
+    "recall": 0.75,
+    "precision": 0.0786
+   },
+   {
+    "recall": 0.775,
+    "precision": 0.071
+   },
+   {
+    "recall": 0.8,
+    "precision": 0.0631
+   },
+   {
+    "recall": 0.825,
+    "precision": 0.0573
+   },
+   {
+    "recall": 0.85,
+    "precision": 0.0512
+   },
+   {
+    "recall": 0.875,
+    "precision": 0.0451
+   },
+   {
+    "recall": 0.9,
+    "precision": 0.0406
+   },
+   {
+    "recall": 0.925,
+    "precision": 0.0363
+   },
+   {
+    "recall": 0.95,
+    "precision": 0.0275
+   },
+   {
+    "recall": 0.975,
+    "precision": 0.02
+   },
+   {
+    "recall": 1.0,
+    "precision": 0.0153
+   }
+  ]
+ },
+ "yagi": [
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 00:00:00",
+   "heavy_rain_probability": 0.0294580071672491,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 01:00:00",
+   "heavy_rain_probability": 0.0189087408796272,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 02:00:00",
+   "heavy_rain_probability": 0.0242879632930918,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 03:00:00",
+   "heavy_rain_probability": 0.032865561417738,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 04:00:00",
+   "heavy_rain_probability": 0.0189886134169353,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 05:00:00",
+   "heavy_rain_probability": 0.0121008240027148,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 06:00:00",
+   "heavy_rain_probability": 0.0287083464611362,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 07:00:00",
+   "heavy_rain_probability": 0.0363523770465198,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 08:00:00",
+   "heavy_rain_probability": 0.0598087139708487,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 09:00:00",
+   "heavy_rain_probability": 0.0481001405586642,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 10:00:00",
+   "heavy_rain_probability": 0.0493334691813916,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 11:00:00",
+   "heavy_rain_probability": 0.0378254305172003,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 12:00:00",
+   "heavy_rain_probability": 0.0349804953100893,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 13:00:00",
+   "heavy_rain_probability": 0.0611632027831199,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 14:00:00",
+   "heavy_rain_probability": 0.0427999211214319,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 0.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 15:00:00",
+   "heavy_rain_probability": 0.0441663010398364,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 16:00:00",
+   "heavy_rain_probability": 0.0250281185216387,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.2000000000000002,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 17:00:00",
+   "heavy_rain_probability": 0.0084805625302697,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 18:00:00",
+   "heavy_rain_probability": 0.0089866143351353,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 19:00:00",
+   "heavy_rain_probability": 0.0392341463892432,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 20:00:00",
+   "heavy_rain_probability": 0.0181367580624841,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 21:00:00",
+   "heavy_rain_probability": 0.0408939905416932,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 22:00:00",
+   "heavy_rain_probability": 0.0152619409742881,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-04 23:00:00",
+   "heavy_rain_probability": 0.0797038064096764,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 3.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 00:00:00",
+   "heavy_rain_probability": 0.0925295337378427,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 8.0,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 01:00:00",
+   "heavy_rain_probability": 0.1346982432544804,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 10.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 02:00:00",
+   "heavy_rain_probability": 0.2621283338011727,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 12.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 03:00:00",
+   "heavy_rain_probability": 0.2513984359239544,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 19.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 04:00:00",
+   "heavy_rain_probability": 0.482609171633069,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 05:00:00",
+   "heavy_rain_probability": 0.4365619268278933,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 06:00:00",
+   "heavy_rain_probability": 0.2144268787114246,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 07:00:00",
+   "heavy_rain_probability": 0.0633967210576527,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 08:00:00",
+   "heavy_rain_probability": 0.0347860158853635,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 09:00:00",
+   "heavy_rain_probability": 0.0717815112584299,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 10:00:00",
+   "heavy_rain_probability": 0.0667179774440986,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 11:00:00",
+   "heavy_rain_probability": 0.0196530241512837,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 12:00:00",
+   "heavy_rain_probability": 0.0194038350232879,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 13:00:00",
+   "heavy_rain_probability": 0.0091680669435689,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 24.0,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 14:00:00",
+   "heavy_rain_probability": 0.0531086097349916,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 24.7,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 15:00:00",
+   "heavy_rain_probability": 0.1046624033675273,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 16:00:00",
+   "heavy_rain_probability": 0.0484558111574158,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 17:00:00",
+   "heavy_rain_probability": 0.06784362026474,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 18:00:00",
+   "heavy_rain_probability": 0.1057566368911002,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.700000000000006,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 19:00:00",
+   "heavy_rain_probability": 0.1285133198666464,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.800000000000008,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 20:00:00",
+   "heavy_rain_probability": 0.1816251036039462,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.800000000000008,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 21:00:00",
+   "heavy_rain_probability": 0.2135569116875946,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.90000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 22:00:00",
+   "heavy_rain_probability": 0.2291300775723042,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 24.20000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-05 23:00:00",
+   "heavy_rain_probability": 0.5101363722522823,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.40000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 00:00:00",
+   "heavy_rain_probability": 0.8464272929006099,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 20.700000000000006,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 01:00:00",
+   "heavy_rain_probability": 0.944075200928866,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 19.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 02:00:00",
+   "heavy_rain_probability": 0.7930267689927645,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 03:00:00",
+   "heavy_rain_probability": 0.4203736492700594,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 12.699999999999998,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 04:00:00",
+   "heavy_rain_probability": 0.8032287073429429,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 10.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 05:00:00",
+   "heavy_rain_probability": 0.9200907317713818,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 12.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 06:00:00",
+   "heavy_rain_probability": 0.8363748895629093,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 07:00:00",
+   "heavy_rain_probability": 0.5986193298584866,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 27.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 08:00:00",
+   "heavy_rain_probability": 0.6002224024000402,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 30.7,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 09:00:00",
+   "heavy_rain_probability": 0.4874691795573884,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 35.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 10:00:00",
+   "heavy_rain_probability": 0.4414905981238956,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 45.7,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 11:00:00",
+   "heavy_rain_probability": 0.3596483885882069,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 58.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 12:00:00",
+   "heavy_rain_probability": 0.3206441374054308,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 70.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 13:00:00",
+   "heavy_rain_probability": 0.4390308376624496,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 83.39999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 14:00:00",
+   "heavy_rain_probability": 0.3818438170163825,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 92.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 15:00:00",
+   "heavy_rain_probability": 0.6450836998828873,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 98.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 16:00:00",
+   "heavy_rain_probability": 0.6197099343487721,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 100.9,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 17:00:00",
+   "heavy_rain_probability": 0.361530120981899,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 102.9,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 18:00:00",
+   "heavy_rain_probability": 0.4749740273228272,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 105.2,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 19:00:00",
+   "heavy_rain_probability": 0.5775165447339268,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 108.5,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 20:00:00",
+   "heavy_rain_probability": 0.6417491526882547,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 111.90000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 21:00:00",
+   "heavy_rain_probability": 0.6505952987513619,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 115.40000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 22:00:00",
+   "heavy_rain_probability": 0.6686424147263459,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 120.1,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-06 23:00:00",
+   "heavy_rain_probability": 0.91508976608775,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 124.80000000000004,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 00:00:00",
+   "heavy_rain_probability": 0.9397099968121272,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 128.70000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 01:00:00",
+   "heavy_rain_probability": 0.9733041961521698,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 133.40000000000003,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 02:00:00",
+   "heavy_rain_probability": 0.9722300822360296,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 138.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 03:00:00",
+   "heavy_rain_probability": 0.968671172811822,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 141.20000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 04:00:00",
+   "heavy_rain_probability": 0.965722947380209,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 142.70000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 05:00:00",
+   "heavy_rain_probability": 0.980437343778178,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 141.20000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 06:00:00",
+   "heavy_rain_probability": 0.9852284424415784,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 136.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 07:00:00",
+   "heavy_rain_probability": 0.9859076836716432,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 127.40000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 08:00:00",
+   "heavy_rain_probability": 0.987730285281186,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 125.60000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 09:00:00",
+   "heavy_rain_probability": 0.9881019204560644,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 121.30000000000004,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 10:00:00",
+   "heavy_rain_probability": 0.988577558629079,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 112.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 11:00:00",
+   "heavy_rain_probability": 0.988577558629079,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 100.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 12:00:00",
+   "heavy_rain_probability": 0.9887021660279894,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 88.80000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 13:00:00",
+   "heavy_rain_probability": 0.9887021660279894,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 76.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 14:00:00",
+   "heavy_rain_probability": 0.9887021660279894,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 68.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 15:00:00",
+   "heavy_rain_probability": 0.9887021660279894,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 64.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 16:00:00",
+   "heavy_rain_probability": 0.9884818632292806,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 63.00000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 17:00:00",
+   "heavy_rain_probability": 0.6406834148136265,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 63.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 18:00:00",
+   "heavy_rain_probability": 0.6455682751451053,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 63.10000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 19:00:00",
+   "heavy_rain_probability": 0.7047425968351867,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 61.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 20:00:00",
+   "heavy_rain_probability": 0.7035404500158491,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 59.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 21:00:00",
+   "heavy_rain_probability": 0.6670964788193787,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 60.400000000000006,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 22:00:00",
+   "heavy_rain_probability": 0.6650045704328459,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 60.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-07 23:00:00",
+   "heavy_rain_probability": 0.5368298137863745,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 56.900000000000006,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 00:00:00",
+   "heavy_rain_probability": 0.5055302152528813,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 51.70000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 01:00:00",
+   "heavy_rain_probability": 0.4669077267533689,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 47.00000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 02:00:00",
+   "heavy_rain_probability": 0.4492221815435513,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 41.500000000000014,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 03:00:00",
+   "heavy_rain_probability": 0.4042312203723112,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 37.60000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 04:00:00",
+   "heavy_rain_probability": 0.3845992902403099,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 34.50000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 05:00:00",
+   "heavy_rain_probability": 0.3574966498167226,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 33.50000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 06:00:00",
+   "heavy_rain_probability": 0.2816807022535554,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 07:00:00",
+   "heavy_rain_probability": 0.2722959441181019,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 08:00:00",
+   "heavy_rain_probability": 0.2901917554064357,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 31.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 09:00:00",
+   "heavy_rain_probability": 0.2473156754149062,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 30.5,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 10:00:00",
+   "heavy_rain_probability": 0.2300747076400239,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 11:00:00",
+   "heavy_rain_probability": 0.2300747076400239,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.599999999999994,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 12:00:00",
+   "heavy_rain_probability": 0.2277009075708083,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 33.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 13:00:00",
+   "heavy_rain_probability": 0.1644535585520679,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 33.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 14:00:00",
+   "heavy_rain_probability": 0.2444200758191045,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 35.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 15:00:00",
+   "heavy_rain_probability": 0.2736761484920199,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 36.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 16:00:00",
+   "heavy_rain_probability": 0.2479724607679163,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 35.099999999999994,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 17:00:00",
+   "heavy_rain_probability": 0.1858299289958339,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 18:00:00",
+   "heavy_rain_probability": 0.2852773886942645,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 31.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 19:00:00",
+   "heavy_rain_probability": 0.2839907921496596,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 20:00:00",
+   "heavy_rain_probability": 0.2993484411783106,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 33.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 21:00:00",
+   "heavy_rain_probability": 0.2559008187282631,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 29.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 22:00:00",
+   "heavy_rain_probability": 0.256954412722456,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 25.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-08 23:00:00",
+   "heavy_rain_probability": 0.256954412722456,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 26.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 00:00:00",
+   "heavy_rain_probability": 0.2994734155766661,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 26.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 01:00:00",
+   "heavy_rain_probability": 0.2813690786719617,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 26.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 02:00:00",
+   "heavy_rain_probability": 0.4126935578545101,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 28.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 03:00:00",
+   "heavy_rain_probability": 0.3781519897488284,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 30.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 04:00:00",
+   "heavy_rain_probability": 0.3104105722994745,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 05:00:00",
+   "heavy_rain_probability": 0.2942079216404853,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 35.5,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 06:00:00",
+   "heavy_rain_probability": 0.3043315605859515,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 38.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 07:00:00",
+   "heavy_rain_probability": 0.2753746725144917,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 41.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 08:00:00",
+   "heavy_rain_probability": 0.2759817894336624,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 46.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 09:00:00",
+   "heavy_rain_probability": 0.1825992855485816,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 50.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 10:00:00",
+   "heavy_rain_probability": 0.1114827236605117,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.10000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 11:00:00",
+   "heavy_rain_probability": 0.1910336792554813,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 56.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 12:00:00",
+   "heavy_rain_probability": 0.248516707533534,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 57.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 13:00:00",
+   "heavy_rain_probability": 0.237546864762365,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 59.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 14:00:00",
+   "heavy_rain_probability": 0.202440961701928,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 57.900000000000006,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 15:00:00",
+   "heavy_rain_probability": 0.2668658739157321,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 60.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 16:00:00",
+   "heavy_rain_probability": 0.4374071181788941,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 62.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 17:00:00",
+   "heavy_rain_probability": 0.6954252737940269,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 64.4,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 18:00:00",
+   "heavy_rain_probability": 0.4906472577812586,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 65.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 19:00:00",
+   "heavy_rain_probability": 0.5929065633657701,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 63.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 20:00:00",
+   "heavy_rain_probability": 0.6223488859270154,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 61.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 21:00:00",
+   "heavy_rain_probability": 0.6364791417765616,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 62.1,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 22:00:00",
+   "heavy_rain_probability": 0.6737391171300311,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 61.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "HPHO",
+   "ts": "2024-09-09 23:00:00",
+   "heavy_rain_probability": 0.6361474165361772,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 60.09999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 00:00:00",
+   "heavy_rain_probability": 0.0359081560316121,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 01:00:00",
+   "heavy_rain_probability": 0.0278205531174566,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 02:00:00",
+   "heavy_rain_probability": 0.0517871537383703,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 03:00:00",
+   "heavy_rain_probability": 0.0500878514163586,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 04:00:00",
+   "heavy_rain_probability": 0.0281574193261547,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 05:00:00",
+   "heavy_rain_probability": 0.0322521557545259,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 06:00:00",
+   "heavy_rain_probability": 0.0396379356352779,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 07:00:00",
+   "heavy_rain_probability": 0.0461404275316833,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 08:00:00",
+   "heavy_rain_probability": 0.0511656273344459,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 09:00:00",
+   "heavy_rain_probability": 0.0834149028264293,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 10:00:00",
+   "heavy_rain_probability": 0.0673796980000753,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 11:00:00",
+   "heavy_rain_probability": 0.0788072135968657,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 12:00:00",
+   "heavy_rain_probability": 0.045792817514818,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 13:00:00",
+   "heavy_rain_probability": 0.0433784690987932,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 14:00:00",
+   "heavy_rain_probability": 0.0360064601192899,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 15:00:00",
+   "heavy_rain_probability": 0.0094233322538587,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 2.3000000000000003,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 16:00:00",
+   "heavy_rain_probability": 0.0239481026120861,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 2.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 17:00:00",
+   "heavy_rain_probability": 0.0356703621051189,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.0,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 18:00:00",
+   "heavy_rain_probability": 0.050577184447385,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 19:00:00",
+   "heavy_rain_probability": 0.0791353042061231,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 20:00:00",
+   "heavy_rain_probability": 0.0399403028648794,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 21:00:00",
+   "heavy_rain_probability": 0.032415945973444,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 22:00:00",
+   "heavy_rain_probability": 0.0391388787025384,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 1.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-04 23:00:00",
+   "heavy_rain_probability": 0.1406571091819274,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 3.3,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 00:00:00",
+   "heavy_rain_probability": 0.2280877684796662,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 6.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 01:00:00",
+   "heavy_rain_probability": 0.3155681262084302,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 6.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 02:00:00",
+   "heavy_rain_probability": 0.5117331047909233,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 11.0,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 03:00:00",
+   "heavy_rain_probability": 0.6523246390305002,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 04:00:00",
+   "heavy_rain_probability": 0.7219605329895215,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 05:00:00",
+   "heavy_rain_probability": 0.7249907842030001,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 06:00:00",
+   "heavy_rain_probability": 0.4400146049525652,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 07:00:00",
+   "heavy_rain_probability": 0.1833348910693727,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 08:00:00",
+   "heavy_rain_probability": 0.0502814688142248,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 09:00:00",
+   "heavy_rain_probability": 0.0599794590825493,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 10:00:00",
+   "heavy_rain_probability": 0.096542524553089,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 11:00:00",
+   "heavy_rain_probability": 0.0510474606094557,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 12:00:00",
+   "heavy_rain_probability": 0.0498518745199914,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.8,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 13:00:00",
+   "heavy_rain_probability": 0.0678879363786132,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.4,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 14:00:00",
+   "heavy_rain_probability": 0.11912638772588,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 19.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 15:00:00",
+   "heavy_rain_probability": 0.0976535386955142,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.200000000000003,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 16:00:00",
+   "heavy_rain_probability": 0.050761306137631,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.200000000000003,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 17:00:00",
+   "heavy_rain_probability": 0.0835566598738904,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.300000000000004,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 18:00:00",
+   "heavy_rain_probability": 0.055070289035169,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.200000000000003,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 19:00:00",
+   "heavy_rain_probability": 0.1735510160658417,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.300000000000004,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 20:00:00",
+   "heavy_rain_probability": 0.1766545818715939,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.40000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 21:00:00",
+   "heavy_rain_probability": 0.2106382604298032,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.500000000000007,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 22:00:00",
+   "heavy_rain_probability": 0.2327371842104025,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 18.700000000000006,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-05 23:00:00",
+   "heavy_rain_probability": 0.7078953268407174,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 17.500000000000004,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 00:00:00",
+   "heavy_rain_probability": 0.9395733881195172,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 15.899999999999997,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 01:00:00",
+   "heavy_rain_probability": 0.8637200013733616,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 17.999999999999996,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 02:00:00",
+   "heavy_rain_probability": 0.3988553773119196,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 14.099999999999996,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 03:00:00",
+   "heavy_rain_probability": 0.5368455648684071,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 8.9,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 04:00:00",
+   "heavy_rain_probability": 0.8510577928058958,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 10.6,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 05:00:00",
+   "heavy_rain_probability": 0.9375119020896912,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 15.000000000000002,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 06:00:00",
+   "heavy_rain_probability": 0.7316289340658294,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 23.800000000000004,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 07:00:00",
+   "heavy_rain_probability": 0.6305691951278002,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 34.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 08:00:00",
+   "heavy_rain_probability": 0.6110347564446831,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 38.400000000000006,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 09:00:00",
+   "heavy_rain_probability": 0.5150122442402213,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 45.10000000000001,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 10:00:00",
+   "heavy_rain_probability": 0.4903425384461088,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.80000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 11:00:00",
+   "heavy_rain_probability": 0.386277987303221,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 67.20000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 12:00:00",
+   "heavy_rain_probability": 0.3306471043211064,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 80.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 13:00:00",
+   "heavy_rain_probability": 0.3495050291409174,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 88.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 14:00:00",
+   "heavy_rain_probability": 0.6127268671406794,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 92.4,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 15:00:00",
+   "heavy_rain_probability": 0.6891980604596456,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 94.4,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 16:00:00",
+   "heavy_rain_probability": 0.6546426449004457,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 95.9,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 17:00:00",
+   "heavy_rain_probability": 0.4049490246612209,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 98.70000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 18:00:00",
+   "heavy_rain_probability": 0.6035068656164208,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 102.4,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 19:00:00",
+   "heavy_rain_probability": 0.6511229339871235,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 106.9,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 20:00:00",
+   "heavy_rain_probability": 0.7059901849499315,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 111.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 21:00:00",
+   "heavy_rain_probability": 0.7067118231852814,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 116.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 22:00:00",
+   "heavy_rain_probability": 0.736066885227828,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 122.1,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-06 23:00:00",
+   "heavy_rain_probability": 0.866323605736276,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 127.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 00:00:00",
+   "heavy_rain_probability": 0.9182700527989586,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 133.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 01:00:00",
+   "heavy_rain_probability": 0.972174130885645,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 139.29999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 02:00:00",
+   "heavy_rain_probability": 0.9815624244328544,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 145.79999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 03:00:00",
+   "heavy_rain_probability": 0.9653113873788408,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 151.39999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 04:00:00",
+   "heavy_rain_probability": 0.968043204025945,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 154.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 05:00:00",
+   "heavy_rain_probability": 0.9829121034392544,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 151.89999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 06:00:00",
+   "heavy_rain_probability": 0.9748043205530555,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 144.29999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 07:00:00",
+   "heavy_rain_probability": 0.9876780429884432,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 135.29999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 08:00:00",
+   "heavy_rain_probability": 0.9882426282597594,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 132.29999999999998,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 09:00:00",
+   "heavy_rain_probability": 0.988577558629079,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 127.1,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 10:00:00",
+   "heavy_rain_probability": 0.988577558629079,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 118.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 11:00:00",
+   "heavy_rain_probability": 0.9887021660279894,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 107.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 12:00:00",
+   "heavy_rain_probability": 0.9887021660279894,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 95.5,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 13:00:00",
+   "heavy_rain_probability": 0.9885275388344302,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 87.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 14:00:00",
+   "heavy_rain_probability": 0.9883177168220196,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 83.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 15:00:00",
+   "heavy_rain_probability": 0.9116646979925754,
+   "is_heavy_rain_predicted": true,
+   "rain_next_24h": 82.50000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 16:00:00",
+   "heavy_rain_probability": 0.6957388282895468,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 83.30000000000001,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 17:00:00",
+   "heavy_rain_probability": 0.5958076259677173,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 83.2,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 18:00:00",
+   "heavy_rain_probability": 0.70378550490366,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 82.20000000000002,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 19:00:00",
+   "heavy_rain_probability": 0.7236584908191582,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 80.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 20:00:00",
+   "heavy_rain_probability": 0.6750982206906305,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 79.89999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 21:00:00",
+   "heavy_rain_probability": 0.6214246563113092,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 77.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 22:00:00",
+   "heavy_rain_probability": 0.5011824322622691,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 78.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-07 23:00:00",
+   "heavy_rain_probability": 0.4274706913455592,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 78.89999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 00:00:00",
+   "heavy_rain_probability": 0.3910608507422261,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 78.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 01:00:00",
+   "heavy_rain_probability": 0.3845798134930471,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 76.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 02:00:00",
+   "heavy_rain_probability": 0.3738684916849052,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 70.39999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 03:00:00",
+   "heavy_rain_probability": 0.3754193549075058,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 63.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 04:00:00",
+   "heavy_rain_probability": 0.3666308228644664,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 59.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 05:00:00",
+   "heavy_rain_probability": 0.2520737996477183,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 57.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 06:00:00",
+   "heavy_rain_probability": 0.2498890848687547,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 56.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 07:00:00",
+   "heavy_rain_probability": 0.2395580049917415,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 55.5,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 08:00:00",
+   "heavy_rain_probability": 0.2719775432508395,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 09:00:00",
+   "heavy_rain_probability": 0.2427880658579058,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 53.49999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 10:00:00",
+   "heavy_rain_probability": 0.2467491849742067,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 53.4,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 11:00:00",
+   "heavy_rain_probability": 0.2727095463851299,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 52.9,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 12:00:00",
+   "heavy_rain_probability": 0.2530551024160181,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 13:00:00",
+   "heavy_rain_probability": 0.1732831293166265,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.19999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 14:00:00",
+   "heavy_rain_probability": 0.148113384256019,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.49999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 15:00:00",
+   "heavy_rain_probability": 0.205100132505088,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 54.3,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 16:00:00",
+   "heavy_rain_probability": 0.2173973242601328,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 52.39999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 17:00:00",
+   "heavy_rain_probability": 0.2245991073419801,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 50.49999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 18:00:00",
+   "heavy_rain_probability": 0.2799754281201175,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 50.49999999999999,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 19:00:00",
+   "heavy_rain_probability": 0.291922915589592,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 50.399999999999984,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 20:00:00",
+   "heavy_rain_probability": 0.2746612611962419,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 48.79999999999999,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 21:00:00",
+   "heavy_rain_probability": 0.2693385735780783,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 46.99999999999999,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 22:00:00",
+   "heavy_rain_probability": 0.2693385735780783,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 42.899999999999984,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-08 23:00:00",
+   "heavy_rain_probability": 0.2628466272832794,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 39.39999999999999,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 00:00:00",
+   "heavy_rain_probability": 0.2564598037137325,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 34.29999999999999,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 01:00:00",
+   "heavy_rain_probability": 0.3099411076106276,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 29.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 02:00:00",
+   "heavy_rain_probability": 0.3023356897791266,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 29.799999999999997,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 03:00:00",
+   "heavy_rain_probability": 0.2952926213362102,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 31.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 04:00:00",
+   "heavy_rain_probability": 0.3698843669730574,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 32.5,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 05:00:00",
+   "heavy_rain_probability": 0.2815879559620692,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 34.2,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 06:00:00",
+   "heavy_rain_probability": 0.295286079052228,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 36.29999999999999,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 07:00:00",
+   "heavy_rain_probability": 0.3179774457317199,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 39.29999999999999,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 08:00:00",
+   "heavy_rain_probability": 0.3286608144043278,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 43.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 09:00:00",
+   "heavy_rain_probability": 0.285432668001033,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 47.1,
+   "label": 0.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 10:00:00",
+   "heavy_rain_probability": 0.1635346450563833,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 51.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 11:00:00",
+   "heavy_rain_probability": 0.3360904444118825,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 55.2,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 12:00:00",
+   "heavy_rain_probability": 0.3782532104789948,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 56.4,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 13:00:00",
+   "heavy_rain_probability": 0.4126516313375332,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 60.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 14:00:00",
+   "heavy_rain_probability": 0.3971870591171637,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 62.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 15:00:00",
+   "heavy_rain_probability": 0.4434943456257438,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 68.7,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 16:00:00",
+   "heavy_rain_probability": 0.5041242446057786,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 72.2,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 17:00:00",
+   "heavy_rain_probability": 0.6470401638863272,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 74.6,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 18:00:00",
+   "heavy_rain_probability": 0.6441844589102481,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 74.0,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 19:00:00",
+   "heavy_rain_probability": 0.6294995023756088,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 72.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 20:00:00",
+   "heavy_rain_probability": 0.645435925875423,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 71.9,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 21:00:00",
+   "heavy_rain_probability": 0.6408110593849684,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 72.8,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 22:00:00",
+   "heavy_rain_probability": 0.6659121435473119,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 72.1,
+   "label": 1.0
+  },
+  {
+   "location_id": "QNIN",
+   "ts": "2024-09-09 23:00:00",
+   "heavy_rain_probability": 0.7218406589586254,
+   "is_heavy_rain_predicted": false,
+   "rain_next_24h": 71.69999999999999,
+   "label": 1.0
+  }
+ ],
+ "stream": {
+  "files": 240,
+  "checkpoint_commits": 40
+ },
+ "mongo": {
+  "counts": {
+   "predictions": 336,
+   "province_risk": 336,
+   "distinct_ids_predictions": 336
+  },
+  "indexes": {
+   "predictions": [
+    "_id_",
+    "loc_time"
+   ],
+   "province_risk": [
+    "_id_",
+    "time_score"
+   ]
+  },
+  "q1_alerts_at_time": {
+   "filter": {
+    "prediction_time": "2024-09-07T00:00:00+07:00",
+    "alert": true
+   },
+   "plan_stages": [
+    "FETCH",
+    "IXSCAN"
+   ],
+   "rows": [
+    {
+     "province_code": "HPH",
+     "prediction_time": "2024-09-07T00:00:00+07:00",
+     "province_risk_score": 0.9397099968121272,
+     "driving_location_id": "HPHO",
+     "decision_threshold": 0.8477511583930617,
+     "alert": true,
+     "aggregation_method": "max_point_probability",
+     "model_version": "rf_20261031T140936Z_pilot_M1",
+     "run_type": "replay"
+    },
+    {
+     "province_code": "QNI",
+     "prediction_time": "2024-09-07T00:00:00+07:00",
+     "province_risk_score": 0.9182700527989586,
+     "driving_location_id": "QNIN",
+     "decision_threshold": 0.8477511583930617,
+     "alert": true,
+     "aggregation_method": "max_point_probability",
+     "model_version": "rf_20261031T140936Z_pilot_M1",
+     "run_type": "replay"
+    }
+   ]
+  },
+  "q2_location_series": {
+   "filter": {
+    "location_id": "HPHO",
+    "status": "ok",
+    "prediction_time": {
+     "$gte": "2024-09-05T00:00:00+07:00",
+     "$lt": "2024-09-09T00:00:00+07:00"
+    }
+   },
+   "plan_stages": [
+    "FETCH",
+    "IXSCAN"
+   ],
+   "n": 96,
+   "rows": [
+    {
+     "prediction_time": "2024-09-05T00:00:00+07:00",
+     "heavy_rain_probability": 0.0925295337378427,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T01:00:00+07:00",
+     "heavy_rain_probability": 0.13469824325448043,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T02:00:00+07:00",
+     "heavy_rain_probability": 0.2621283338011727,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T03:00:00+07:00",
+     "heavy_rain_probability": 0.25139843592395444,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T04:00:00+07:00",
+     "heavy_rain_probability": 0.48260917163306905,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T05:00:00+07:00",
+     "heavy_rain_probability": 0.4365619268278933,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T06:00:00+07:00",
+     "heavy_rain_probability": 0.21442687871142468,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T07:00:00+07:00",
+     "heavy_rain_probability": 0.06339672105765273,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T08:00:00+07:00",
+     "heavy_rain_probability": 0.03478601588536357,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T09:00:00+07:00",
+     "heavy_rain_probability": 0.07178151125842996,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T10:00:00+07:00",
+     "heavy_rain_probability": 0.06671797744409866,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T11:00:00+07:00",
+     "heavy_rain_probability": 0.01965302415128379,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T12:00:00+07:00",
+     "heavy_rain_probability": 0.019403835023287953,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T13:00:00+07:00",
+     "heavy_rain_probability": 0.009168066943568913,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.1
+    },
+    {
+     "prediction_time": "2024-09-05T14:00:00+07:00",
+     "heavy_rain_probability": 0.053108609734991666,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 0.2
+    },
+    {
+     "prediction_time": "2024-09-05T15:00:00+07:00",
+     "heavy_rain_probability": 0.1046624033675273,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.1
+    },
+    {
+     "prediction_time": "2024-09-05T16:00:00+07:00",
+     "heavy_rain_probability": 0.04845581115741585,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.2000000000000002
+    },
+    {
+     "prediction_time": "2024-09-05T17:00:00+07:00",
+     "heavy_rain_probability": 0.06784362026474001,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.1
+    },
+    {
+     "prediction_time": "2024-09-05T18:00:00+07:00",
+     "heavy_rain_probability": 0.1057566368911002,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.3
+    },
+    {
+     "prediction_time": "2024-09-05T19:00:00+07:00",
+     "heavy_rain_probability": 0.1285133198666464,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.3
+    },
+    {
+     "prediction_time": "2024-09-05T20:00:00+07:00",
+     "heavy_rain_probability": 0.18162510360394624,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.3
+    },
+    {
+     "prediction_time": "2024-09-05T21:00:00+07:00",
+     "heavy_rain_probability": 0.21355691168759464,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.3
+    },
+    {
+     "prediction_time": "2024-09-05T22:00:00+07:00",
+     "heavy_rain_probability": 0.22913007757230425,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 1.3
+    },
+    {
+     "prediction_time": "2024-09-05T23:00:00+07:00",
+     "heavy_rain_probability": 0.5101363722522823,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 3.3
+    },
+    {
+     "prediction_time": "2024-09-06T00:00:00+07:00",
+     "heavy_rain_probability": 0.8464272929006099,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 8.0
+    },
+    {
+     "prediction_time": "2024-09-06T01:00:00+07:00",
+     "heavy_rain_probability": 0.944075200928866,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 10.8
+    },
+    {
+     "prediction_time": "2024-09-06T02:00:00+07:00",
+     "heavy_rain_probability": 0.7930267689927645,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 12.9
+    },
+    {
+     "prediction_time": "2024-09-06T03:00:00+07:00",
+     "heavy_rain_probability": 0.42037364927005944,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 19.4
+    },
+    {
+     "prediction_time": "2024-09-06T04:00:00+07:00",
+     "heavy_rain_probability": 0.8032287073429429,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T05:00:00+07:00",
+     "heavy_rain_probability": 0.9200907317713818,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T06:00:00+07:00",
+     "heavy_rain_probability": 0.8363748895629093,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T07:00:00+07:00",
+     "heavy_rain_probability": 0.5986193298584866,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T08:00:00+07:00",
+     "heavy_rain_probability": 0.6002224024000402,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T09:00:00+07:00",
+     "heavy_rain_probability": 0.4874691795573884,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T10:00:00+07:00",
+     "heavy_rain_probability": 0.4414905981238956,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T11:00:00+07:00",
+     "heavy_rain_probability": 0.3596483885882069,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T12:00:00+07:00",
+     "heavy_rain_probability": 0.3206441374054308,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.4
+    },
+    {
+     "prediction_time": "2024-09-06T13:00:00+07:00",
+     "heavy_rain_probability": 0.43903083766244966,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 24.0
+    },
+    {
+     "prediction_time": "2024-09-06T14:00:00+07:00",
+     "heavy_rain_probability": 0.38184381701638254,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 24.7
+    },
+    {
+     "prediction_time": "2024-09-06T15:00:00+07:00",
+     "heavy_rain_probability": 0.6450836998828873,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.900000000000002
+    },
+    {
+     "prediction_time": "2024-09-06T16:00:00+07:00",
+     "heavy_rain_probability": 0.6197099343487721,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.8
+    },
+    {
+     "prediction_time": "2024-09-06T17:00:00+07:00",
+     "heavy_rain_probability": 0.361530120981899,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.8
+    },
+    {
+     "prediction_time": "2024-09-06T18:00:00+07:00",
+     "heavy_rain_probability": 0.47497402732282723,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.700000000000006
+    },
+    {
+     "prediction_time": "2024-09-06T19:00:00+07:00",
+     "heavy_rain_probability": 0.5775165447339268,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.800000000000008
+    },
+    {
+     "prediction_time": "2024-09-06T20:00:00+07:00",
+     "heavy_rain_probability": 0.6417491526882547,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.800000000000008
+    },
+    {
+     "prediction_time": "2024-09-06T21:00:00+07:00",
+     "heavy_rain_probability": 0.6505952987513619,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 23.90000000000001
+    },
+    {
+     "prediction_time": "2024-09-06T22:00:00+07:00",
+     "heavy_rain_probability": 0.6686424147263459,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 24.20000000000001
+    },
+    {
+     "prediction_time": "2024-09-06T23:00:00+07:00",
+     "heavy_rain_probability": 0.91508976608775,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 23.40000000000001
+    },
+    {
+     "prediction_time": "2024-09-07T00:00:00+07:00",
+     "heavy_rain_probability": 0.9397099968121272,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 20.700000000000006
+    },
+    {
+     "prediction_time": "2024-09-07T01:00:00+07:00",
+     "heavy_rain_probability": 0.9733041961521698,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 19.4
+    },
+    {
+     "prediction_time": "2024-09-07T02:00:00+07:00",
+     "heavy_rain_probability": 0.9722300822360297,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 18.099999999999998
+    },
+    {
+     "prediction_time": "2024-09-07T03:00:00+07:00",
+     "heavy_rain_probability": 0.9686711728118219,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 12.699999999999998
+    },
+    {
+     "prediction_time": "2024-09-07T04:00:00+07:00",
+     "heavy_rain_probability": 0.965722947380209,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 10.299999999999999
+    },
+    {
+     "prediction_time": "2024-09-07T05:00:00+07:00",
+     "heavy_rain_probability": 0.980437343778178,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 12.799999999999999
+    },
+    {
+     "prediction_time": "2024-09-07T06:00:00+07:00",
+     "heavy_rain_probability": 0.9852284424415785,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 18.299999999999997
+    },
+    {
+     "prediction_time": "2024-09-07T07:00:00+07:00",
+     "heavy_rain_probability": 0.9859076836716432,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 27.9
+    },
+    {
+     "prediction_time": "2024-09-07T08:00:00+07:00",
+     "heavy_rain_probability": 0.9877302852811859,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 30.7
+    },
+    {
+     "prediction_time": "2024-09-07T09:00:00+07:00",
+     "heavy_rain_probability": 0.9881019204560643,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 35.9
+    },
+    {
+     "prediction_time": "2024-09-07T10:00:00+07:00",
+     "heavy_rain_probability": 0.988577558629079,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 45.7
+    },
+    {
+     "prediction_time": "2024-09-07T11:00:00+07:00",
+     "heavy_rain_probability": 0.988577558629079,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 58.300000000000004
+    },
+    {
+     "prediction_time": "2024-09-07T12:00:00+07:00",
+     "heavy_rain_probability": 0.9887021660279894,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 70.7
+    },
+    {
+     "prediction_time": "2024-09-07T13:00:00+07:00",
+     "heavy_rain_probability": 0.9887021660279894,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 83.39999999999999
+    },
+    {
+     "prediction_time": "2024-09-07T14:00:00+07:00",
+     "heavy_rain_probability": 0.9887021660279894,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 92.3
+    },
+    {
+     "prediction_time": "2024-09-07T15:00:00+07:00",
+     "heavy_rain_probability": 0.9887021660279894,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 98.0
+    },
+    {
+     "prediction_time": "2024-09-07T16:00:00+07:00",
+     "heavy_rain_probability": 0.9884818632292806,
+     "is_heavy_rain_predicted": true,
+     "rain_24h_observed": 100.9
+    },
+    {
+     "prediction_time": "2024-09-07T17:00:00+07:00",
+     "heavy_rain_probability": 0.6406834148136265,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 102.9
+    },
+    {
+     "prediction_time": "2024-09-07T18:00:00+07:00",
+     "heavy_rain_probability": 0.6455682751451053,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 105.2
+    },
+    {
+     "prediction_time": "2024-09-07T19:00:00+07:00",
+     "heavy_rain_probability": 0.7047425968351867,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 108.50000000000001
+    },
+    {
+     "prediction_time": "2024-09-07T20:00:00+07:00",
+     "heavy_rain_probability": 0.7035404500158491,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 111.90000000000002
+    },
+    {
+     "prediction_time": "2024-09-07T21:00:00+07:00",
+     "heavy_rain_probability": 0.6670964788193787,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 115.40000000000002
+    },
+    {
+     "prediction_time": "2024-09-07T22:00:00+07:00",
+     "heavy_rain_probability": 0.6650045704328459,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 120.10000000000001
+    },
+    {
+     "prediction_time": "2024-09-07T23:00:00+07:00",
+     "heavy_rain_probability": 0.5368298137863745,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 124.80000000000003
+    },
+    {
+     "prediction_time": "2024-09-08T00:00:00+07:00",
+     "heavy_rain_probability": 0.5055302152528813,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 128.70000000000002
+    },
+    {
+     "prediction_time": "2024-09-08T01:00:00+07:00",
+     "heavy_rain_probability": 0.4669077267533689,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 133.40000000000003
+    },
+    {
+     "prediction_time": "2024-09-08T02:00:00+07:00",
+     "heavy_rain_probability": 0.4492221815435513,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 138.3
+    },
+    {
+     "prediction_time": "2024-09-08T03:00:00+07:00",
+     "heavy_rain_probability": 0.4042312203723112,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 141.20000000000002
+    },
+    {
+     "prediction_time": "2024-09-08T04:00:00+07:00",
+     "heavy_rain_probability": 0.3845992902403099,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 142.70000000000002
+    },
+    {
+     "prediction_time": "2024-09-08T05:00:00+07:00",
+     "heavy_rain_probability": 0.35749664981672263,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 141.20000000000002
+    },
+    {
+     "prediction_time": "2024-09-08T06:00:00+07:00",
+     "heavy_rain_probability": 0.2816807022535554,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 136.3
+    },
+    {
+     "prediction_time": "2024-09-08T07:00:00+07:00",
+     "heavy_rain_probability": 0.27229594411810193,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 127.40000000000002
+    },
+    {
+     "prediction_time": "2024-09-08T08:00:00+07:00",
+     "heavy_rain_probability": 0.2901917554064357,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 125.60000000000002
+    },
+    {
+     "prediction_time": "2024-09-08T09:00:00+07:00",
+     "heavy_rain_probability": 0.24731567541490623,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 121.30000000000003
+    },
+    {
+     "prediction_time": "2024-09-08T10:00:00+07:00",
+     "heavy_rain_probability": 0.2300747076400239,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 112.00000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T11:00:00+07:00",
+     "heavy_rain_probability": 0.2300747076400239,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 100.30000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T12:00:00+07:00",
+     "heavy_rain_probability": 0.22770090757080833,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 88.80000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T13:00:00+07:00",
+     "heavy_rain_probability": 0.16445355855206797,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 76.30000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T14:00:00+07:00",
+     "heavy_rain_probability": 0.2444200758191045,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 68.30000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T15:00:00+07:00",
+     "heavy_rain_probability": 0.27367614849201993,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 64.30000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T16:00:00+07:00",
+     "heavy_rain_probability": 0.2479724607679163,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 63.00000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T17:00:00+07:00",
+     "heavy_rain_probability": 0.18582992899583392,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 63.7
+    },
+    {
+     "prediction_time": "2024-09-08T18:00:00+07:00",
+     "heavy_rain_probability": 0.28527738869426456,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 63.10000000000001
+    },
+    {
+     "prediction_time": "2024-09-08T19:00:00+07:00",
+     "heavy_rain_probability": 0.2839907921496596,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 61.3
+    },
+    {
+     "prediction_time": "2024-09-08T20:00:00+07:00",
+     "heavy_rain_probability": 0.29934844117831066,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 59.3
+    },
+    {
+     "prediction_time": "2024-09-08T21:00:00+07:00",
+     "heavy_rain_probability": 0.2559008187282631,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 60.400000000000006
+    },
+    {
+     "prediction_time": "2024-09-08T22:00:00+07:00",
+     "heavy_rain_probability": 0.256954412722456,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 60.6
+    },
+    {
+     "prediction_time": "2024-09-08T23:00:00+07:00",
+     "heavy_rain_probability": 0.256954412722456,
+     "is_heavy_rain_predicted": false,
+     "rain_24h_observed": 56.900000000000006
+    }
+   ]
+  },
+  "q3_alert_hours_by_province": [
+   {
+    "_id": "QNI",
+    "hours": 168,
+    "alert_hours": 22,
+    "max_risk": 0.9887021660279894
+   },
+   {
+    "_id": "HPH",
+    "hours": 168,
+    "alert_hours": 20,
+    "max_risk": 0.9887021660279894
+   }
+  ],
+  "sample_prediction": {
+   "_id": "HPHO|2024-09-07T00:00|rf_20261031T140936Z_pilot_M1|replay",
+   "location_id": "HPHO",
+   "new_province_code": "HPH",
+   "prediction_time": "2024-09-07T00:00:00+07:00",
+   "forecast_horizon_hours": 24,
+   "heavy_rain_threshold_mm": 50.0,
+   "heavy_rain_probability": 0.9397099968121272,
+   "decision_threshold": 0.8477511583930617,
+   "is_heavy_rain_predicted": true,
+   "rain_24h_observed": 20.700000000000006,
+   "status": "ok",
+   "model_version": "rf_20261031T140936Z_pilot_M1",
+   "run_type": "replay",
+   "batch_id": 24,
+   "processed_at_utc": "2026-10-31T14:41:32.742402+00:00"
+  }
+ },
+ "mapreduce": {
+  "validation": {
+   "keys_spark": 144,
+   "keys_mapreduce": 144,
+   "missing_or_extra": 0,
+   "mismatches": 0,
+   "rows_spark": 420480,
+   "rows_mapreduce": 420480,
+   "examples": []
+  },
+  "input_mb": 5.5,
+  "log": [
+   "2026-10-31 14:44:32 INFO  Job:1726 - Running job: job_1793441592059_0002",
+   "2026-10-31 14:44:49 INFO  Job:1765 - Job job_1793441592059_0002 completed successfully",
+   "Launched map tasks=4",
+   "Launched reduce tasks=2",
+   "Map input records=420480",
+   "Map output records=420480",
+   "Combine input records=420480",
+   "Combine output records=576",
+   "Reduce shuffle bytes=16707",
+   "Reduce input records=576",
+   "Reduce output records=144",
+   "real\t0m20.383s"
+  ]
+ },
+ "plans": {
+  "q1_heavy_rate_region_month_plan": [
+   "AdaptiveSparkPlan (9)",
+   "+- Sort (8)",
+   "   +- Exchange (7)",
+   "      +- HashAggregate (6)",
+   "         +- Exchange (5)",
+   "            +- HashAggregate (4)",
+   "               +- Project (3)",
+   "                  +- Filter (2)",
+   "                     +- Scan parquet  (1)"
+  ],
+  "q2_heavy_days_province_year_plan": [
+   "AdaptiveSparkPlan (22)",
+   "+- Sort (21)",
+   "   +- Exchange (20)",
+   "      +- HashAggregate (19)",
+   "         +- Exchange (18)",
+   "            +- HashAggregate (17)",
+   "               +- Project (16)",
+   "                  +- BroadcastHashJoin Inner BuildRight (15)",
+   "                     :- Project (11)",
+   "                     :  +- BroadcastHashJoin Inner BuildRight (10)",
+   "                     :     :- HashAggregate (6)",
+   "                     :     :  +- Exchange (5)",
+   "                     :     :     +- HashAggregate (4)",
+   "                     :     :        +- Project (3)",
+   "                     :     :           +- Filter (2)",
+   "                     :     :              +- Scan parquet  (1)",
+   "                     :     +- BroadcastExchange (9)",
+   "                     :        +- Filter (8)",
+   "                     :           +- Scan parquet  (7)",
+   "                     +- BroadcastExchange (14)",
+   "                        +- Filter (13)",
+   "                           +- Scan csv  (12)"
+  ],
+  "q3_top_events_per_location_plan": [
+   "AdaptiveSparkPlan (13)",
+   "+- Sort (12)",
+   "   +- Exchange (11)",
+   "      +- Filter (10)",
+   "         +- Window (9)",
+   "            +- WindowGroupLimit (8)",
+   "               +- Sort (7)",
+   "                  +- Exchange (6)",
+   "                     +- WindowGroupLimit (5)",
+   "                        +- Sort (4)",
+   "                           +- Project (3)",
+   "                              +- Filter (2)",
+   "                                 +- Scan parquet  (1)"
+  ]
+ },
+ "samples": {
+  "e0_noaa_vs_era5": [
+   {
+    "station": "Da Nang",
+    "date": "2023-10-13",
+    "gauge_mm": 408.7,
+    "era5_mm": 74.8,
+    "era5_heavy": true
+   },
+   {
+    "station": "Da Nang",
+    "date": "2022-10-14",
+    "gauge_mm": 396.0,
+    "era5_mm": 171.3,
+    "era5_heavy": true
+   },
+   {
+    "station": "Da Nang",
+    "date": "2023-10-14",
+    "gauge_mm": 371.6,
+    "era5_mm": 45.7,
+    "era5_heavy": false
+   },
+   {
+    "station": "Ha Noi (Ha Dong)",
+    "date": "2016-05-25",
+    "gauge_mm": 337.8,
+    "era5_mm": 19.2,
+    "era5_heavy": false
+   },
+   {
+    "station": "Ha Noi (Ha Dong)",
+    "date": "2024-07-23",
+    "gauge_mm": 189.5,
+    "era5_mm": 98.7,
+    "era5_heavy": true
+   },
+   {
+    "station": "Ha Noi (Ha Dong)",
+    "date": "2018-07-21",
+    "gauge_mm": 183.9,
+    "era5_mm": 45.6,
+    "era5_heavy": false
+   }
+  ],
+  "gold_rows": [
+   {
+    "location_id": "HPHO",
+    "ts": "05/09 12:00",
+    "rain_3h": 0.2,
+    "rain_24h": 1.3,
+    "rh_mean_6h": 67.83,
+    "pressure_change_24h": -2.0,
+    "elevation_m": 8.0,
+    "distance_to_coast_km": 3.51,
+    "neighbor_rain_sum_6h": 0.77,
+    "neighbor_pressure_change_24h": -2.08,
+    "rain_next_24h": 23.8,
+    "label": 0.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "06/09 00:00",
+    "rain_3h": 0.0,
+    "rain_24h": 23.4,
+    "rh_mean_6h": 90.0,
+    "pressure_change_24h": -2.1,
+    "elevation_m": 8.0,
+    "distance_to_coast_km": 3.51,
+    "neighbor_rain_sum_6h": 9.55,
+    "neighbor_pressure_change_24h": -2.03,
+    "rain_next_24h": 27.9,
+    "label": 0.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "06/09 12:00",
+    "rain_3h": 0.2,
+    "rain_24h": 23.8,
+    "rh_mean_6h": 75.17,
+    "pressure_change_24h": -1.7,
+    "elevation_m": 8.0,
+    "distance_to_coast_km": 3.51,
+    "neighbor_rain_sum_6h": 1.98,
+    "neighbor_pressure_change_24h": -1.62,
+    "rain_next_24h": 108.5,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "07/09 00:00",
+    "rain_3h": 17.6,
+    "rain_24h": 27.9,
+    "rh_mean_6h": 87.83,
+    "pressure_change_24h": -8.6,
+    "elevation_m": 8.0,
+    "distance_to_coast_km": 3.51,
+    "neighbor_rain_sum_6h": 21.42,
+    "neighbor_pressure_change_24h": -8.7,
+    "rain_next_24h": 127.4,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "07/09 12:00",
+    "rain_3h": 7.8,
+    "rain_24h": 108.5,
+    "rh_mean_6h": 96.17,
+    "pressure_change_24h": -8.9,
+    "elevation_m": 8.0,
+    "distance_to_coast_km": 3.51,
+    "neighbor_rain_sum_6h": 34.58,
+    "neighbor_pressure_change_24h": -8.72,
+    "rain_next_24h": 61.3,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "08/09 00:00",
+    "rain_3h": 2.3,
+    "rain_24h": 127.4,
+    "rh_mean_6h": 92.17,
+    "pressure_change_24h": 8.3,
+    "elevation_m": 8.0,
+    "distance_to_coast_km": 3.51,
+    "neighbor_rain_sum_6h": 18.4,
+    "neighbor_pressure_change_24h": 8.25,
+    "rain_next_24h": 32.2,
+    "label": 0.0
+   }
+  ],
+  "predictions": [
+   {
+    "location_id": "HGIA",
+    "ts": "2024-04-21 11:00",
+    "label": 1.0,
+    "M1": 0.027,
+    "M2": 0.092,
+    "M3": 0.054
+   },
+   {
+    "location_id": "HGIA",
+    "ts": "2024-01-08 02:00",
+    "label": 0.0,
+    "M1": 0.359,
+    "M2": 0.409,
+    "M3": 0.414
+   },
+   {
+    "location_id": "LDON",
+    "ts": "2024-05-20 11:00",
+    "label": 1.0,
+    "M1": 0.053,
+    "M2": 0.035,
+    "M3": 0.024
+   },
+   {
+    "location_id": "LDON",
+    "ts": "2024-05-19 02:00",
+    "label": 0.0,
+    "M1": 0.617,
+    "M2": 0.622,
+    "M3": 0.527
+   },
+   {
+    "location_id": "HUE",
+    "ts": "2024-06-09 12:00",
+    "label": 1.0,
+    "M1": 0.047,
+    "M2": 0.081,
+    "M3": 0.036
+   },
+   {
+    "location_id": "HUE",
+    "ts": "2024-01-02 16:00",
+    "label": 0.0,
+    "M1": 0.339,
+    "M2": 0.499,
+    "M3": 0.344
+   }
+  ],
+  "mr_input": [
+   "HGIA,6,0,0.8",
+   "HGIA,6,0,0.8",
+   "HGIA,6,0,0.8",
+   "HGIA,6,0,0.8"
+  ],
+  "mr_output": [
+   "HGIA|06\t2880,0,0.000000,0.438889,10.7",
+   "HUE|10\t2976,517,0.173723,0.998522,14.7"
+  ],
+  "yagi_rows": [
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-05 00:00:00",
+    "heavy_rain_probability": 0.093,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 8.0,
+    "label": 0.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-05 12:00:00",
+    "heavy_rain_probability": 0.019,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 23.4,
+    "label": 0.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-06 00:00:00",
+    "heavy_rain_probability": 0.846,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 20.7,
+    "label": 0.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-06 12:00:00",
+    "heavy_rain_probability": 0.321,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 70.7,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-07 00:00:00",
+    "heavy_rain_probability": 0.94,
+    "is_heavy_rain_predicted": true,
+    "rain_next_24h": 128.7,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-07 12:00:00",
+    "heavy_rain_probability": 0.989,
+    "is_heavy_rain_predicted": true,
+    "rain_next_24h": 88.8,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-08 00:00:00",
+    "heavy_rain_probability": 0.506,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 51.7,
+    "label": 1.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-08 12:00:00",
+    "heavy_rain_probability": 0.228,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 33.6,
+    "label": 0.0
+   },
+   {
+    "location_id": "HPHO",
+    "ts": "2024-09-09 00:00:00",
+    "heavy_rain_probability": 0.299,
+    "is_heavy_rain_predicted": false,
+    "rain_next_24h": 26.8,
+    "label": 0.0
+   }
+  ]
+ }
+}

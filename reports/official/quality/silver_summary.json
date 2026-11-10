@@ -1,0 +1,27 @@
+{
+  "bronze_rows": 47552808,
+  "silver_rows": 47540976,
+  "duplicate_cell_hours": 0,
+  "cells": 493,
+  "cells_in_map": 493,
+  "first_ts_vn": "2015-01-01 00:00:00",
+  "last_ts_vn": "2025-12-31 23:00:00",
+  "cell_years": 5423,
+  "cell_years_incomplete": 0,
+  "nulls_after_rules": {
+    "precipitation": 0,
+    "temperature_2m": 0,
+    "relative_humidity_2m": 0,
+    "dew_point_2m": 0,
+    "pressure_msl": 0,
+    "cloud_cover": 0,
+    "wind_speed_10m": 0,
+    "wind_direction_10m": 0,
+    "tcwv": 0,
+    "ivt_east": 0,
+    "ivt_north": 0,
+    "vimd": 0,
+    "cape": 2,
+    "k_index": 243
+  }
+}

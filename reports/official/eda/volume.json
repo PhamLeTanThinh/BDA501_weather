@@ -1,0 +1,23 @@
+{
+  "silver_rows": 47540976,
+  "cells": 493,
+  "first_ts_vn": "2015-01-01 00:00:00",
+  "last_ts_vn": "2025-12-31 23:00:00",
+  "gold_rows": 47540976,
+  "gold_columns": 51,
+  "size_gb": {
+    "bronze": 1.81,
+    "silver": 2.9,
+    "gold": 5.24
+  },
+  "raw_gb": 4.74,
+  "crosscheck_openmeteo": {
+    "points": 63,
+    "median_daily_precip_corr": 0.999782279109754,
+    "median_hourly_precip_corr": 0.999561025245241,
+    "median_temp_bias_c": -0.03028115196092841,
+    "corr_lag_-1h": 0.6980424209068045,
+    "corr_lag_+0h": 0.9889350466064715,
+    "corr_lag_+1h": 0.6983759422981075
+  }
+}

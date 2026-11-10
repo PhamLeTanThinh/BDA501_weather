@@ -1,0 +1,139 @@
+# Ablation M1 / M2 / M3 cho bài toán: tại giờ t, tổng mưa (t, t+24h] > 50 mm?
+# Mọi đường dẫn tương đối tính từ thư mục gốc repo (BDA501_weather/).
+# Profile "full" là thiết kế chính thức; "pilot" chạy được trên laptop trong một buổi.
+
+experiment_name: rain24h_spatial_ablation
+seed: 42
+
+paths:
+  points: data/reference/points.csv
+  raw: data/raw/era5                     # JSON gốc, 1 file = 1 ô lưới × 1 năm
+  grid_plan: data/reference/grid_plan.csv  # điểm → ô trung tâm + ô lân cận (đã khử trùng)
+  geography: data/reference/location_geography.csv
+  coastline: data/reference/ne_10m_coastline_vn.geojson
+  lake: data/lake                        # thay bằng hdfs://namenode:9000/rain-forecast khi chạy trên cụm
+  reports: reports
+
+source:
+  api: https://archive-api.open-meteo.com/v1/archive
+  model: era5
+  timezone: Asia/Ho_Chi_Minh             # kiểm tra utc_offset_seconds == 25200
+  expected_utc_offset_seconds: 25200
+  center_cell_selection: land            # điểm ven biển lấy ô đất liền
+  neighbor_cell_selection: nearest       # ô lân cận được phép là ô biển (nguồn ẩm, mưa đang tới)
+  grid_step_deg: 0.25                    # lưới ERA5
+  hourly: [precipitation, temperature_2m, relative_humidity_2m, dew_point_2m,
+           pressure_msl, cloud_cover, wind_speed_10m, wind_direction_10m]
+  expected_units:
+    precipitation: mm
+    temperature_2m: "°C"
+    relative_humidity_2m: "%"
+    dew_point_2m: "°C"
+    pressure_msl: hPa
+    cloud_cover: "%"
+    wind_speed_10m: km/h
+    wind_direction_10m: "°"
+  pause_seconds: 20                      # gói free: 600/phút, 5.000/giờ, 10.000/ngày (1 năm ≈ 26 lượt)
+
+neighbors:
+  pattern: nsew                          # nsew = 4 ô N/S/E/W; ring = 8 ô 3×3 bỏ ô giữa
+  min_neighbors: 2                       # ít hơn → feature neighbor = null, dòng ra khỏi cohort
+
+label:
+  horizon_hours: 24
+  threshold_mm: 50.0                     # QĐ 18/2021/QĐ-TTg, Điều 5, khoản 17
+
+splits:                                  # theo giờ Việt Nam; nhãn phải nằm trọn trong split
+  train: ["2015-01-01 00:00", "2022-12-31 23:00"]
+  validation: ["2023-01-01 00:00", "2023-12-31 23:00"]
+  test: ["2024-01-01 00:00", "2025-12-31 23:00"]
+
+features:
+  M1: [rain_3h, rain_24h, rain_72h, rain_max_1h_24h, rain_hours_24h,
+       rh, rh_mean_6h, dew_point, dewpoint_depression,
+       pressure_msl, pressure_change_3h, pressure_change_24h,
+       wind_speed, wind_speed_change_24h, wind_dir_sin, wind_dir_cos,
+       temperature, temp_change_24h, cloud_cover, cloud_mean_6h,
+       month_sin, month_cos, hour_sin, hour_cos]
+  M2_add: [elevation_m, distance_to_coast_km, terrain_slope_deg]
+  M3_add: [neighbor_rain_sum_6h, neighbor_rain_sum_24h,
+           neighbor_pressure_change_24h, neighbor_humidity_mean_6h]
+  M4_add: [tcwv, tcwv_change_24h, ivt, ivt_dir_sin, ivt_dir_cos,   # 6 biến khí quyển (chỉ có ở CDS)
+           vimd_sum_6h, cape, cape_max_24h, k_index]
+
+geography:
+  elevation_api: https://api.open-meteo.com/v1/elevation   # Copernicus DEM GLO-90
+  slope_spacing_m: 1000                  # khoảng cách lưới 3×3 lấy mẫu DEM cho công thức Horn
+  coastline_url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_coastline.geojson
+  coastline_bbox: [97.0, 4.0, 117.0, 26.0]   # lon_min, lat_min, lon_max, lat_max
+
+model:
+  type: RandomForestClassifier           # cố định cho cả M1, M2, M3
+  numTrees: 200
+  maxDepth: 12
+  minInstancesPerNode: 20
+  featureSubsetStrategy: sqrt
+  subsamplingRate: 0.8
+  maxBins: 64
+  class_weight: balanced                 # w1 = N0/N1 tính trên train, w0 = 1
+
+threshold:
+  policy: max_f1_on_validation           # chọn trên 2023, khóa trước khi chạm test
+
+evaluation:
+  primary: pr_auc                        # average precision (bậc thang, không nội suy tuyến tính)
+  bootstrap:
+    block: day                           # lấy mẫu lại theo ngày, mọi điểm của ngày đi cùng nhau
+    n_resamples: 500
+    ci: 0.95
+  rainy_season_months:                   # mùa mưa theo vùng, dùng để tách báo cáo
+    Bac: [5, 6, 7, 8, 9, 10]
+    BacTrungBo: [8, 9, 10, 11]
+    NamTrungBo: [9, 10, 11, 12]
+    TayNguyen: [5, 6, 7, 8, 9, 10]
+    Nam: [5, 6, 7, 8, 9, 10, 11]
+
+profiles:
+  official:                              # bản chính thức: ERA5 CDS 13 biến, ~490 ô đất liền, feature M1 (+ M4)
+    years: [2015, 2025]
+    points: all
+    neighbors:
+      pattern: none
+    paths:
+      raw_cds: ${BDA_DATA}/raw/era5_cds       # zip NetCDF tải từ CDS (src.ingest.cds_jobs)
+      cells: data/reference/cells_land.csv    # ô đất liền → tỉnh (src.ingest.build_cell_map)
+      geography: data/reference/cells_geography.csv  # địa hình tại tâm ô (src.ingest.collect_geography)
+      lake: ${BDA_DATA}/lake                  # bronze/silver/gold chính thức, tách khỏi data/lake của pilot
+      reports: reports/official
+    geography:                           # Open-Meteo hết hạn mức ngày khi tải 493 ô → OpenTopoData (SRTM 90 m)
+      elevation_api: https://api.opentopodata.org/v1/srtm90m
+      dem_name: SRTM 90 m via OpenTopoData (sea = 0 m)
+    model:
+      numTrees: 100
+  full:                                  # Open-Meteo 63 điểm (dự phòng), chỉ ô trung tâm (M1)
+    years: [2015, 2025]
+    points: all
+    neighbors:
+      pattern: none
+    paths:
+      grid_plan: data/reference/grid_plan_full.csv
+  pilot:                                 # cùng split; train chỉ còn 2019–2022
+    years: [2019, 2025]
+    points: pilot                        # cột pilot = 1 trong points.csv (8 điểm, có HP + QN cho Yagi)
+    model:
+      numTrees: 100
+
+streaming:
+  replay_start: "2024-09-01 00:00"       # 72h đầu chỉ để warm-up
+  warmup_hours: 72
+  predict_from: "2024-09-04 00:00"
+  replay_end: "2024-09-10 23:00"
+  locations: [HPHO, QNIN]
+  stream_in: data/lake/stream_in/weather
+  staging: data/lake/stream_staging
+  checkpoint: data/lake/checkpoints/weather_stream
+  trigger_seconds: 15
+  seconds_per_replay_hour: 5
+  mongo_uri: mongodb://localhost:27017
+  mongo_db: rain_forecast
+  mongo_collection: predictions

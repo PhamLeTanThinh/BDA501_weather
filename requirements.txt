@@ -1,0 +1,10 @@
+# Chạy trong container docker/Dockerfile.spark (Spark 4.2.0, Java 17, Python 3.11).
+# Ngoài container: Linux/macOS dùng được trực tiếp; Windows cần winutils.exe cho Spark ghi Parquet.
+pyspark==4.2.0
+numpy
+pandas<3
+pyarrow
+pyyaml
+pytest
+matplotlib
+pymongo

@@ -1,0 +1,675 @@
+{
+  "counts": {
+    "predictions": 336,
+    "province_risk": 336,
+    "distinct_ids_predictions": 336
+  },
+  "indexes": {
+    "predictions": [
+      "_id_",
+      "loc_time"
+    ],
+    "province_risk": [
+      "_id_",
+      "time_score"
+    ]
+  },
+  "q1_alerts_at_time": {
+    "filter": {
+      "prediction_time": "2024-09-07T00:00:00+07:00",
+      "alert": true
+    },
+    "plan_stages": [
+      "FETCH",
+      "IXSCAN"
+    ],
+    "rows": [
+      {
+        "province_code": "HPH",
+        "prediction_time": "2024-09-07T00:00:00+07:00",
+        "province_risk_score": 0.9397099968121272,
+        "driving_location_id": "HPHO",
+        "decision_threshold": 0.8477511583930617,
+        "alert": true,
+        "aggregation_method": "max_point_probability",
+        "model_version": "rf_20261031T140936Z_pilot_M1",
+        "run_type": "replay"
+      },
+      {
+        "province_code": "QNI",
+        "prediction_time": "2024-09-07T00:00:00+07:00",
+        "province_risk_score": 0.9182700527989586,
+        "driving_location_id": "QNIN",
+        "decision_threshold": 0.8477511583930617,
+        "alert": true,
+        "aggregation_method": "max_point_probability",
+        "model_version": "rf_20261031T140936Z_pilot_M1",
+        "run_type": "replay"
+      }
+    ]
+  },
+  "q2_location_series": {
+    "filter": {
+      "location_id": "HPHO",
+      "status": "ok",
+      "prediction_time": {
+        "$gte": "2024-09-05T00:00:00+07:00",
+        "$lt": "2024-09-09T00:00:00+07:00"
+      }
+    },
+    "plan_stages": [
+      "FETCH",
+      "IXSCAN"
+    ],
+    "n": 96,
+    "rows": [
+      {
+        "prediction_time": "2024-09-05T00:00:00+07:00",
+        "heavy_rain_probability": 0.0925295337378427,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T01:00:00+07:00",
+        "heavy_rain_probability": 0.13469824325448043,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T02:00:00+07:00",
+        "heavy_rain_probability": 0.2621283338011727,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T03:00:00+07:00",
+        "heavy_rain_probability": 0.25139843592395444,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T04:00:00+07:00",
+        "heavy_rain_probability": 0.48260917163306905,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T05:00:00+07:00",
+        "heavy_rain_probability": 0.4365619268278933,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T06:00:00+07:00",
+        "heavy_rain_probability": 0.21442687871142468,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T07:00:00+07:00",
+        "heavy_rain_probability": 0.06339672105765273,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T08:00:00+07:00",
+        "heavy_rain_probability": 0.03478601588536357,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T09:00:00+07:00",
+        "heavy_rain_probability": 0.07178151125842996,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T10:00:00+07:00",
+        "heavy_rain_probability": 0.06671797744409866,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T11:00:00+07:00",
+        "heavy_rain_probability": 0.01965302415128379,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T12:00:00+07:00",
+        "heavy_rain_probability": 0.019403835023287953,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T13:00:00+07:00",
+        "heavy_rain_probability": 0.009168066943568913,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.1
+      },
+      {
+        "prediction_time": "2024-09-05T14:00:00+07:00",
+        "heavy_rain_probability": 0.053108609734991666,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 0.2
+      },
+      {
+        "prediction_time": "2024-09-05T15:00:00+07:00",
+        "heavy_rain_probability": 0.1046624033675273,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.1
+      },
+      {
+        "prediction_time": "2024-09-05T16:00:00+07:00",
+        "heavy_rain_probability": 0.04845581115741585,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.2000000000000002
+      },
+      {
+        "prediction_time": "2024-09-05T17:00:00+07:00",
+        "heavy_rain_probability": 0.06784362026474001,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.1
+      },
+      {
+        "prediction_time": "2024-09-05T18:00:00+07:00",
+        "heavy_rain_probability": 0.1057566368911002,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.3
+      },
+      {
+        "prediction_time": "2024-09-05T19:00:00+07:00",
+        "heavy_rain_probability": 0.1285133198666464,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.3
+      },
+      {
+        "prediction_time": "2024-09-05T20:00:00+07:00",
+        "heavy_rain_probability": 0.18162510360394624,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.3
+      },
+      {
+        "prediction_time": "2024-09-05T21:00:00+07:00",
+        "heavy_rain_probability": 0.21355691168759464,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.3
+      },
+      {
+        "prediction_time": "2024-09-05T22:00:00+07:00",
+        "heavy_rain_probability": 0.22913007757230425,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 1.3
+      },
+      {
+        "prediction_time": "2024-09-05T23:00:00+07:00",
+        "heavy_rain_probability": 0.5101363722522823,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 3.3
+      },
+      {
+        "prediction_time": "2024-09-06T00:00:00+07:00",
+        "heavy_rain_probability": 0.8464272929006099,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 8.0
+      },
+      {
+        "prediction_time": "2024-09-06T01:00:00+07:00",
+        "heavy_rain_probability": 0.944075200928866,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 10.8
+      },
+      {
+        "prediction_time": "2024-09-06T02:00:00+07:00",
+        "heavy_rain_probability": 0.7930267689927645,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 12.9
+      },
+      {
+        "prediction_time": "2024-09-06T03:00:00+07:00",
+        "heavy_rain_probability": 0.42037364927005944,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 19.4
+      },
+      {
+        "prediction_time": "2024-09-06T04:00:00+07:00",
+        "heavy_rain_probability": 0.8032287073429429,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T05:00:00+07:00",
+        "heavy_rain_probability": 0.9200907317713818,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T06:00:00+07:00",
+        "heavy_rain_probability": 0.8363748895629093,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T07:00:00+07:00",
+        "heavy_rain_probability": 0.5986193298584866,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T08:00:00+07:00",
+        "heavy_rain_probability": 0.6002224024000402,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T09:00:00+07:00",
+        "heavy_rain_probability": 0.4874691795573884,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T10:00:00+07:00",
+        "heavy_rain_probability": 0.4414905981238956,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T11:00:00+07:00",
+        "heavy_rain_probability": 0.3596483885882069,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T12:00:00+07:00",
+        "heavy_rain_probability": 0.3206441374054308,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.4
+      },
+      {
+        "prediction_time": "2024-09-06T13:00:00+07:00",
+        "heavy_rain_probability": 0.43903083766244966,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 24.0
+      },
+      {
+        "prediction_time": "2024-09-06T14:00:00+07:00",
+        "heavy_rain_probability": 0.38184381701638254,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 24.7
+      },
+      {
+        "prediction_time": "2024-09-06T15:00:00+07:00",
+        "heavy_rain_probability": 0.6450836998828873,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.900000000000002
+      },
+      {
+        "prediction_time": "2024-09-06T16:00:00+07:00",
+        "heavy_rain_probability": 0.6197099343487721,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.8
+      },
+      {
+        "prediction_time": "2024-09-06T17:00:00+07:00",
+        "heavy_rain_probability": 0.361530120981899,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.8
+      },
+      {
+        "prediction_time": "2024-09-06T18:00:00+07:00",
+        "heavy_rain_probability": 0.47497402732282723,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.700000000000006
+      },
+      {
+        "prediction_time": "2024-09-06T19:00:00+07:00",
+        "heavy_rain_probability": 0.5775165447339268,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.800000000000008
+      },
+      {
+        "prediction_time": "2024-09-06T20:00:00+07:00",
+        "heavy_rain_probability": 0.6417491526882547,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.800000000000008
+      },
+      {
+        "prediction_time": "2024-09-06T21:00:00+07:00",
+        "heavy_rain_probability": 0.6505952987513619,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 23.90000000000001
+      },
+      {
+        "prediction_time": "2024-09-06T22:00:00+07:00",
+        "heavy_rain_probability": 0.6686424147263459,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 24.20000000000001
+      },
+      {
+        "prediction_time": "2024-09-06T23:00:00+07:00",
+        "heavy_rain_probability": 0.91508976608775,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 23.40000000000001
+      },
+      {
+        "prediction_time": "2024-09-07T00:00:00+07:00",
+        "heavy_rain_probability": 0.9397099968121272,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 20.700000000000006
+      },
+      {
+        "prediction_time": "2024-09-07T01:00:00+07:00",
+        "heavy_rain_probability": 0.9733041961521698,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 19.4
+      },
+      {
+        "prediction_time": "2024-09-07T02:00:00+07:00",
+        "heavy_rain_probability": 0.9722300822360297,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 18.099999999999998
+      },
+      {
+        "prediction_time": "2024-09-07T03:00:00+07:00",
+        "heavy_rain_probability": 0.9686711728118219,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 12.699999999999998
+      },
+      {
+        "prediction_time": "2024-09-07T04:00:00+07:00",
+        "heavy_rain_probability": 0.965722947380209,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 10.299999999999999
+      },
+      {
+        "prediction_time": "2024-09-07T05:00:00+07:00",
+        "heavy_rain_probability": 0.980437343778178,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 12.799999999999999
+      },
+      {
+        "prediction_time": "2024-09-07T06:00:00+07:00",
+        "heavy_rain_probability": 0.9852284424415785,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 18.299999999999997
+      },
+      {
+        "prediction_time": "2024-09-07T07:00:00+07:00",
+        "heavy_rain_probability": 0.9859076836716432,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 27.9
+      },
+      {
+        "prediction_time": "2024-09-07T08:00:00+07:00",
+        "heavy_rain_probability": 0.9877302852811859,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 30.7
+      },
+      {
+        "prediction_time": "2024-09-07T09:00:00+07:00",
+        "heavy_rain_probability": 0.9881019204560643,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 35.9
+      },
+      {
+        "prediction_time": "2024-09-07T10:00:00+07:00",
+        "heavy_rain_probability": 0.988577558629079,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 45.7
+      },
+      {
+        "prediction_time": "2024-09-07T11:00:00+07:00",
+        "heavy_rain_probability": 0.988577558629079,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 58.300000000000004
+      },
+      {
+        "prediction_time": "2024-09-07T12:00:00+07:00",
+        "heavy_rain_probability": 0.9887021660279894,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 70.7
+      },
+      {
+        "prediction_time": "2024-09-07T13:00:00+07:00",
+        "heavy_rain_probability": 0.9887021660279894,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 83.39999999999999
+      },
+      {
+        "prediction_time": "2024-09-07T14:00:00+07:00",
+        "heavy_rain_probability": 0.9887021660279894,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 92.3
+      },
+      {
+        "prediction_time": "2024-09-07T15:00:00+07:00",
+        "heavy_rain_probability": 0.9887021660279894,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 98.0
+      },
+      {
+        "prediction_time": "2024-09-07T16:00:00+07:00",
+        "heavy_rain_probability": 0.9884818632292806,
+        "is_heavy_rain_predicted": true,
+        "rain_24h_observed": 100.9
+      },
+      {
+        "prediction_time": "2024-09-07T17:00:00+07:00",
+        "heavy_rain_probability": 0.6406834148136265,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 102.9
+      },
+      {
+        "prediction_time": "2024-09-07T18:00:00+07:00",
+        "heavy_rain_probability": 0.6455682751451053,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 105.2
+      },
+      {
+        "prediction_time": "2024-09-07T19:00:00+07:00",
+        "heavy_rain_probability": 0.7047425968351867,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 108.50000000000001
+      },
+      {
+        "prediction_time": "2024-09-07T20:00:00+07:00",
+        "heavy_rain_probability": 0.7035404500158491,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 111.90000000000002
+      },
+      {
+        "prediction_time": "2024-09-07T21:00:00+07:00",
+        "heavy_rain_probability": 0.6670964788193787,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 115.40000000000002
+      },
+      {
+        "prediction_time": "2024-09-07T22:00:00+07:00",
+        "heavy_rain_probability": 0.6650045704328459,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 120.10000000000001
+      },
+      {
+        "prediction_time": "2024-09-07T23:00:00+07:00",
+        "heavy_rain_probability": 0.5368298137863745,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 124.80000000000003
+      },
+      {
+        "prediction_time": "2024-09-08T00:00:00+07:00",
+        "heavy_rain_probability": 0.5055302152528813,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 128.70000000000002
+      },
+      {
+        "prediction_time": "2024-09-08T01:00:00+07:00",
+        "heavy_rain_probability": 0.4669077267533689,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 133.40000000000003
+      },
+      {
+        "prediction_time": "2024-09-08T02:00:00+07:00",
+        "heavy_rain_probability": 0.4492221815435513,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 138.3
+      },
+      {
+        "prediction_time": "2024-09-08T03:00:00+07:00",
+        "heavy_rain_probability": 0.4042312203723112,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 141.20000000000002
+      },
+      {
+        "prediction_time": "2024-09-08T04:00:00+07:00",
+        "heavy_rain_probability": 0.3845992902403099,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 142.70000000000002
+      },
+      {
+        "prediction_time": "2024-09-08T05:00:00+07:00",
+        "heavy_rain_probability": 0.35749664981672263,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 141.20000000000002
+      },
+      {
+        "prediction_time": "2024-09-08T06:00:00+07:00",
+        "heavy_rain_probability": 0.2816807022535554,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 136.3
+      },
+      {
+        "prediction_time": "2024-09-08T07:00:00+07:00",
+        "heavy_rain_probability": 0.27229594411810193,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 127.40000000000002
+      },
+      {
+        "prediction_time": "2024-09-08T08:00:00+07:00",
+        "heavy_rain_probability": 0.2901917554064357,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 125.60000000000002
+      },
+      {
+        "prediction_time": "2024-09-08T09:00:00+07:00",
+        "heavy_rain_probability": 0.24731567541490623,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 121.30000000000003
+      },
+      {
+        "prediction_time": "2024-09-08T10:00:00+07:00",
+        "heavy_rain_probability": 0.2300747076400239,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 112.00000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T11:00:00+07:00",
+        "heavy_rain_probability": 0.2300747076400239,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 100.30000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T12:00:00+07:00",
+        "heavy_rain_probability": 0.22770090757080833,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 88.80000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T13:00:00+07:00",
+        "heavy_rain_probability": 0.16445355855206797,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 76.30000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T14:00:00+07:00",
+        "heavy_rain_probability": 0.2444200758191045,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 68.30000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T15:00:00+07:00",
+        "heavy_rain_probability": 0.27367614849201993,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 64.30000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T16:00:00+07:00",
+        "heavy_rain_probability": 0.2479724607679163,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 63.00000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T17:00:00+07:00",
+        "heavy_rain_probability": 0.18582992899583392,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 63.7
+      },
+      {
+        "prediction_time": "2024-09-08T18:00:00+07:00",
+        "heavy_rain_probability": 0.28527738869426456,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 63.10000000000001
+      },
+      {
+        "prediction_time": "2024-09-08T19:00:00+07:00",
+        "heavy_rain_probability": 0.2839907921496596,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 61.3
+      },
+      {
+        "prediction_time": "2024-09-08T20:00:00+07:00",
+        "heavy_rain_probability": 0.29934844117831066,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 59.3
+      },
+      {
+        "prediction_time": "2024-09-08T21:00:00+07:00",
+        "heavy_rain_probability": 0.2559008187282631,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 60.400000000000006
+      },
+      {
+        "prediction_time": "2024-09-08T22:00:00+07:00",
+        "heavy_rain_probability": 0.256954412722456,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 60.6
+      },
+      {
+        "prediction_time": "2024-09-08T23:00:00+07:00",
+        "heavy_rain_probability": 0.256954412722456,
+        "is_heavy_rain_predicted": false,
+        "rain_24h_observed": 56.900000000000006
+      }
+    ]
+  },
+  "q3_alert_hours_by_province": [
+    {
+      "_id": "QNI",
+      "hours": 168,
+      "alert_hours": 22,
+      "max_risk": 0.9887021660279894
+    },
+    {
+      "_id": "HPH",
+      "hours": 168,
+      "alert_hours": 20,
+      "max_risk": 0.9887021660279894
+    }
+  ],
+  "sample_prediction": {
+    "_id": "HPHO|2024-09-07T00:00|rf_20261031T140936Z_pilot_M1|replay",
+    "location_id": "HPHO",
+    "new_province_code": "HPH",
+    "prediction_time": "2024-09-07T00:00:00+07:00",
+    "forecast_horizon_hours": 24,
+    "heavy_rain_threshold_mm": 50.0,
+    "heavy_rain_probability": 0.9397099968121272,
+    "decision_threshold": 0.8477511583930617,
+    "is_heavy_rain_predicted": true,
+    "rain_24h_observed": 20.700000000000006,
+    "status": "ok",
+    "model_version": "rf_20261031T140936Z_pilot_M1",
+    "run_type": "replay",
+    "batch_id": 24,
+    "processed_at_utc": "2026-10-31T14:41:32.742402+00:00"
+  }
+}

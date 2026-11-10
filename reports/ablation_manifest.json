@@ -1,0 +1,179 @@
+{
+  "run_id": "20261031T140936Z_pilot",
+  "profile": "pilot",
+  "years": [
+    2019,
+    2025
+  ],
+  "seed": 42,
+  "created_utc": "2026-10-31T14:12:48.492659+00:00",
+  "python": "3.11.18",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "spark": "4.2.0",
+  "model": {
+    "type": "RandomForestClassifier",
+    "numTrees": 100,
+    "maxDepth": 12,
+    "minInstancesPerNode": 20,
+    "featureSubsetStrategy": "sqrt",
+    "subsamplingRate": 0.8,
+    "maxBins": 64,
+    "class_weight": "balanced"
+  },
+  "class_weight_positive": 79.63566487317448,
+  "splits": {
+    "train": [
+      "2005-01-01 00:00",
+      "2022-12-31 23:00"
+    ],
+    "validation": [
+      "2023-01-01 00:00",
+      "2023-12-31 23:00"
+    ],
+    "test": [
+      "2024-01-01 00:00",
+      "2025-12-31 23:00"
+    ]
+  },
+  "label": {
+    "horizon_hours": 24,
+    "threshold_mm": 50.0
+  },
+  "feature_sets": {
+    "M1": [
+      "rain_3h",
+      "rain_24h",
+      "rain_72h",
+      "rain_max_1h_24h",
+      "rain_hours_24h",
+      "rh",
+      "rh_mean_6h",
+      "dew_point",
+      "dewpoint_depression",
+      "pressure_msl",
+      "pressure_change_3h",
+      "pressure_change_24h",
+      "wind_speed",
+      "wind_speed_change_24h",
+      "wind_dir_sin",
+      "wind_dir_cos",
+      "temperature",
+      "temp_change_24h",
+      "cloud_cover",
+      "cloud_mean_6h",
+      "month_sin",
+      "month_cos",
+      "hour_sin",
+      "hour_cos"
+    ],
+    "M2": [
+      "rain_3h",
+      "rain_24h",
+      "rain_72h",
+      "rain_max_1h_24h",
+      "rain_hours_24h",
+      "rh",
+      "rh_mean_6h",
+      "dew_point",
+      "dewpoint_depression",
+      "pressure_msl",
+      "pressure_change_3h",
+      "pressure_change_24h",
+      "wind_speed",
+      "wind_speed_change_24h",
+      "wind_dir_sin",
+      "wind_dir_cos",
+      "temperature",
+      "temp_change_24h",
+      "cloud_cover",
+      "cloud_mean_6h",
+      "month_sin",
+      "month_cos",
+      "hour_sin",
+      "hour_cos",
+      "elevation_m",
+      "distance_to_coast_km",
+      "terrain_slope_deg"
+    ],
+    "M3": [
+      "rain_3h",
+      "rain_24h",
+      "rain_72h",
+      "rain_max_1h_24h",
+      "rain_hours_24h",
+      "rh",
+      "rh_mean_6h",
+      "dew_point",
+      "dewpoint_depression",
+      "pressure_msl",
+      "pressure_change_3h",
+      "pressure_change_24h",
+      "wind_speed",
+      "wind_speed_change_24h",
+      "wind_dir_sin",
+      "wind_dir_cos",
+      "temperature",
+      "temp_change_24h",
+      "cloud_cover",
+      "cloud_mean_6h",
+      "month_sin",
+      "month_cos",
+      "hour_sin",
+      "hour_cos",
+      "elevation_m",
+      "distance_to_coast_km",
+      "terrain_slope_deg",
+      "neighbor_rain_sum_6h",
+      "neighbor_rain_sum_24h",
+      "neighbor_pressure_change_24h",
+      "neighbor_humidity_mean_6h"
+    ]
+  },
+  "thresholds_from_validation": {
+    "M1": 0.8477511583930617,
+    "M2": 0.8369317650999787,
+    "M3": 0.8245172198009628,
+    "persistence_rain24h": 36.699999999999996,
+    "climatology_loc_month": 0.1737231182795699
+  },
+  "cohort_counts": [
+    {
+      "split": "test",
+      "n": 210240,
+      "pos": 3227.0
+    },
+    {
+      "split": "validation",
+      "n": 104832,
+      "pos": 896.0
+    },
+    {
+      "split": "train",
+      "n": 419628,
+      "pos": 5204.0
+    }
+  ],
+  "locations": [
+    "HCMC",
+    "HGIA",
+    "HNOI",
+    "HPHO",
+    "HUE",
+    "KHOA",
+    "KTUM",
+    "LCHA",
+    "LDON",
+    "NAN",
+    "QNGA",
+    "QNIN"
+  ],
+  "config_sha256": "c8ae77fea48f47ecd46d776b9851c7c21b7218e5efb7ffa97a86de9d1e883da2",
+  "geography_sha256": "ff9863305ae5c71e7f120c6020fb052994bf677c0bd2b68246d4166c79ddd411",
+  "grid_plan_sha256": "f6459b39b6761842b0aab7ae7a90a7b2020fa6244ff14b6ea46d070218e59697",
+  "bootstrap": {
+    "block": "day",
+    "n_resamples": 500,
+    "ci": 0.95
+  },
+  "model_dir": "/app/data/lake/models/ablation/20261031T140936Z_pilot"
+}

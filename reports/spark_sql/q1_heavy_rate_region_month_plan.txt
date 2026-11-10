@@ -1,0 +1,57 @@
+== Physical Plan ==
+AdaptiveSparkPlan (9)
++- Sort (8)
+   +- Exchange (7)
+      +- HashAggregate (6)
+         +- Exchange (5)
+            +- HashAggregate (4)
+               +- Project (3)
+                  +- Filter (2)
+                     +- Scan parquet  (1)
+
+
+(1) Scan parquet 
+Output [5]: [region#4, month#10, rain_next_24h#14, label#15, year#48]
+Batched: true
+Location: InMemoryFileIndex [file:/app/data/lake/gold/features_hourly]
+PushedFilters: [IsNotNull(label)]
+ReadSchema: struct<region:string,month:int,rain_next_24h:double,label:double>
+
+(2) Filter
+Input [5]: [region#4, month#10, rain_next_24h#14, label#15, year#48]
+Condition : isnotnull(label#15)
+
+(3) Project
+Output [4]: [region#4, month#10, rain_next_24h#14, label#15]
+Input [5]: [region#4, month#10, rain_next_24h#14, label#15, year#48]
+
+(4) HashAggregate
+Input [4]: [region#4, month#10, rain_next_24h#14, label#15]
+Keys [2]: [region#4, month#10]
+Functions [4]: [partial_count(1), partial_sum(label#15), partial_avg(label#15), partial_avg(rain_next_24h#14)]
+Aggregate Attributes [6]: [count#87L, sum#88, sum#89, count#90L, sum#91, count#92L]
+Results [8]: [region#4, month#10, count#93L, sum#94, sum#95, count#96L, sum#97, count#98L]
+
+(5) Exchange
+Input [8]: [region#4, month#10, count#93L, sum#94, sum#95, count#96L, sum#97, count#98L]
+Arguments: hashpartitioning(region#4, month#10, 16), ENSURE_REQUIREMENTS, [plan_id=47]
+
+(6) HashAggregate
+Input [8]: [region#4, month#10, count#93L, sum#94, sum#95, count#96L, sum#97, count#98L]
+Keys [2]: [region#4, month#10]
+Functions [4]: [count(1), sum(label#15), avg(label#15), avg(rain_next_24h#14)]
+Aggregate Attributes [4]: [count(1)#83L, sum(label#15)#84, avg(label#15)#85, avg(rain_next_24h#14)#86]
+Results [6]: [region#4, month#10, count(1)#83L AS hours#79L, sum(label#15)#84 AS heavy_hours#80, round((100.0 * avg(label#15)#85), 2) AS heavy_pct#81, round(avg(rain_next_24h#14)#86, 2) AS mean_next24_mm#82]
+
+(7) Exchange
+Input [6]: [region#4, month#10, hours#79L, heavy_hours#80, heavy_pct#81, mean_next24_mm#82]
+Arguments: rangepartitioning(region#4 ASC NULLS FIRST, month#10 ASC NULLS FIRST, 16), ENSURE_REQUIREMENTS, [plan_id=50]
+
+(8) Sort
+Input [6]: [region#4, month#10, hours#79L, heavy_hours#80, heavy_pct#81, mean_next24_mm#82]
+Arguments: [region#4 ASC NULLS FIRST, month#10 ASC NULLS FIRST], true, 0
+
+(9) AdaptiveSparkPlan
+Output [6]: [region#4, month#10, hours#79L, heavy_hours#80, heavy_pct#81, mean_next24_mm#82]
+Arguments: isFinalPlan=false
+
