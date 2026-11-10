@@ -69,7 +69,7 @@ ingest: (IC) => {
   const S = slide("CONTENT", SEC(), t("Step 1 · Data pull: ERA5 from Copernicus CDS", "Bước 1 · Kéo dữ liệu: ERA5 từ Copernicus CDS"));
   stats(S, [[`${dl.zip_files}`, t("NetCDF files (zip), 2015–2025", "file NetCDF (zip), 2015–2025")],
     ["13", t("ERA5 variables (7 surface + 6 atmosphere)", "biến ERA5 (7 bề mặt + 6 khí quyển)")],
-    ["61 × 33", t("grid points, 0.25° (≈ 26–28 km)", "điểm lưới 0,25° (≈ 26–28 km)")],
+    [`${cells.n}`, t("land cells, 0.25° (≈ 26–28 km each)", "ô đất liền 0,25° (mỗi ô ≈ 26–28 km)")],
     [gb(dl.raw_gb), t("raw size on disk and on HDFS", "dung lượng raw trên đĩa và HDFS")],
     [`${dl.requests_total}`, t(`CDS requests on ${dl.accounts} team accounts`, `request CDS trên ${dl.accounts} tài khoản nhóm`)]]);
   // một ý duy nhất nên không đánh số
@@ -142,7 +142,32 @@ bronze: (IC) => {
       "Không làm sạch ở bước này: bronze giữ nguyên giá trị CDS gửi (K, Pa, m, giờ UTC), để silver luôn dựng lại được."),
     t("Runs in Python because Spark cannot read NetCDF; every later step runs on Spark.",
       "Chạy bằng Python vì Spark không đọc được NetCDF; mọi bước sau chạy trên Spark."),
-  ], 12.5) });
+  ], 12.5) });  // giải thích bước 3 "Trải phẳng" cho người trình bày
+  S.addNotes(t(
+`Step 3 "Flatten": turn the grid (multi-dimensional blocks) into a table, one row per cell per hour.
+
+Before (NetCDF): each variable is a 3-D block time × latitude × longitude. For rain tp in a 31-day month: tp[744 hours][61 latitudes][33 longitudes] — one block of numbers, no "rows". The 13 variables are 13 such blocks side by side.
+
+After (table): each (hour, cell) pair becomes one row and each variable one column, e.g.
+ts (UTC) | lat | lon | tp (m) | t2m (K) | msl (Pa) | … 13 columns
+2024-09-06 12:00 | 20.75 | 106.75 | 0.0003 | 302.9 | 99693 | …
+(values for illustration). Only then can it be written to Parquet and processed by Spark with SQL or DataFrames.
+
+"Units and UTC time unchanged": bronze does not change any value — rain stays in metres, temperature in Kelvin, pressure in Pa, time in UTC, exactly as CDS sent it. Converting to mm, °C, hPa and Vietnam time is silver's job (step 4). Keeping bronze as a faithful copy means a silver bug only needs silver rebuilt from bronze, never a new download from CDS.
+
+Link to step 2 "Keep land": while flattening, only the 493 land cells out of 2,013 grid points are kept. A 31-day month gives 744 hours × 493 cells = 366,792 rows; 11 years add up to about ${mil(sv.bronze_rows)} bronze rows.`,
+`Bước 3 "Trải phẳng": chuyển dữ liệu từ dạng lưới (khối nhiều chiều) sang dạng bảng, mỗi dòng là một ô tại một giờ.
+
+Trước (NetCDF): mỗi biến là một khối 3 chiều thời gian × vĩ độ × kinh độ. Ví dụ lượng mưa tp của một tháng 31 ngày: tp[744 giờ][61 vĩ độ][33 kinh độ] — một khối số, không có "dòng". 13 biến là 13 khối như vậy nằm cạnh nhau.
+
+Sau (bảng): mỗi tổ hợp (giờ, ô) thành một dòng, mỗi biến thành một cột, ví dụ
+ts (UTC) | lat | lon | tp (m) | t2m (K) | msl (Pa) | … 13 cột
+2024-09-06 12:00 | 20.75 | 106.75 | 0.0003 | 302.9 | 99693 | …
+(giá trị chỉ để minh họa). Lúc này mới ghi được ra Parquet và Spark mới xử lý được bằng SQL hay DataFrame.
+
+"Giữ nguyên đơn vị và giờ UTC": bronze không sửa giá trị nào — mưa vẫn tính bằng mét, nhiệt độ bằng Kelvin, áp suất bằng Pa, giờ vẫn là UTC đúng như CDS gửi. Đổi sang mm, °C, hPa và giờ Việt Nam là việc của silver (bước 4). Giữ bronze là bản sao trung thực của dữ liệu gốc nên nếu silver có lỗi chỉ cần dựng lại silver từ bronze, không phải tải lại từ CDS.
+
+Liên quan bước 2 "Giữ đất liền": khi trải phẳng chỉ giữ 493 ô đất liền trong số 2.013 điểm lưới. Một tháng 31 ngày còn 744 giờ × 493 ô = 366.792 dòng; cả 11 năm cộng lại khoảng ${mil(sv.bronze_rows)} dòng bronze.`));
 },
 
 // 4. silver
@@ -219,11 +244,46 @@ edaSpace: (IC) => {
     `${top[0].new_province}: ${pct(top[0].positive_rate, 1)} số giờ dẫn tới mưa lớn, so với ${pct(nat, 1)} cả nước`), C.accent2, 54);
   bigLine(S, x, 3.0, w, top.slice(0, 4).map((r) => r.new_province).join(" · "), t("the four wettest provinces all lie on the central coast",
     "bốn tỉnh mưa lớn nhiều nhất đều ở dải ven biển miền Trung"), C.text2, 30);
-  bigLine(S, x, 4.35, w, `${pct(sp.validation.rate, 2)} → ${pct(sp.test.rate, 2)}`, t("validation 2023 had few heavy-rain hours; test 2024–2025 had many (Typhoon Yagi)",
-    "validation 2023 ít giờ mưa lớn; test 2024–2025 nhiều (bão Yagi)"), C.accent1, 40);
+  bigLine(S, x, 4.35, w, `${pct(sp.validation.rate, 2)} → ${pct(sp.test.rate, 2)}`, t("validation 2023 was a dry year; test 2024–2025 had almost twice as many heavy-rain hours",
+    "validation 2023 là năm ít mưa lớn; test 2024–2025 nhiều gần gấp đôi"), C.accent1, 40);
   S.addText(t("→ forecast per cell, not per province · test on harder years than the threshold was tuned on",
     "→ dự báo theo ô, không theo tỉnh · test trên các năm khó hơn năm chọn ngưỡng"),
     { x, y: 5.85, w, h: 0.4, fontSize: 14, bold: true, color: C.text2, margin: 0, isTextBox: true });
+},
+
+edaYear: (IC) => {
+  const S = slide("CONTENT", SEC(), t("EDA · Heavy rain changes a lot from year to year", "EDA · Mưa lớn thay đổi nhiều theo từng năm"));
+  // tỷ lệ ô-giờ có nhãn mưa lớn theo năm, tô màu theo split
+  const rows = require("fs").readFileSync(R("eda/label_by_year.csv"), "utf8").trim().split(/\r?\n/).slice(1)
+    .map((l) => l.split(",")).map(([y, n, pos, r]) => ({ y: Number(y), n: Number(n), pos: Number(pos), r: Number(r) }));
+  const split = (y) => (y <= 2022 ? ["train", C.accent1] : y === 2023 ? ["validation", C.accent5] : ["test", C.accent2]);
+  S.addText([{ text: t("Share of cell-hours followed by > 50 mm in the next 24 h", "Tỷ lệ ô-giờ có mưa > 50 mm trong 24 giờ tiếp theo"), options: { bold: true, color: C.text2, breakLine: true } },
+    { text: t(`${cells.n} land cells, every hour of each year`, `${cells.n} ô đất liền, mọi giờ của từng năm`), options: { fontSize: 12, color: C.text1 } }],
+    { x: MX, y: 1.2, w: W - 2 * MX, h: 0.65, fontSize: 18, margin: 0, isTextBox: true });
+  const x0 = MX + 0.5, x1 = W - MX, base = 5.2, hmax = 2.8, max = 0.014, bw = (x1 - x0) / rows.length;
+  S.addShape("line", { x: x0, y: base, w: x1 - x0, h: 0, line: { color: C.accent4, width: 1 } });
+  const trainAvg = rows.filter((r) => r.y <= 2022).reduce((a, r) => [a[0] + r.pos, a[1] + r.n], [0, 0]);
+  const avg = trainAvg[0] / trainAvg[1], ay = base - (avg / max) * hmax;
+  S.addShape("line", { x: x0, y: ay, w: x1 - x0, h: 0, line: { color: C.accent1, width: 1, dashType: "dash" } });
+  S.addText(t(`train average ${pct(avg, 2)}`, `trung bình train ${pct(avg, 2)}`), { x: MX - 0.1, y: ay - 0.32, w: 1.9, h: 0.28, fontSize: 10.5, italic: true, color: C.accent1, margin: 0, isTextBox: true });
+  rows.forEach((r, i) => {
+    const [, col] = split(r.y), h = (r.r / max) * hmax, x = x0 + i * bw, w = bw * 0.62;
+    S.addShape("rect", { x: x + (bw - w) / 2, y: base - h, w, h, fill: { color: col }, line: { color: col } });
+    S.addText(pct(r.r, 2), { x: x + bw * 0.12, y: base - h - 0.32, w: bw * 0.76, h: 0.28, fontSize: 12, bold: r.y >= 2023, color: col, fill: { color: C.background1 }, align: "center", valign: "middle", margin: 0 });
+    S.addText(String(r.y), { x, y: base + 0.06, w: bw, h: 0.3, fontSize: 12, color: C.text1, align: "center", margin: 0, isTextBox: true });
+  });
+  // dải tên split dưới trục năm
+  [["Train 2015–2022", 0, 8, C.accent1], ["Val 2023", 8, 9, C.accent5], ["Test 2024–2025", 9, 11, C.accent2]].forEach(([k, a, b, col]) =>
+    S.addText(k, { shape: "rect", x: x0 + a * bw + 0.03, y: base + 0.42, w: (b - a) * bw - 0.06, h: 0.36, fill: { color: col }, line: { color: col },
+      color: C.background1, fontSize: 12, bold: true, align: "center", valign: "middle", margin: 0 }));
+  const g = (y) => rows.find((r) => r.y === y).r;
+  S.addText([{ text: t("Threshold is chosen on ", "Ngưỡng cảnh báo chọn trên "), options: {} },
+    { text: t(`2023 (${pct(g(2023), 2)}, the second driest year)`, `2023 (${pct(g(2023), 2)}, năm ít mưa lớn thứ hai)`), options: { bold: true, color: C.accent5 } },
+    { text: t(" but tested on ", " nhưng test trên "), options: {} },
+    { text: t(`2024–2025 (${pct(g(2024), 2)} and ${pct(g(2025), 2)}, 2025 the wettest)`, `2024–2025 (${pct(g(2024), 2)} và ${pct(g(2025), 2)}, 2025 nhiều nhất)`), options: { bold: true, color: C.accent2 } }],
+    { x: MX, y: 6.15, w: W - 2 * MX, h: 0.45, fontSize: 15, color: C.text1, margin: 0, isTextBox: true });
+  S.addNotes(t(`Each bar is the share of cell-hours in that year whose next 24 hours bring more than 50 mm (the label). It swings from ${pct(g(2015), 2)} in 2015 to ${pct(g(2025), 2)} in 2025. The split is by year, so the model is trained on 2015–2022, the alert threshold is chosen on 2023 — the second driest year — and the model is tested on 2024–2025, two of the three wettest years. This is why a threshold that is good on 2023 does not transfer perfectly to the test years, and why PR-AUC on test (0.420) is higher than on validation (0.210): PR-AUC rises when the positive class is more common, so the two are not directly comparable.`,
+    `Mỗi cột là tỷ lệ ô-giờ trong năm đó có tổng mưa 24 giờ tiếp theo vượt 50 mm (nhãn). Tỷ lệ dao động từ ${pct(g(2015), 2)} năm 2015 đến ${pct(g(2025), 2)} năm 2025. Split chia theo năm: train 2015–2022, ngưỡng cảnh báo chọn trên 2023 — năm ít mưa lớn thứ hai — và test trên 2024–2025, hai trong ba năm nhiều mưa lớn nhất. Đây là lý do ngưỡng tốt trên 2023 không khớp hoàn toàn với các năm test, và vì sao PR-AUC trên test (0,420) cao hơn trên validation (0,210): PR-AUC tăng khi mưa lớn phổ biến hơn, nên hai con số không so trực tiếp được.`));
 },
 
 // lưu trữ: số đo thật
@@ -240,7 +300,8 @@ storage: (IC) => {
   L.forEach(([name, size, sub], i) => {
     const h = 0.5 + 1.4 * size / max, x = cx(i) + 0.4, w = cw - 0.8;
     S.addShape("can", { x, y: base - h, w, h, fill: { color: i < 2 ? C.accent1 : C.text2 }, line: { color: i < 2 ? C.accent1 : C.text2 } });
-    S.addText([{ text: name, options: { bold: true, fontSize: 18, color: C.text2 } }, { text: `  ${gb(size)}`, options: { bold: true, fontSize: 18, color: C.accent2 } }],
+    // tên tầng là chữ nổi bật; dung lượng nhỏ, màu trung tính
+    S.addText([{ text: name, options: { bold: true, fontSize: 22, color: C.accent2 } }, { text: `  ${gb(size)}`, options: { fontSize: 14, color: C.text1 } }],
       { x: cx(i), y: base + 0.1, w: cw, h: 0.4, align: "center", margin: 0, isTextBox: true });
     S.addText(sub, { x: cx(i), y: base + 0.5, w: cw, h: 0.3, fontSize: 12, color: C.text1, align: "center", margin: 0, isTextBox: true });
     if (i < 3) arrow(S, C, cx(i) + cw - 0.3, base - 0.3, cx(i + 1) + 0.3, base - 0.3, { color: C.accent2, width: 1.75 });

@@ -126,16 +126,53 @@ function badge(slide, C, x, y, n, color) {
     objectName: `step-${n}` });
 }
 
+// Bảng vẽ bằng hình chữ nhật + hộp chữ (không dùng addTable): Canva và một số trình xem không đọc được bảng PowerPoint.
 function table(slide, C, rows, opts) {
-  const head = rows[0].map((t) => ({ text: t, options: { bold: true, color: C.background1, fill: { color: C.text2 },
-    fontSize: opts.headSize || opts.fontSize || 12 } }));
-  const body = rows.slice(1).map((r, i) => r.map((c) => {
-    const cell = typeof c === "object" && c !== null && c.text !== undefined ? c : { text: String(c) };
-    return { text: cell.text, options: Object.assign({ fontSize: opts.fontSize || 12, color: C.text1,
-      fill: { color: i % 2 ? C.background1 : C.background2 } }, cell.options || {}) };
-  }));
-  slide.addTable([head, ...body], Object.assign({ border: { type: "solid", pt: 0.5, color: "D5E2E4" }, margin: 0.06,
-    valign: "middle" }, opts, { fontSize: undefined, headSize: undefined }));
+  const fs0 = opts.fontSize || 12, hs = opts.headSize || fs0, m = 0.06;
+  const ncol = rows[0].length, W0 = opts.w || (W - 2 * MX);
+  const colW = opts.colW || Array(ncol).fill(W0 / ncol);
+  const norm = (c, r) => {
+    const cell = typeof c === "object" && c !== null && c.text !== undefined ? c : { text: c === null || c === undefined ? "" : String(c) };
+    const base = r === 0 ? { bold: true, color: C.background1, fill: { color: C.text2 }, fontSize: hs }
+      : { fontSize: fs0, color: C.text1, fill: { color: r % 2 ? C.background2 : C.background1 } };
+    return { text: cell.text, o: Object.assign({}, base, cell.options || {}) };
+  };
+  const cells = rows.map((row, r) => row.map((c) => norm(c, r)));
+  // ước lượng chiều cao dòng theo độ dài chữ và độ rộng cột
+  const runs = (t) => (Array.isArray(t) ? t : [{ text: String(t), options: {} }]);
+  const lines = (cell, w) => {
+    let n = 0, cur = 0;
+    runs(cell.text).forEach((rn) => {
+      const f = (rn.options && rn.options.fontSize) || cell.o.fontSize;
+      const perLine = Math.max(1, Math.floor((w - 2 * m) / (f * 0.52 / 72)));
+      String(rn.text).split("\n").forEach((seg, k) => {
+        if (k > 0) { n += Math.max(1, Math.ceil(cur / perLine)); cur = 0; }
+        cur += seg.length;
+      });
+      if (rn.options && rn.options.breakLine) { n += Math.max(1, Math.ceil(cur / perLine)); cur = 0; }
+    });
+    if (cur > 0 || n === 0) n += Math.max(1, Math.ceil(cur / Math.max(1, Math.floor((w - 2 * m) / (cell.o.fontSize * 0.52 / 72)))));
+    return n;
+  };
+  const rowH = cells.map((row, r) => {
+    if (Array.isArray(opts.rowH) && opts.rowH[r]) return opts.rowH[r];
+    if (typeof opts.rowH === "number") return opts.rowH;
+    return Math.max(0.32, ...row.map((c, j) => lines(c, colW[j]) * (c.o.fontSize * 1.22 / 72) + 2 * m));
+  });
+  let y = opts.y;
+  cells.forEach((row, r) => {
+    let x = opts.x;
+    row.forEach((c, j) => {
+      const fill = (c.o.fill && c.o.fill.color) || C.background1;
+      slide.addShape("rect", { x, y, w: colW[j], h: rowH[r], fill: { color: fill }, line: { color: "D5E2E4", width: 0.5 } });
+      const o = c.o;
+      slide.addText(Array.isArray(c.text) ? c.text : String(c.text), { x: x + m, y, w: colW[j] - 2 * m, h: rowH[r], fontSize: o.fontSize, color: o.color,
+        bold: o.bold, italic: o.italic, align: o.align || "left", valign: o.valign || opts.valign || "middle", margin: 0, isTextBox: true });
+      x += colW[j];
+    });
+    y += rowH[r];
+  });
+  return y;
 }
 
 function source(slide, C, text, y) {

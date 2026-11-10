@@ -1,0 +1,65 @@
+# Luồng streaming: Kafka (KRaft, 1 node) · MongoDB · Spark Structured Streaming · producer phát lại silver · web.
+#   scripts/stream_demo.sh up | reset | down
+name: bda501-stream
+x-app: &app
+  image: bda501-rain-stream:1
+  working_dir: /app
+  environment:
+    TZ: Asia/Ho_Chi_Minh
+    BDA_DATA: /data
+    KAFKA_BOOTSTRAP: kafka:9092
+    MONGO_URI: mongodb://mongo:27017
+  volumes:
+    - ..:/app
+    - ${BDA_DATA_HOST:-D:/BDA501_data}:/data
+services:
+  kafka:
+    image: apache/kafka:3.9.1
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_HEAP_OPTS: -Xmx512m -Xms256m
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+  mongo:
+    image: mongo:7
+    command: ["--wiredTigerCacheSizeGB", "0.5"]
+  spark:
+    <<: *app
+    command: ["python3", "-m", "src.streaming.kafka_stream"]
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      BDA_DATA: /data
+      KAFKA_BOOTSTRAP: kafka:9092
+      MONGO_URI: mongodb://mongo:27017
+      SPARK_DRIVER_MEMORY: 3g
+    ports: ["4040:4040"]
+    depends_on:
+      kafka: { condition: service_healthy }
+      mongo: { condition: service_started }
+  producer:
+    <<: *app
+    command: ["python3", "-m", "src.streaming.kafka_producer", "--seconds-per-hour", "${SECONDS_PER_HOUR:-5}",
+              "--wait-start", "${WAIT_START:-1}"]
+    depends_on:
+      kafka: { condition: service_healthy }
+      mongo: { condition: service_started }
+    restart: "no"
+  web:
+    <<: *app
+    command: ["uvicorn", "src.web.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["8000:8000"]
+    depends_on: [mongo]

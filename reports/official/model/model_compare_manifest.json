@@ -1,0 +1,32 @@
+{
+  "run_id": "20261110T165732Z_model_compare",
+  "created_utc": "2026-11-10T17:21:55.869584+00:00",
+  "spark": "4.2.0",
+  "features": "M4",
+  "n_features": 33,
+  "train_rows": 1313246,
+  "train_positives": 308098,
+  "class_weight_positive": 3.262429486721757,
+  "selection_rule": "highest PR-AUC on validation 2023",
+  "best": "Random Forest",
+  "models": {
+    "Logistic regression": {
+      "maxIter": 100,
+      "regParam": 0.0001,
+      "standardized": true
+    },
+    "Random Forest": {
+      "reused": "20261107T050443Z_official_ablation/M4",
+      "numTrees": 100,
+      "maxDepth": 12,
+      "minInstancesPerNode": 20
+    },
+    "Gradient-boosted trees": {
+      "maxIter": 100,
+      "maxDepth": 6,
+      "stepSize": 0.1,
+      "subsamplingRate": 0.8
+    }
+  },
+  "model_dir": "/data/lake/models/official/20261110T165732Z_model_compare"
+}

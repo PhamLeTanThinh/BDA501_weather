@@ -1,0 +1,6 @@
+# Image cho luồng streaming: image Spark của dự án + client Kafka (producer), FastAPI (web)
+# và connector Kafka của Spark tải sẵn vào ivy cache (chạy không cần mạng).
+FROM bda501-rain-spark:1
+RUN python3 -m pip install --no-cache-dir kafka-python-ng fastapi "uvicorn[standard]"
+RUN python3 -c "from pyspark.sql import SparkSession as S; s = S.builder.master('local[1]').config('spark.jars.packages', 'org.apache.spark:spark-sql-kafka-0-10_2.13:4.2.0').getOrCreate(); s.stop()"
+WORKDIR /app

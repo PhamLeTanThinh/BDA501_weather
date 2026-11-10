@@ -6,6 +6,16 @@ const O = JSON.parse(fs.readFileSync(path.join(K.ROOT, "reports", "official", "d
 const AB = O.ablation, R = (m) => AB.results.find((r) => r.model === m && r.split === "test"), DL = (c) => AB.deltas.find((d) => d.comparison === c);
 const SA = () => t("Architecture & pipeline", "Kiến trúc & pipeline"), SE = () => t("Experiments & results", "Thực nghiệm & kết quả");
 const mil = (x) => t(`${f(x / 1e6, 1)} M`, `${f(x / 1e6, 1).replace(".", ",")} triệu`);
+// kết quả lượt streaming (Kafka, M4): đo lường + parity, và dữ liệu cho slide Yagi
+const rd = (f) => { const q = path.join(K.ROOT, "reports", "streaming", f); return fs.existsSync(q) ? JSON.parse(fs.readFileSync(q, "utf8")) : null; };
+const SR = rd("stream_report.json"), SD = rd("stream_deck.json");
+// so sánh ba thuật toán (Logistic regression, Random Forest, GBT) trên cùng dữ liệu M4
+const MC = (() => {
+  const d = path.join(K.ROOT, "reports", "official", "model"), csv = (f) => fs.readFileSync(path.join(d, f), "utf8").trim().split(/\r?\n/);
+  if (!fs.existsSync(path.join(d, "model_compare_manifest.json"))) return null;
+  const rows = (f) => { const [h, ...r] = csv(f); const k = h.split(","); return r.map((l) => Object.fromEntries(l.split(",").map((v, i) => [k[i], isNaN(+v) || v === "" ? v : +v]))); };
+  return { man: JSON.parse(fs.readFileSync(path.join(d, "model_compare_manifest.json"), "utf8")), res: rows("model_compare_results.csv"), del: rows("model_compare_deltas.csv") };
+})();
 const PILOT = () => t(`Pilot demo: 12 cities, model ${SEL}`, `Demo pilot: 12 thành phố, model ${SEL}`);
 
 // Một dòng chữ to: tiêu đề câu hỏi / bài toán của slide.
@@ -45,65 +55,77 @@ function flow(S, y, nodes, hb = 1.35) {
 const note = (S, en, vi) => S.addNotes(t(en, vi));
 
 module.exports = {
-// ---------------- Streaming
+// ---------------- Streaming: kết quả chạy thử với dữ liệu rác và tắt job giữa chừng
 streaming: (IC) => {
-  const yg = D.yagi || [], mc = D.mongo ? D.mongo.counts : {};
-  const S = slide("CONTENT", SA(), t("Structured Streaming: replaying Typhoon Yagi (Sep 2024)", "Structured Streaming: phát lại bão Yagi (09/2024)"));
-  lead(S, t("Replay Typhoon Yagi hour by hour as if it were live, and predict heavy rain 24 h ahead",
-    "Phát lại bão Yagi từng giờ như dữ liệu trực tiếp, và dự báo mưa lớn 24 h tới"));
-  flow(S, 2.35, [
-    { can: true, head: "silver/", sub: "01–10/09/2024" },
-    { head: t("Replay producer", "Bộ phát lại"), sub: t("1 JSON file per hour", "1 file JSON mỗi giờ"), num: t(`${n(D.stream.files)} files`, `${n(D.stream.files)} file`) },
-    { head: t("Read stream", "Đọc stream"), sub: t("file source, 6 files per trigger", "file source, 6 file mỗi lượt"), num: t(`${n(D.stream.checkpoint_commits)} micro-batches`, `${n(D.stream.checkpoint_commits)} micro-batch`) },
-    { head: t("Build features", "Tạo feature"), sub: t("96 h buffer, same code as batch", "bộ đệm 96 h, cùng code batch"), num: t("72 h warm-up", "làm nóng 72 h") },
-    { head: t("Predict", "Dự báo"), sub: t(`RF ${SEL} + 2023 threshold, frozen`, `RF ${SEL} + ngưỡng 2023, cố định`), num: t("no refit on 2024", "không train lại") },
-    { can: true, head: "MongoDB", sub: t("upsert", "upsert"), num: t(`${n(mc.predictions || 0)} predictions`, `${n(mc.predictions || 0)} dự báo`) },
-  ]);
-  big(S, MX, 4.6, 3.6, "0", t("files processed twice when the job is restarted (checkpoint)", "file bị xử lý lại khi chạy lại job (nhờ checkpoint)"), C.accent3, 44);
-  big(S, MX + 4.2, 4.6, 3.6, n(yg.length), t("predictions checked against the real rain once t + 24 h has passed", "dự báo được đối chiếu với mưa thật sau khi qua t + 24 h"), C.accent2, 44);
-  big(S, MX + 8.4, 4.6, W - 2 * MX - 8.4, t("final model", "model cuối"), t("the official model plugs into this same lane", "model chính thức gắn vào đúng làn này"), C.text2, 30);
-  source(S, C, PILOT());
-  note(S, "The producer writes each hour to a .tmp file and renames it, so Spark never reads half a file. Spark reads the folder as a stream, at most 6 files per trigger. In foreachBatch it removes duplicate (cell, hour) rows, appends to a 96-hour history buffer and builds features with the same function as the batch job (a parity test checks they are equal). The frozen RF and its 2023 threshold predict; results are upserted with _id = point|hour|model|replay, so a retry never creates duplicates. No watermark or Kafka: there is no stateful aggregation inside Spark, the rolling state is the history buffer keyed by (cell, hour), and a file source gives the same delivery contract as a topic without running another service.",
-    "Bộ phát lại ghi mỗi giờ ra file .tmp rồi đổi tên, nên Spark không bao giờ đọc nửa file. Spark đọc thư mục như một stream, tối đa 6 file mỗi lượt. Trong foreachBatch: lọc trùng (ô, giờ), nối vào bộ đệm lịch sử 96 giờ, tạo feature bằng đúng hàm của batch (có parity test kiểm tra bằng nhau). Model RF và ngưỡng 2023 giữ cố định để dự báo; kết quả upsert với _id = điểm|giờ|model|replay nên chạy lại không sinh bản trùng. Không dùng watermark hay Kafka: không có phép gộp có trạng thái trong Spark, trạng thái là bộ đệm lịch sử theo (ô, giờ), và file source cho cùng cam kết như một topic mà không cần chạy thêm dịch vụ.");
+  const S = slide("CONTENT", SA(), t("Structured Streaming: dirty data and a crash, handled", "Structured Streaming: dữ liệu bẩn và sự cố giữa chừng"));
+  lead(S, t("Replay Typhoon Yagi through Kafka with injected junk, kill Spark mid-run, then check every number",
+    "Phát lại bão Yagi qua Kafka kèm dữ liệu rác, tắt Spark giữa chừng, rồi kiểm tra từng con số"));
+  if (!SR) return;
+  const J = Object.fromEntries(SR.junk.map((r) => [r.case, r]));
+  const rows = [
+    [t("Duplicates", "Bản ghi trùng"), J["duplicate (immediate + later)"], t("watermark + dedup", "watermark + khử trùng")],
+    [t("Late ≤ 6 h, out of order", "Trễ ≤ 6 giờ, sai thứ tự"), J["late within 6 h + out of order"], t("accepted, recomputed", "nhận, tính lại")],
+    [t("Late > 6 h", "Trễ > 6 giờ"), J["late beyond 6 h"], t("dropped by watermark", "watermark bỏ")],
+    [t("Broken records", "Bản ghi hỏng"), { injected: ["malformed JSON", "missing field", "out-of-range value", "unknown cell"].reduce((a, k) => a + J[k].injected, 0),
+      handled: ["malformed JSON", "missing field", "out-of-range value", "unknown cell"].reduce((a, k) => a + J[k].handled, 0) }, t("quarantined", "cách ly")],
+    [t("Missing hours (5 cells)", "Thiếu giờ (5 ô)"), J["missing hours (never sent)"], t("no forecast, never 0 mm", "không dự báo, không coi là 0")],
+  ];
+  const x0 = MX, cw = [3.0, 1.35, 1.35, 2.3], y0 = 1.95;
+  [t("Case", "Tình huống"), t("Injected", "Chèn vào"), t("Spark", "Spark"), t("Handling", "Cách xử lý")].forEach((h, j) =>
+    S.addText(h, { x: x0 + cw.slice(0, j).reduce((a, b) => a + b, 0) + (j === 3 ? 0.25 : 0), y: y0, w: cw[j], h: 0.35, fontSize: 12, bold: true, color: C.accent4,
+      align: j === 1 || j === 2 ? "right" : "left", margin: 0, isTextBox: true }));
+  rows.forEach(([k, r, how], i) => {
+    const y = y0 + 0.42 + i * 0.5;
+    S.addShape("line", { x: x0, y: y - 0.04, w: cw.reduce((a, b) => a + b, 0), h: 0, line: { color: "DCE5E8", width: 0.75 } });
+    [[k, C.text2, true], [n(r.injected), C.text1, false], [r.handled == null ? "–" : n(r.handled), C.accent3, true], [how, C.text1, false]].forEach(([v, col, b], j) =>
+      S.addText(v, { x: x0 + cw.slice(0, j).reduce((a, c) => a + c, 0) + (j === 3 ? 0.25 : 0), y, w: cw[j], h: 0.42, fontSize: 13.5, bold: b, color: col,
+        align: j === 1 || j === 2 ? "right" : "left", valign: "middle", margin: 0, isTextBox: true }));
+  });
+  const k = SR.kafka, pr = SR.parity_stream_vs_batch_same_rows;
+  const bx = 8.75, bw = W - MX - bx;
+  big(S, bx, 1.9, bw, `${n(k.read_by_forecast_query)} = ${n(k.messages_in_topic)}`,
+    t("Kafka messages read = in topic, even after killing Spark mid-run: nothing lost, nothing read twice", "bản tin đã đọc = có trong topic, kể cả khi tắt Spark giữa chừng: không mất, không đọc lại"), C.accent3, 26);
+  big(S, bx, 3.35, bw, n(pr.cell_hours_both_scored),
+    t(`cell-hours where stream = batch on the same rows · ${pr.alert_mismatch} alert differences`, `ô-giờ stream = batch trên cùng dữ liệu · ${pr.alert_mismatch} khác biệt cảnh báo`), C.accent1, 30);
+  big(S, bx, 4.8, bw, String(SR.mongo.duplicate_cell_hours),
+    t("duplicate forecasts in MongoDB after the restart (upsert by cell|hour)", "dự báo trùng trong MongoDB sau khi chạy lại (upsert theo ô|giờ)"), C.accent3, 30);
+  source(S, C, t(`Silver 01–10/09/2024 · ${n(k.messages_in_topic)} Kafka messages · model M4 · reports/streaming/stream_report.md`,
+    `Silver 01–10/09/2024 · ${n(k.messages_in_topic)} bản tin Kafka · model M4 · reports/streaming/stream_report.md`));
+  const rw = SR.rows;
+  note(S, `Producer replays silver hour by hour into Kafka and injects junk without any flag in the message, so Spark must detect it. Duplicates (sent again at once or a few hours later) are removed by withWatermark(6 h) + dropDuplicatesWithinWatermark on (cell, hour). Messages up to 6 hours late or out of order are accepted and the affected hours are recomputed; messages more than 6 hours late are dropped by the watermark, so that hour counts as missing. Malformed JSON, missing fields, impossible values and unknown cells are quarantined in MongoDB. Five cells lose six hours each: their features become empty and no forecast is made, rather than treating the gap as 0 mm. Totals: ${n(rw.sent)} sent, ${n(rw.valid_into_forecast)} clean rows into the forecast, ${n(rw.dropped_total)} removed (${n(rw.rejected_records)} broken, ${n(rw.dropped_duplicates)} duplicates, ${n(rw.dropped_late)} too late). Spark was killed with SIGKILL mid-run and restarted from its checkpoint while the producer kept sending; both queries still read exactly the ${n(k.messages_in_topic)} messages in the topic. Parity: recomputing in batch on exactly the rows the stream accepted gives the same probabilities for all ${n(pr.cell_hours_both_scored)} cell-hours (stored to 4 decimals) and no alert difference. Two counts are not exact by design: Spark's watermark is the max event time of earlier micro-batches minus 6 h, so during bursts (warm-up, the 20-hour burst) some messages more than 6 h late arrive before the watermark has moved and are still accepted — Spark guarantees to keep data less than 6 h late, not to drop everything older. The late-but-accepted count is estimated from Kafka arrival order, whose timestamps have millisecond resolution, so it is approximate; dropped and quarantined counts are exact.`,
+    `Producer phát lại silver từng giờ vào Kafka và chèn rác mà không đánh dấu, nên Spark phải tự phát hiện. Bản trùng (gửi lại ngay hoặc sau vài giờ) bị bỏ bằng withWatermark(6 giờ) + dropDuplicatesWithinWatermark theo (ô, giờ). Bản tin trễ tới 6 giờ hoặc sai thứ tự được nhận và các giờ bị ảnh hưởng được tính lại; trễ quá 6 giờ bị watermark bỏ nên giờ đó coi như thiếu. JSON hỏng, thiếu trường, giá trị vô lý và ô không tồn tại bị cách ly vào MongoDB. Năm ô mất mỗi ô sáu giờ: feature của các ô đó để trống và không dự báo, chứ không coi chỗ thiếu là 0 mm. Tổng: gửi ${n(rw.sent)}, ${n(rw.valid_into_forecast)} dòng sạch vào dự báo, loại ${n(rw.dropped_total)} (${n(rw.rejected_records)} hỏng, ${n(rw.dropped_duplicates)} trùng, ${n(rw.dropped_late)} quá hạn). Spark bị tắt bằng SIGKILL giữa chừng rồi chạy lại từ checkpoint trong lúc producer vẫn phát; cả hai truy vấn vẫn đọc đúng ${n(k.messages_in_topic)} bản tin có trong topic. Parity: tính lại bằng batch trên đúng các dòng stream đã nhận cho cùng xác suất ở cả ${n(pr.cell_hours_both_scored)} ô-giờ (lưu 4 chữ số) và không khác cảnh báo nào. Hai con số không khớp tuyệt đối là do bản chất: watermark của Spark = giờ lớn nhất của các micro-batch trước trừ 6 giờ, nên lúc dữ liệu dồn (làm nóng, đợt dồn 20 giờ) một số bản tin trễ hơn 6 giờ đến trước khi watermark kịp tăng và vẫn được nhận — Spark chỉ cam kết giữ dữ liệu trễ dưới 6 giờ, không cam kết bỏ hết dữ liệu trễ hơn. Số bản tin trễ được nhận là ước lượng theo thứ tự đến trong Kafka (timestamp tính theo mili-giây) nên gần đúng; số bị bỏ và bị cách ly thì chính xác.`);
 },
 
 // ---------------- MongoDB
 mongo: (IC) => {
-  const mg = D.mongo || {}, sp = mg.sample_prediction || {};
-  const S = slide("CONTENT", SA(), t("Serving: MongoDB data model and read-back", "Phục vụ: mô hình dữ liệu MongoDB và đọc lại"));
-  lead(S, t("One document per city and hour, so a user's question is a single indexed lookup",
-    "Mỗi thành phố, mỗi giờ là một document, nên câu hỏi của người dùng chỉ là một lần tra theo index"));
-  // hình một document: các trường chính, chữ to dễ đọc
+  const S = slide("CONTENT", SA(), t("Serving: MongoDB data model and the live web page", "Phục vụ: mô hình dữ liệu MongoDB và trang web trực tiếp"));
+  lead(S, t("One document per cell and hour, written by upsert, read by the web page every 2 seconds",
+    "Mỗi ô, mỗi giờ là một document, ghi bằng upsert, trang web đọc lại mỗi 2 giây"));
+  const sp = (SD && SD.sample_doc) || {};
   const x0 = MX, y0 = 2.0, dw = 5.2;
   S.addShape("roundRect", { x: x0, y: y0, w: dw, h: 3.9, rectRadius: 0.1, fill: { color: C.background2 }, line: { color: C.accent1, width: 1.5 } });
   S.addText(t("predictions · one document", "predictions · một document"), { x: x0 + 0.25, y: y0 + 0.15, w: dw - 0.5, h: 0.35, fontSize: 12, bold: true, color: C.accent1, margin: 0, isTextBox: true });
-  const ptime = String(sp.prediction_time || "").slice(0, 16).replace("T", " ");
-  [[t("city", "thành phố"), `${sp.location_id || "–"} · ${sp.new_province_code || ""}`],
-   [t("time", "thời điểm"), ptime],
-   [t("probability", "xác suất"), f(sp.heavy_rain_probability || 0, 2)],
-   [t("threshold", "ngưỡng"), f(sp.decision_threshold || 0, 3)],
-   [t("alert", "cảnh báo"), sp.is_heavy_rain_predicted ? t("YES", "CÓ") : t("no", "không")],
-   ["model", `${SEL} · ${sp.run_type || "replay"}`]].forEach(([k, v], i) => {
+  [["_id", sp._id || "–"], [t("province", "tỉnh"), sp.province || "–"], [t("probability", "xác suất"), sp.p == null ? "–" : f(sp.p, 3)],
+   [t("alert", "cảnh báo"), sp.alert ? t("YES", "CÓ") : t("no", "không")], [t("rain next 24 h", "mưa 24 h tới"), sp.observed_24h_mm == null ? "–" : `${f(sp.observed_24h_mm, 1)} mm`],
+   [t("revisions", "lần tính"), String(sp.revisions || 1)]].forEach(([k, v], i) => {
     const y = y0 + 0.6 + i * 0.52;
     S.addText(k, { x: x0 + 0.25, y, w: 1.6, h: 0.45, fontSize: 13, color: C.text1, margin: 0, valign: "middle", isTextBox: true });
-    S.addText(v, { x: x0 + 1.9, y, w: dw - 2.1, h: 0.45, fontSize: 17, bold: true, fontFace: "Consolas", color: i === 4 && sp.is_heavy_rain_predicted ? C.accent2 : C.text2, margin: 0, valign: "middle", isTextBox: true });
+    S.addText(v, { x: x0 + 1.9, y, w: dw - 2.1, h: 0.45, fontSize: i === 0 ? 13 : 17, bold: true, fontFace: "Consolas", color: i === 3 && sp.alert ? C.accent2 : C.text2, margin: 0, valign: "middle", isTextBox: true, fit: "shrink" });
   });
-  // ba câu hỏi → index → kết quả
-  const st = (q) => ((mg[q] || {}).plan_stages || []).includes("IXSCAN") ? t("index scan ✓", "dùng index ✓") : "–";
-  [[t("Which provinces are on alert at hour t?", "Tỉnh nào đang cảnh báo tại giờ t?"), "(time, score ↓)", st("q1_alerts_at_time")],
-   [t("Probability over time for one city", "Xác suất theo thời gian của một thành phố"), "(city, time)", st("q2_location_series")],
-   [t("Alert hours per province", "Số giờ cảnh báo theo tỉnh"), "$group", t("aggregation", "aggregation")]].forEach(([q, idx, res], i) => {
-    const y = 2.05 + i * 1.3, x = 6.0;
-    S.addText(q, { x, y, w: 2.85, h: 1.0, fontSize: 14, bold: true, color: C.text2, margin: 0, valign: "middle", isTextBox: true });
-    arrow(S, C, x + 2.95, y + 0.5, x + 3.3, y + 0.5, { color: C.accent2, width: 1.75 });
-    S.addText(idx, { shape: "roundRect", rectRadius: 0.08, x: x + 3.35, y: y + 0.2, w: 1.75, h: 0.6, fill: { color: C.background1 }, line: { color: C.accent1, width: 1.25 },
+  [[t("Map: every cell at the latest hour", "Bản đồ: mọi ô ở giờ mới nhất"), "predictions (ts)"],
+   [t("Chart: one cell over time", "Biểu đồ: một ô theo thời gian"), "predictions (cell, ts)"],
+   [t("Top provinces at hour t", "Tỉnh rủi ro cao ở giờ t"), "province_risk (ts)"],
+   [t("Quarantined records", "Bản ghi bị cách ly"), "stream_rejects (capped)"]].forEach(([q, idx], i) => {
+    const y = 2.0 + i * 0.98, x = 6.0;
+    S.addText(q, { x, y, w: 3.1, h: 0.75, fontSize: 14, bold: true, color: C.text2, margin: 0, valign: "middle", isTextBox: true });
+    arrow(S, C, x + 3.15, y + 0.37, x + 3.5, y + 0.37, { color: C.accent2, width: 1.75 });
+    S.addText(idx, { shape: "roundRect", rectRadius: 0.08, x: x + 3.55, y: y + 0.1, w: W - MX - x - 3.55, h: 0.55, fill: { color: C.background1 }, line: { color: C.accent1, width: 1.25 },
       fontFace: "Consolas", fontSize: 12, color: C.accent1, bold: true, align: "center", valign: "middle", margin: 0 });
-    arrow(S, C, x + 5.15, y + 0.5, x + 5.5, y + 0.5, { color: C.accent2, width: 1.75 });
-    S.addText(res, { x: x + 5.55, y, w: W - MX - x - 5.55, h: 1.0, fontSize: 13, bold: true, color: C.accent3, margin: 0, valign: "middle", isTextBox: true });
   });
-  source(S, C, t(`Real document read back after the Yagi replay · ${PILOT()}`, `Document thật đọc lại sau khi phát lại bão Yagi · ${PILOT()}`));
-  note(S, "Why MongoDB and not only Parquet: Parquet is built for scans, users need lookups by key in milliseconds. Each (city, hour) is one self-contained document, so no join is needed at read time. Upsert by a deterministic _id means Spark retries never create duplicates. CAP: a replica set with one primary is CP — writes with w: majority survive a failover, reads wait about 10 s while a new primary is elected.",
-    "Vì sao MongoDB mà không chỉ Parquet: Parquet để quét dữ liệu, người dùng cần tra theo khóa trong mili giây. Mỗi (thành phố, giờ) là một document đủ thông tin nên không cần join khi đọc. Upsert theo _id cố định nên Spark chạy lại không sinh bản trùng. CAP: replica set một primary là CP — ghi với w: majority không mất khi failover, đọc phải chờ khoảng 10 giây trong lúc bầu primary mới.");
+  source(S, C, t("Web: FastAPI + Leaflet map at http://localhost:8000 · document shown: Hai Phong cell, 06/09/2024 19:00, from the stream run",
+    "Web: FastAPI + bản đồ Leaflet tại http://localhost:8000 · document trên slide: ô Hải Phòng, 19:00 06/09/2024, từ lượt chạy stream"));
+  note(S, "Why MongoDB and not only Parquet: Parquet is built for scans, the web page needs lookups by key every two seconds. Each (cell, hour) is one self-contained document, so no join is needed at read time. Upsert by a deterministic _id = cell|hour means a replayed micro-batch overwrites instead of duplicating; when late data arrives the same document is recomputed and its revisions counter goes up. The web page reads predictions (latest hour for the map, one cell for the chart), province_risk and stream_rejects, plus per-batch counters in batch_stats, reject_stats and progress, summed by batch id so a replayed batch is never counted twice.",
+    "Vì sao MongoDB mà không chỉ Parquet: Parquet để quét dữ liệu, trang web cần tra theo khóa mỗi hai giây. Mỗi (ô, giờ) là một document đủ thông tin nên không cần join khi đọc. Upsert theo _id cố định = ô|giờ nên batch chạy lại sẽ ghi đè chứ không nhân đôi; khi dữ liệu trễ tới, cùng document được tính lại và bộ đếm revisions tăng. Trang web đọc predictions (giờ mới nhất cho bản đồ, một ô cho biểu đồ), province_risk và stream_rejects, cùng bộ đếm theo batch trong batch_stats, reject_stats và progress, cộng theo batch id nên batch chạy lại không bao giờ bị đếm hai lần.");
 },
 
 // ---------------- Triển khai cụm (thiết kế)
@@ -148,27 +170,30 @@ deploy: (IC) => {
 // ---------------- Chọn mô hình
 modelChoice: (IC) => {
   const S = slide("CONTENT", t("Model building", "Xây dựng mô hình"), t("ML: choosing the model", "ML: chọn mô hình"));
-  lead(S, t("Random Forest: the simplest model that learns interactions and scales on Spark",
-    "Random Forest: mô hình đơn giản nhất học được tương tác và chạy tốt trên Spark"));
-  const M = [["Persistence", t("baseline", "baseline"), t("rained > 50 mm in the last 24 h → yes", "24 h qua > 50 mm → có"), C.accent4],
-    ["Climatology", t("baseline", "baseline"), t("how often per place and month", "tần suất theo nơi và tháng"), C.accent4],
-    [t("Logistic reg.", "Hồi quy logistic"), t("not kept", "không giữ"), t("linear only", "chỉ tuyến tính"), C.accent4],
-    ["Random Forest", t("★ main model", "★ mô hình chính"), t("many trees, averaged votes", "nhiều cây, lấy trung bình phiếu"), C.accent2],
-    [t("Boosted trees", "Boosted trees"), t("future work", "hướng mở rộng"), t("sequential, overfits easily", "train tuần tự, dễ overfit"), C.accent4],
-    ["LSTM", t("out of scope", "ngoài phạm vi"), t("needs GPU, hard to explain", "cần GPU, khó giải thích"), C.accent4]];
+  lead(S, t("Three algorithms trained on the same data; the one with the best validation PR-AUC is kept",
+    "Train ba thuật toán trên cùng dữ liệu; giữ thuật toán có PR-AUC validation cao nhất"));
+  const mc = (name) => MC && MC.res.find((r) => r.model === name && r.split === "test");
+  const tag = (name) => (mc(name) ? t(`trained · test ${f(mc(name).pr_auc)}`, `đã train · test ${f(mc(name).pr_auc)}`) : t("trained", "đã train"));
+  const best = MC ? MC.man.best : "Random Forest";
+  const M = [["Persistence", t("baseline", "baseline"), t("rained > 50 mm in the last 24 h → yes", "24 h qua > 50 mm → có"), false],
+    ["Climatology", t("baseline", "baseline"), t("how often per place and month", "tần suất theo nơi và tháng"), false],
+    [t("Logistic reg.", "Hồi quy logistic"), tag("Logistic regression"), t("linear, fast", "tuyến tính, nhanh"), best === "Logistic regression"],
+    ["Random Forest", best === "Random Forest" ? t("★ chosen", "★ được chọn") : tag("Random Forest"), t("many trees, averaged votes", "nhiều cây, lấy trung bình phiếu"), best === "Random Forest"],
+    [t("Boosted trees", "Boosted trees"), tag("Gradient-boosted trees"), t("trees fix each other's errors", "cây sau sửa lỗi cây trước"), best === "Gradient-boosted trees"],
+    ["LSTM", t("out of scope", "ngoài phạm vi"), t("needs GPU, hard to explain", "cần GPU, khó giải thích"), false]];
   const ay = 2.35, gap = 0.2, w = (W - 2 * MX - 5 * gap) / 6;
   arrow(S, C, MX, ay + 1.65, W - MX, ay + 1.65, { color: C.accent4, width: 1.5 });
   S.addText(t("simpler", "đơn giản"), { x: MX, y: ay + 1.72, w: 2, h: 0.3, fontSize: 11, italic: true, color: C.accent4, margin: 0, isTextBox: true });
   S.addText(t("more complex", "phức tạp hơn"), { x: W - MX - 2, y: ay + 1.72, w: 2, h: 0.3, fontSize: 11, italic: true, color: C.accent4, align: "right", margin: 0, isTextBox: true });
-  M.forEach(([name, role, how, col], i) => {
-    const x = MX + i * (w + gap), hl = i === 3, y = hl ? ay - 0.25 : ay;
+  M.forEach(([name, role, how, hl], i) => {
+    const x = MX + i * (w + gap), y = hl ? ay - 0.25 : ay, trained = i >= 2 && i <= 4;
+    const col = hl ? C.accent2 : trained ? C.accent1 : C.accent4;
     S.addShape("roundRect", { x, y, w, h: hl ? 1.7 : 1.45, rectRadius: 0.1, fill: { color: hl ? C.accent2 : C.background1 }, line: { color: col, width: hl ? 2 : 1.25 } });
     S.addText([{ text: name, options: { bold: true, fontSize: 15, color: hl ? C.background1 : C.text2, breakLine: true } },
       { text: role, options: { bold: true, fontSize: 12, color: hl ? C.background1 : col, breakLine: true } },
       { text: how, options: { fontSize: 11, color: hl ? C.background1 : C.text1 } }],
       { x: x + 0.08, y, w: w - 0.16, h: hl ? 1.7 : 1.45, align: "center", valign: "middle", margin: 0, isTextBox: true });
   });
-  // vì sao RF
   [[t("Learns interactions", "Học tương tác"), t("“lots of rain in 72 h AND pressure falling”", "“mưa 72 h nhiều VÀ áp suất đang giảm”")],
    [t("Parallel in Spark ML", "Song song trên Spark ML"), t("each tree trains independently", "mỗi cây train độc lập")],
    [t("Explains itself", "Giải thích được"), t("feature importance per variable", "mức quan trọng của từng biến")]].forEach(([h, d], i) => {
@@ -176,8 +201,43 @@ modelChoice: (IC) => {
     S.addText([{ text: h, options: { bold: true, fontSize: 16, color: C.accent2, breakLine: true } }, { text: d, options: { fontSize: 12.5, color: C.text1 } }],
       { x, y: 4.95, w: (W - 2 * MX) / 3 - 0.2, h: 0.85, margin: 0, valign: "middle", isTextBox: true });
   });
-  note(S, "Persistence and climatology are the baselines every model must beat. Logistic regression is fast and interpretable but only linear. Random Forest learns non-linear interactions, is robust, trains in parallel in Spark ML and gives feature importance; its weakness is that it is heavier than LR and its probabilities are not calibrated. Gradient-boosted trees are often slightly more accurate but train sequentially and overfit more easily — future work. LSTM needs a GPU, is hard to explain and does not fit a 3-week project. We do not claim RF is the most accurate possible model, only that it beats the baselines and fits Spark ML.",
-    "Persistence và climatology là baseline mà mọi model phải vượt. Hồi quy logistic nhanh, dễ giải thích nhưng chỉ tuyến tính. Random Forest học được tương tác phi tuyến, ổn định, train song song trên Spark ML và có feature importance; nhược điểm là nặng hơn LR và xác suất chưa được hiệu chỉnh. Gradient-boosted trees thường chính xác hơn chút nhưng train tuần tự và dễ overfit — để làm sau. LSTM cần GPU, khó giải thích và không vừa dự án 3 tuần. Nhóm không khẳng định RF là chính xác nhất, chỉ là nó vượt baseline và phù hợp Spark ML.");
+  note(S, "Persistence and climatology are the baselines every model must beat. Logistic regression, Random Forest and gradient-boosted trees are all trained on the same M4 features, the same training sample and the same class weight, and compared on validation 2023 (next slide). Random Forest is kept: best validation PR-AUC, trains in parallel in Spark ML and gives feature importance. LSTM needs a GPU, is hard to explain and does not fit the project time.",
+    "Persistence và climatology là baseline mà mọi model phải vượt. Hồi quy logistic, Random Forest và gradient-boosted trees đều được train trên cùng feature M4, cùng mẫu train và cùng trọng số lớp, rồi so trên validation 2023 (slide sau). Giữ Random Forest: PR-AUC validation cao nhất, train song song trên Spark ML và có feature importance. LSTM cần GPU, khó giải thích và không vừa thời gian dự án.");
+},
+
+// ---------------- So sánh ba thuật toán (cùng dữ liệu M4)
+modelCompare: (IC) => {
+  if (!MC) return;
+  const S = slide("CONTENT", t("Model building", "Xây dựng mô hình"), t("ML: three algorithms on the same data", "ML: ba thuật toán trên cùng dữ liệu"));
+  const names = ["Logistic regression", "Random Forest", "Gradient-boosted trees"];
+  const lbl = { "Logistic regression": t("Logistic regression", "Hồi quy logistic"), "Random Forest": "Random Forest", "Gradient-boosted trees": t("Gradient-boosted trees", "Gradient-boosted trees") };
+  const r = (m, sp) => MC.res.find((x) => x.model === m && x.split === sp);
+  const best = MC.man.best;
+  S.addText(t("PR-AUC (higher is better) · chosen on validation 2023, then reported on test 2024–2025", "PR-AUC (càng cao càng tốt) · chọn trên validation 2023, rồi báo cáo trên test 2024–2025"),
+    { x: MX, y: 1.25, w: 8.2, h: 0.4, fontSize: 14, bold: true, color: C.text2, margin: 0, isTextBox: true });
+  const bx = MX + 2.55, sc = 5.1 / 0.45;
+  names.forEach((m, i) => {
+    const y = 1.85 + i * 1.3, hl = m === best;
+    S.addText([{ text: lbl[m], options: { bold: true, fontSize: 14, color: hl ? C.accent2 : C.text2, breakLine: true } },
+      { text: r(m, "test").train_seconds ? t(`train ${f(r(m, "test").train_seconds, 0)} s`, `train ${f(r(m, "test").train_seconds, 0)} s`) : t("100 trees", "100 cây"), options: { fontSize: 11, color: C.text1 } }],
+      { x: MX, y, w: 2.45, h: 0.95, margin: 0, valign: "middle", isTextBox: true });
+    [["validation", 0, C.accent5], ["test", 0.48, hl ? C.accent2 : C.accent1]].forEach(([sp, dy, col]) => {
+      const v = r(m, sp).pr_auc;
+      S.addShape("rect", { x: bx, y: y + dy + 0.05, w: v * sc, h: 0.36, fill: { color: col }, line: { color: col } });
+      S.addText(`${f(v)}  ${sp === "validation" ? "val" : "test"}`, { x: bx + v * sc + 0.08, y: y + dy, w: 1.4, h: 0.46, fontSize: 12.5, bold: true, color: col, valign: "middle", margin: 0, isTextBox: true });
+    });
+  });
+  const dl = (c) => MC.del.find((d) => d.comparison === c);
+  const a = dl("Random Forest - Logistic regression"), b = dl("Gradient-boosted trees - Random Forest");
+  const sg = (x) => `${x >= 0 ? "+" : "−"}${f(Math.abs(x), 3)}`;
+  big(S, 9.1, 1.3, W - MX - 9.1, best === "Random Forest" ? "Random Forest" : lbl[best], t(`kept: best validation PR-AUC (${f(r(best, "validation").pr_auc)})`, `được giữ: PR-AUC validation cao nhất (${f(r(best, "validation").pr_auc)})`), C.accent2, 30);
+  big(S, 9.1, 2.95, W - MX - 9.1, sg(a.bootstrap_mean), t(`RF vs logistic on test · CI ${sg(a.ci_lo)} to ${sg(a.ci_hi)}: a real gain`, `RF so với logistic trên test · KTC ${sg(a.ci_lo)} đến ${sg(a.ci_hi)}: hơn thật`), C.accent3, 32);
+  big(S, 9.1, 4.55, W - MX - 9.1, sg(b.bootstrap_mean), t(`boosted trees vs RF · CI ${sg(b.ci_lo)} to ${sg(b.ci_hi)}: no real difference`, `boosted trees so với RF · KTC ${sg(b.ci_lo)} đến ${sg(b.ci_hi)}: không khác biệt thật`), C.accent4, 32);
+  source(S, C, t(`Same M4 features, same training sample (${n(MC.man.train_rows)} rows, weight ×${f(MC.man.class_weight_positive, 2)}), same validation and test · reports/official/model/model_compare_*.csv`,
+    `Cùng feature M4, cùng mẫu train (${n(MC.man.train_rows)} dòng, trọng số ×${f(MC.man.class_weight_positive, 2)}), cùng validation và test · reports/official/model/model_compare_*.csv`));
+  const tr = names.map((m) => `${m}: validation ${f(r(m, "validation").pr_auc)}, test ${f(r(m, "test").pr_auc)}, test recall ${pct(r(m, "test").recall)}, precision ${pct(r(m, "test").precision)}`).join("; ");
+  note(S, `All three algorithms use the 33 M4 features, the same training sample and class weight, and the same split. The model is chosen only on validation 2023, so the test years stay untouched. ${tr}. Random Forest beats logistic regression by ${sg(a.bootstrap_mean)} PR-AUC on test with a 95% CI entirely above zero (block bootstrap by day). Gradient-boosted trees are ${sg(b.bootstrap_mean)} versus Random Forest with a CI that crosses zero, so the two tree models are statistically tied; Random Forest is kept because it is best on validation and trains in parallel. Settings: logistic regression standardized, L2 1e-4, 100 iterations; Random Forest 100 trees, depth 12; boosted trees 100 rounds, depth 6, step 0.1.`,
+    `Cả ba thuật toán dùng 33 feature M4, cùng mẫu train và trọng số lớp, cùng cách chia dữ liệu. Model chỉ được chọn trên validation 2023, nên các năm test không bị đụng tới. ${tr}. Random Forest hơn hồi quy logistic ${sg(a.bootstrap_mean)} PR-AUC trên test, khoảng tin cậy 95% nằm hẳn trên 0 (bootstrap theo khối ngày). Gradient-boosted trees chênh ${sg(b.bootstrap_mean)} so với Random Forest với khoảng tin cậy cắt qua 0, nên hai model cây ngang nhau về mặt thống kê; giữ Random Forest vì tốt nhất trên validation và train song song. Tham số: logistic chuẩn hóa feature, L2 1e-4, 100 vòng lặp; Random Forest 100 cây, độ sâu 12; boosted trees 100 vòng, độ sâu 6, bước 0,1.`);
 },
 
 // ---------------- Quy trình train / đánh giá (bản chính thức)
@@ -193,8 +253,8 @@ protocol: (IC) => {
   });
   flow(S, 2.85, [
     { head: t("Sample train", "Lấy mẫu train"), sub: t(`all heavy-rain rows + ${pct(man.train_sample.neg_frac)} of the others`, `mọi dòng mưa lớn + ${pct(man.train_sample.neg_frac)} dòng còn lại`), num: t(`${mil(ts.rows)} rows · weight ×${f(ts.class_weight_positive, 2)}`, `${mil(ts.rows)} dòng · trọng số ×${f(ts.class_weight_positive, 2).replace(".", ",")}`) },
-    { head: t("Train RF", "Train RF"), sub: t(`${man.model.numTrees} trees, depth ${man.model.maxDepth}, same for M1–M4`, `${man.model.numTrees} cây, độ sâu ${man.model.maxDepth}, giống nhau cho M1–M4`), num: t(`${man.cells} cells`, `${man.cells} ô`) },
-    { head: t("Pick threshold", "Chọn ngưỡng"), sub: t("best F1 on validation 2023, then frozen", "F1 cao nhất trên validation 2023, rồi khóa lại"), num: t(`M4: ${f(man.thresholds_from_validation.M4, 2)}`, `M4: ${f(man.thresholds_from_validation.M4, 2)}`) },
+    { head: t("Train 3 models", "Train 3 model"), sub: t("logistic · Random Forest · boosted trees, same data", "logistic · Random Forest · boosted trees, cùng dữ liệu"), num: t(`${man.cells} cells`, `${man.cells} ô`) },
+    { head: t("Pick model + threshold", "Chọn model + ngưỡng"), sub: t("best PR-AUC, then best F1, on validation 2023", "PR-AUC rồi F1 cao nhất trên validation 2023"), num: t(`M4: ${f(man.thresholds_from_validation.M4, 2)}`, `M4: ${f(man.thresholds_from_validation.M4, 2)}`) },
     { head: t("Test once", "Test một lần"), sub: t("PR-AUC on 2024–2025 + bootstrap by day", "PR-AUC trên 2024–2025 + bootstrap theo ngày"), num: t(`${man.bootstrap.n_resamples} resamples → 95% CI`, `${man.bootstrap.n_resamples} lần → khoảng tin cậy 95%`) },
   ], 1.45);
   S.addText([{ text: t("Rule: ", "Nguyên tắc: "), options: { bold: true, color: C.accent1 } },
@@ -228,64 +288,71 @@ e1: (IC) => {
     `Test 2024–2025: ${n(m4.n)} ô-giờ, ${n(m4.positives)} giờ mưa lớn (${pct(prev, 2)}), nên đoán ngẫu nhiên được PR-AUC ≈ ${f(prev, 3)}. Ngưỡng M4 ${f(m4.threshold, 3)} chọn trên 2023: TP ${n(m4.tp)}, FP ${n(m4.fp)}, FN ${n(m4.fn)}; F1 ${f(m4.f1, 3)}, ROC-AUC ${f(m4.roc_auc, 3)}. Địa hình (M2) và ô lân cận (M3) đổi PR-AUC chưa tới 0,002 và khoảng tin cậy cắt qua 0, nên bỏ. Recall ${pct(m4.recall)} vẫn dưới mục tiêu 60%; precision ${pct(m4.precision)} đạt mục tiêu 30%.`);
 },
 
-// ---------------- E7: biểu đồ Yagi
+// ---------------- E7: biểu đồ Yagi (lượt stream M4)
 yagiChart: (IC) => {
-  const yg = D.yagi || [];
-  if (!yg.length) return;
+  if (!SD) return;
   const S = slide("CONTENT", SE(), t("E7 · Typhoon Yagi replay: what the stream predicted", "E7 · Phát lại bão Yagi: streaming đã dự báo gì"));
-  const locs = [...new Set(yg.map((r) => r.location_id))], times = [...new Set(yg.map((r) => r.ts))].sort();
-  const lab = times.map((x) => x.slice(8, 10) + "/09 " + x.slice(11, 13) + "h");
-  const ser = (loc, k) => times.map((x) => { const r = yg.find((y) => y.location_id === loc && y.ts === x); return r ? r[k] : null; });
-  const thr = A.manifest.thresholds_from_validation[SEL];
-  S.addChart(pres.ChartType.line, [...locs.map((l) => ({ name: `${l} P ${SEL}`, labels: lab, values: ser(l, "heavy_rain_probability") })),
+  const cells = Object.keys(SD.cells), times = [...new Set(cells.flatMap((c) => SD.series[c].map((r) => r.ts)))].sort();
+  const lab = times.map((x) => `${x.slice(8, 10)}/09 ${x.slice(11, 13)}h`);
+  const ser = (c, k) => times.map((x) => { const r = SD.series[c].find((y) => y.ts === x); return r && r[k] != null ? r[k] : null; });
+  const thr = (SD.sample_doc && SD.sample_doc.threshold) || R("M4").threshold;
+  const nm = (c) => t(SD.cells[c] === "Hải Phòng" ? "Hai Phong" : "Quang Ninh", SD.cells[c]);
+  S.addChart(pres.ChartType.line, [...cells.map((c) => ({ name: nm(c), labels: lab, values: ser(c, "p") })),
     { name: t("threshold", "ngưỡng"), labels: lab, values: times.map(() => thr) }],
     Object.assign(CT(), { x: MX, y: 1.3, w: 7.6, h: 2.55, chartColors: [HEX.accent1, HEX.accent5, HEX.accent2], lineSize: 2, lineDataSymbol: "none",
-      showLegend: true, legendPos: "r", showTitle: true, title: t("Predicted probability of > 50 mm in the next 24 h", "Xác suất dự báo mưa > 50 mm trong 24 h tới"),
+      showLegend: true, legendPos: "r", showTitle: true, title: t("M4 probability of > 50 mm in the next 24 h", "Xác suất M4 mưa > 50 mm trong 24 h tới"),
       valAxisMinVal: 0, valAxisMaxVal: 1, catAxisLabelFrequency: 24, valAxisLabelFormatCode: "0.0" }));
-  S.addChart(pres.ChartType.line, [...locs.map((l) => ({ name: t(`${l} observed`, `${l} thực tế`), labels: lab, values: ser(l, "rain_next_24h") })),
+  S.addChart(pres.ChartType.line, [...cells.map((c) => ({ name: nm(c), labels: lab, values: ser(c, "observed_24h_mm") })),
     { name: "50 mm", labels: lab, values: times.map(() => 50) }],
     Object.assign(CT(), { x: MX, y: 3.95, w: 7.6, h: 2.45, chartColors: [HEX.accent1, HEX.accent5, HEX.accent6], lineSize: 2, lineDataSymbol: "none",
       showLegend: true, legendPos: "r", showTitle: true, title: t("ERA5 rain in the following 24 h (mm) — ground truth", "Mưa ERA5 trong 24 h sau đó (mm) — giá trị thật"),
       valAxisMinVal: 0, catAxisLabelFrequency: 24 }));
-  const tp = yg.filter((r) => r.label === 1 && r.is_heavy_rain_predicted).length, fp = yg.filter((r) => r.label === 0 && r.is_heavy_rain_predicted).length,
-    fn = yg.filter((r) => r.label === 1 && !r.is_heavy_rain_predicted).length;
-  big(S, 8.5, 1.35, 4.2, `${tp} / ${tp + fp}`, t("alerts were right: when it warned, it was raining heavily", "cảnh báo đúng: hễ báo là có mưa lớn thật"), C.accent3, 40);
-  big(S, 8.5, 2.85, 4.2, t("6–7 Sep ✓", "6–7/9 ✓"), t("caught the landfall peak with high probability", "bắt được đỉnh mưa khi bão vào bờ, xác suất cao"), C.accent1, 34);
-  big(S, 8.5, 4.25, 4.2, t("8–9 Sep ✗", "8–9/9 ✗"), t(`missed most rain after landfall (${fn} of ${tp + fn} heavy hours missed)`, `bỏ sót phần lớn mưa sau bão (sót ${fn}/${tp + fn} giờ mưa lớn)`), C.accent6, 34);
-  source(S, C, PILOT());
-  note(S, `${n(yg.length)} hourly predictions for Hai Phong and Quang Ninh whose label became known after t + 24 h. TP ${tp}, FP ${fp}, FN ${fn}. The model fires strongly on 6–7 September when the typhoon makes landfall. After landfall the local features see a weakening system, so the continuing rain on 8–9 September is mostly missed. Next step: features from 100–300 km away or upwind, rather than adjacent cells.`,
-    `${n(yg.length)} dự báo theo giờ cho Hải Phòng và Quảng Ninh, nhãn có được sau t + 24 h. TP ${tp}, FP ${fp}, FN ${fn}. Model báo mạnh vào 6–7/9 khi bão đổ bộ. Sau đó feature tại chỗ chỉ thấy hệ thống đang suy yếu nên phần lớn mưa kéo dài 8–9/9 bị bỏ sót. Hướng tiếp: feature từ vùng cách 100–300 km hoặc phía đầu gió thay vì ô sát bên.`);
+  const rows = cells.flatMap((c) => SD.series[c]).filter((r) => r.label === 0 || r.label === 1);
+  const tp = rows.filter((r) => r.alert && r.label === 1).length, fp = rows.filter((r) => r.alert && r.label === 0).length,
+    fn = rows.filter((r) => !r.alert && r.label === 1).length;
+  const cf = SD.confusion_all_cells || {};
+  big(S, 8.5, 1.35, 4.2, `${tp} / ${tp + fp}`, t("alerts in these two cells were followed by > 50 mm", "cảnh báo ở hai ô này có mưa > 50 mm thật"), C.accent3, 40);
+  big(S, 8.5, 2.85, 4.2, `${tp} / ${tp + fn}`, t("heavy-rain hours caught in these two cells", "giờ mưa lớn bắt được ở hai ô này"), C.accent2, 40);
+  big(S, 8.5, 4.35, 4.2, `${pct((cf.tp || 0) / Math.max(1, (cf.tp || 0) + (cf.fn || 0)))} · ${pct((cf.tp || 0) / Math.max(1, (cf.tp || 0) + (cf.fp || 0)))}`,
+    t("recall · precision over all cells, 04–09/09", "recall · precision trên mọi ô, 04–09/09"), C.text2, 34);
+  source(S, C, t("Stream run: Kafka replay of silver 01–10/09/2024, model M4, threshold from 2023 · truth filled in once t + 24 h has passed",
+    "Lượt stream: phát lại silver 01–10/09/2024 qua Kafka, model M4, ngưỡng chọn trên 2023 · mưa thật ghi vào sau khi qua t + 24 h"));
+  note(S, `Two cells: Hai Phong (20.75°N 106.75°E) and Quang Ninh (21.00°N 107.00°E). In these two cells: TP ${tp}, FP ${fp}, FN ${fn}. Over every cell-hour from 04/09 whose truth is known: TP ${n(cf.tp || 0)}, FP ${n(cf.fp || 0)}, FN ${n(cf.fn || 0)}, TN ${n(cf.tn || 0)}. This is one week inside the 2024–2025 test period, so the numbers are not a replacement for the full test evaluation (E1), only a check that the live lane behaves like the batch model.`,
+    `Hai ô: Hải Phòng (20,75°N 106,75°E) và Quảng Ninh (21,00°N 107,00°E). Ở hai ô này: TP ${tp}, FP ${fp}, FN ${fn}. Trên mọi ô-giờ từ 04/09 đã biết mưa thật: TP ${n(cf.tp || 0)}, FP ${n(cf.fp || 0)}, FN ${n(cf.fn || 0)}, TN ${n(cf.tn || 0)}. Đây chỉ là một tuần trong giai đoạn test 2024–2025, nên không thay cho đánh giá đầy đủ (E1), chỉ để kiểm tra làn trực tiếp hoạt động như model batch.`);
 },
 
 // ---------------- E7: mẫu dữ liệu, vẽ thành cột xác suất theo thời gian
 yagiSample: (IC) => {
-  const yr = D.samples.yagi_rows || [], thr = A.manifest.thresholds_from_validation[SEL];
+  if (!SD) return;
+  const hp = SD.series["g20.75_106.75"] || [], thr = (SD.sample_doc && SD.sample_doc.threshold) || R("M4").threshold;
+  const yr = hp.filter((r) => /0[5-9] (00|12):00$/.test(r.ts) && r.ts >= "2024-09-05 00:00" && r.ts <= "2024-09-09 00:00");
   const S = slide("CONTENT", SE(), t("E7 data sample: stream predictions vs what happened", "Dữ liệu mẫu E7: dự báo của stream so với thực tế"));
-  lead(S, t(`Hai Phong every 12 h: bar = predicted probability, line = alert threshold ${f(thr, 3)}`, `Hải Phòng mỗi 12 h: cột = xác suất dự báo, vạch = ngưỡng cảnh báo ${f(thr, 3)}`));
+  lead(S, t(`Hai Phong every 12 h: bar = M4 probability, line = alert threshold ${f(thr, 3)}`, `Hải Phòng mỗi 12 h: cột = xác suất M4, vạch = ngưỡng cảnh báo ${f(thr, 3)}`));
   const x0 = MX + 1.9, cw = (W - MX - x0) / Math.max(1, yr.length), base = 4.35, hmax = 2.3;
   [[t("probability", "xác suất"), 3.0], [t("time", "thời điểm"), base + 0.08], [t("rain next 24 h", "mưa 24 h tới"), base + 0.5], [t("result", "kết quả"), base + 1.0]].forEach(([k, y]) =>
     S.addText(k, { x: MX, y, w: 1.8, h: 0.4, fontSize: 12, bold: true, color: C.text2, margin: 0, valign: "middle", isTextBox: true }));
   S.addShape("line", { x: x0, y: base, w: W - MX - x0, h: 0, line: { color: C.accent4, width: 1 } });
   yr.forEach((r, i) => {
-    const a = r.is_heavy_rain_predicted === true || r.is_heavy_rain_predicted === "True", tr = r.label === 1;
-    const o = a && tr ? "TP" : a && !tr ? "FP" : !a && tr ? "FN" : "TN", oc = { TP: C.accent3, FP: C.accent6, FN: C.accent6, TN: C.accent4 }[o];
-    const p = Number(r.heavy_rain_probability), x = x0 + i * cw, bw = cw * 0.55, h = Math.max(0.03, p * hmax);
+    const a = !!r.alert, tr = r.label === 1, known = r.label === 0 || r.label === 1;
+    const o = !known ? "–" : a && tr ? "TP" : a && !tr ? "FP" : !a && tr ? "FN" : "TN", oc = { TP: C.accent3, FP: C.accent6, FN: C.accent6, TN: C.accent4, "–": C.accent4 }[o];
+    const p = Number(r.p), x = x0 + i * cw, bw = cw * 0.55, h = Math.max(0.03, p * hmax);
     S.addShape("rect", { x: x + (cw - bw) / 2, y: base - h, w: bw, h, fill: { color: a ? C.accent2 : C.accent1 }, line: { color: a ? C.accent2 : C.accent1 } });
     S.addText(f(p, 3), { x, y: base - h - 0.32, w: cw, h: 0.3, fontSize: 11, bold: true, color: C.text1, align: "center", margin: 0, isTextBox: true });
-    S.addText(String(r.ts).slice(8, 10) + "/09 " + String(r.ts).slice(11, 13) + "h", { x, y: base + 0.08, w: cw, h: 0.4, fontSize: 11, color: C.text1, align: "center", valign: "middle", margin: 0, isTextBox: true });
-    S.addText(`${f(Number(r.rain_next_24h), 0)} mm`, { x, y: base + 0.5, w: cw, h: 0.4, fontSize: 13, bold: tr, color: tr ? C.accent5 : C.text1, align: "center", valign: "middle", margin: 0, isTextBox: true });
+    S.addText(`${r.ts.slice(8, 10)}/09 ${r.ts.slice(11, 13)}h`, { x, y: base + 0.08, w: cw, h: 0.4, fontSize: 11, color: C.text1, align: "center", valign: "middle", margin: 0, isTextBox: true });
+    S.addText(r.observed_24h_mm == null ? "–" : `${f(r.observed_24h_mm, 0)} mm`, { x, y: base + 0.5, w: cw, h: 0.4, fontSize: 13, bold: tr, color: tr ? C.accent5 : C.text1, align: "center", valign: "middle", margin: 0, isTextBox: true });
     S.addText(o, { shape: "roundRect", rectRadius: 0.06, x: x + cw * 0.15, y: base + 1.02, w: cw * 0.7, h: 0.38, fill: { color: oc }, color: C.background1,
       fontSize: 12, bold: true, align: "center", valign: "middle", margin: 0 });
   });
   const ty = base - thr * hmax;
   S.addShape("line", { x: x0, y: ty, w: W - MX - x0, h: 0, line: { color: C.accent6, width: 1.5, dashType: "dash" } });
   S.addText([{ text: "TP ", options: { bold: true, color: C.accent3 } }, { text: t("alert and heavy rain   ", "báo và có mưa lớn   ") },
-    { text: "FN ", options: { bold: true, color: C.accent6 } }, { text: t("heavy rain but no alert   ", "có mưa lớn nhưng không báo   ") },
+    { text: "FP / FN ", options: { bold: true, color: C.accent6 } }, { text: t("false alarm / missed   ", "báo nhầm / bỏ sót   ") },
     { text: "TN ", options: { bold: true, color: C.accent4 } }, { text: t("no alert, no heavy rain", "không báo, không mưa lớn") }],
     { x: MX, y: 6.0, w: W - 2 * MX, h: 0.35, fontSize: 12.5, color: C.text1, margin: 0, isTextBox: true });
-  source(S, C, PILOT());
-  note(S, `Each column is one MongoDB document for Hai Phong, every 12 hours, with the truth computed only after the replay passed t + 24 h. Model ${SEL}, threshold ${f(thr, 3)} frozen from 2023. Alerts fire on the landfall days (TP); rain that continues after landfall, or that starts while the probability is still rising, is missed (FN).`,
-    `Mỗi cột là một document MongoDB của Hải Phòng, cách 12 giờ, giá trị thật chỉ tính sau khi replay đã qua t + 24 h. Model ${SEL}, ngưỡng ${f(thr, 3)} khóa từ 2023. Cảnh báo bật đúng những ngày bão đổ bộ (TP); mưa kéo dài sau đó, hoặc bắt đầu khi xác suất còn đang tăng, bị bỏ sót (FN).`);
+  source(S, C, t("Each bar is one MongoDB document from the stream run (cell 20.75°N 106.75°E), truth added after t + 24 h",
+    "Mỗi cột là một document MongoDB của lượt stream (ô 20,75°N 106,75°E), mưa thật ghi thêm sau t + 24 h"));
+  note(S, `Each column is the stream's forecast for the Hai Phong cell every 12 hours, read back from MongoDB, with the observed rain of the next 24 hours added once the stream had passed t + 24 h. Model M4, threshold ${f(thr, 3)} chosen on validation 2023 and frozen.`,
+    `Mỗi cột là dự báo của stream cho ô Hải Phòng cách nhau 12 giờ, đọc lại từ MongoDB, kèm mưa thật 24 giờ sau đó được ghi vào khi stream đã qua t + 24 h. Model M4, ngưỡng ${f(thr, 3)} chọn trên validation 2023 và khóa lại.`);
 },
 
 // ---------------- Kiểm chứng
@@ -297,10 +364,10 @@ checks: (IC) => {
     [f(no.median_ratio, 2), t("ERA5 / rain-gauge totals", "tổng mưa ERA5 / trạm đo"), t(`${no.stations.length} NOAA gauges, ${no.years}`, `${no.stations.length} trạm NOAA, ${no.years}`)],
     [`${mv.mismatches ?? "–"} / ${mv.keys_spark ?? "–"}`, t("MapReduce vs Spark SQL differences", "khác biệt MapReduce và Spark SQL"), t("same climatology table", "cùng bảng climatology")],
     [t("no leak", "không rò rỉ"), t("future data cannot change features", "dữ liệu tương lai không đổi được feature"), t("unit tests change the future and compare", "unit test đổi tương lai rồi so sánh")],
-    [t("train = serve", "train = serve"), t("stream features equal batch features", "feature stream bằng feature batch"), t("parity test on a 96 h buffer", "parity test trên bộ đệm 96 h")],
+    [SR ? n(SR.parity_stream_vs_batch_same_rows.cell_hours_both_scored) : "–", t("cell-hours: stream = batch", "ô-giờ: stream = batch"), t("same rows, same features, 0 alert differences", "cùng dữ liệu, cùng feature, 0 khác cảnh báo")],
     ["Δ = 0", t("for two identical models", "với hai model giống nhau"), t("PR-AUC checked on hand-computed cases", "PR-AUC kiểm bằng ví dụ tính tay")],
     [t("same rows", "cùng dòng"), t("baselines and models", "baseline và model"), t("same test rows, same threshold rule", "cùng dòng test, cùng cách chọn ngưỡng")],
-    ["0", t("extra documents on re-run", "document thêm khi chạy lại"), t("MongoDB reads use indexes", "MongoDB đọc bằng index")],
+    [SR ? `${n(SR.kafka.read_by_forecast_query)}` : "–", t("Kafka messages read = in topic", "bản tin Kafka đọc = có trong topic"), t("Spark killed mid-run: 0 lost, 0 duplicate forecasts", "tắt Spark giữa chừng: 0 mất, 0 dự báo trùng")],
   ];
   const gw = (W - 2 * MX - 3 * 0.25) / 4;
   items.forEach(([v, h, d], i) => {
@@ -310,8 +377,8 @@ checks: (IC) => {
     S.addText([{ text: h, options: { bold: true, fontSize: 14, color: C.text2, breakLine: true } }, { text: d, options: { fontSize: 11.5, color: C.text1 } }],
       { x: x + 0.15, y: y + 1.0, w: gw - 0.3, h: 1.2, margin: 0, valign: "top", isTextBox: true });
   });
-  note(S, "All tests run with pytest inside the Spark container. Row counts: bronze and silver match, and gold has no duplicate (cell, hour) keys. Independent truth: ERA5 rain compared with NOAA rain gauges. MapReduce and Spark SQL compute the same climatology table with zero differences. Leakage: unit tests modify future rows and assert past features do not change; the label window is exact and rows across split boundaries are purged. Train = serve: features built in the stream from a 96 h buffer equal the batch features. Metrics: average precision is checked on hand-computed examples, and identical models give a difference of exactly 0. Baselines use the same rows and the same threshold method. Serving: MongoDB reads use indexes (IXSCAN) and a re-run adds no documents.",
-    "Mọi test chạy bằng pytest trong container Spark. Số dòng: bronze và silver khớp, gold không có khóa (ô, giờ) trùng. Đối chiếu độc lập: so mưa ERA5 với trạm đo mưa NOAA. MapReduce và Spark SQL tính ra cùng bảng climatology, không khác biệt. Rò rỉ: unit test sửa dữ liệu tương lai và kiểm tra feature quá khứ không đổi; cửa sổ nhãn chính xác, dòng nằm ở ranh giới split bị loại. Train = serve: feature tạo trong stream từ bộ đệm 96 giờ bằng feature batch. Thước đo: average precision kiểm bằng ví dụ tính tay, hai model giống nhau cho chênh lệch đúng bằng 0. Baseline dùng cùng dòng và cùng cách chọn ngưỡng. Phục vụ: MongoDB đọc bằng index (IXSCAN), chạy lại không thêm document.");
+  note(S, "All tests run with pytest inside the Spark container. Row counts: bronze and silver match, and gold has no duplicate (cell, hour) keys. Independent truth: ERA5 rain compared with NOAA rain gauges. MapReduce and Spark SQL compute the same climatology table with zero differences. Leakage: unit tests modify future rows and assert past features do not change; the label window is exact and rows across split boundaries are purged. Stream = batch: recomputing in batch on exactly the rows the stream accepted gives the same forecasts. Metrics: average precision is checked on hand-computed examples, and identical models give a difference of exactly 0. Baselines use the same rows and the same threshold method. Kafka: Spark was killed mid-run and restarted; it still read exactly the messages in the topic and MongoDB has no duplicate forecast.",
+    "Mọi test chạy bằng pytest trong container Spark. Số dòng: bronze và silver khớp, gold không có khóa (ô, giờ) trùng. Đối chiếu độc lập: so mưa ERA5 với trạm đo mưa NOAA. MapReduce và Spark SQL tính ra cùng bảng climatology, không khác biệt. Rò rỉ: unit test sửa dữ liệu tương lai và kiểm tra feature quá khứ không đổi; cửa sổ nhãn chính xác, dòng nằm ở ranh giới split bị loại. Stream = batch: tính lại bằng batch trên đúng các dòng stream đã nhận cho cùng dự báo. Thước đo: average precision kiểm bằng ví dụ tính tay, hai model giống nhau cho chênh lệch đúng bằng 0. Baseline dùng cùng dòng và cùng cách chọn ngưỡng. Kafka: tắt Spark giữa chừng rồi chạy lại vẫn đọc đúng số bản tin có trong topic, MongoDB không có dự báo trùng.");
 },
 
 // ---------------- E6: thí nghiệm hiệu năng (dự kiến)
@@ -350,7 +417,7 @@ limits: (IC) => {
   [[t(`Recall ${pct(m4.recall)}, target 60%`, `Recall ${pct(m4.recall)}, mục tiêu 60%`), t("pick the threshold for recall; calibrate probabilities", "chọn ngưỡng ưu tiên recall; hiệu chỉnh xác suất")],
    [t("Rain after landfall is missed", "Bỏ sót mưa sau khi bão vào bờ"), t("add upwind / 100–300 km context", "thêm thông tin đầu gió / 100–300 km")],
    [t(`Label = ERA5 on a 25 km cell (hits ${pct(no.hit / no.heavy_days)} of gauge heavy days)`, `Nhãn = ERA5 trên ô 25 km (trúng ${pct(no.hit / no.heavy_days)} ngày mưa lớn tại trạm)`), t("check against more rain gauges", "đối chiếu thêm nhiều trạm đo mưa")],
-   [t(`Streaming demo still uses pilot ${SEL}`, `Demo streaming vẫn dùng ${SEL} pilot`), t("plug the official M4 into the stream", "gắn M4 chính thức vào stream")],
+   [t("Kafka has one broker; Spark runs locally", "Kafka chỉ một broker; Spark chạy local"), t("3 brokers with replication; Spark on YARN", "3 broker có nhân bản; Spark trên YARN")],
    [t("ERA5 arrives ~5 days late", "ERA5 trễ khoảng 5 ngày"), t("Forecast API producer for a live stream", "producer từ Forecast API cho stream thật")],
    [t("Spark in local mode; silver/gold not on HDFS", "Spark chạy local; silver/gold chưa lên HDFS"), t("run on YARN, lake on HDFS; run E6", "chạy trên YARN, lake trên HDFS; chạy E6")]].forEach(([a, b], i) => {
     const y = 1.8 + i * 0.75;
@@ -360,8 +427,8 @@ limits: (IC) => {
     S.addShape("roundRect", { x: 7.0, y, w: W - MX - 7.0, h: 0.6, rectRadius: 0.08, fill: { color: C.background2 }, line: { color: C.background2 } });
     S.addText(b, { x: 7.2, y, w: W - MX - 7.4, h: 0.6, fontSize: 13.5, color: C.text1, valign: "middle", margin: 0, isTextBox: true });
   });
-  note(S, `The model now finds about ${pct(m4.recall)} of heavy-rain hours with ${pct(m4.precision)} precision; to reach 60% recall the threshold can be chosen for recall instead of F1, and probabilities calibrated. The Yagi replay shows that rain after landfall is missed, so context from farther away or upwind is the next feature idea. The label is ERA5 on a 25 km cell, which reaches 50 mm on only ${pct(no.hit / no.heavy_days)} of rain-gauge heavy-rain days. The streaming demo and MongoDB evidence still come from the pilot model; the official M4 goes into the same lane. ERA5 is published about 5 days late, so live use needs a Forecast API producer and re-validation. Spark ran in local mode and silver/gold are on local disk; the next step is YARN with the lake on HDFS, where the E6 performance experiment will run.`,
-    `Model hiện bắt được khoảng ${pct(m4.recall)} số giờ mưa lớn với precision ${pct(m4.precision)}; để đạt recall 60% có thể chọn ngưỡng theo recall thay vì F1 và hiệu chỉnh xác suất. Phát lại Yagi cho thấy mưa sau khi bão vào bờ bị bỏ sót, nên hướng feature tiếp là thông tin từ xa hơn hoặc phía đầu gió. Nhãn là ERA5 trên ô 25 km, chỉ đạt 50 mm ở ${pct(no.hit / no.heavy_days)} số ngày mưa lớn tại trạm đo. Demo streaming và bằng chứng MongoDB vẫn từ model pilot; M4 chính thức gắn vào cùng làn này. ERA5 công bố trễ khoảng 5 ngày nên chạy thật cần producer từ Forecast API và kiểm chứng lại. Spark chạy local, silver/gold nằm trên ổ cục bộ; bước tiếp là chạy trên YARN với lake trên HDFS, và chạy thí nghiệm hiệu năng E6 ở đó.`);
+  note(S, `The model now finds about ${pct(m4.recall)} of heavy-rain hours with ${pct(m4.precision)} precision; to reach 60% recall the threshold can be chosen for recall instead of F1, and probabilities calibrated. The Yagi replay shows that rain after landfall is missed, so context from farther away or upwind is the next feature idea. The label is ERA5 on a 25 km cell, which reaches 50 mm on only ${pct(no.hit / no.heavy_days)} of rain-gauge heavy-rain days. The streaming lane runs the official M4 through a single Kafka broker; production needs several brokers with replication. ERA5 is published about 5 days late, so live use needs a Forecast API producer and re-validation. Spark ran in local mode and silver/gold are on local disk; the next step is YARN with the lake on HDFS, where the E6 performance experiment will run.`,
+    `Model hiện bắt được khoảng ${pct(m4.recall)} số giờ mưa lớn với precision ${pct(m4.precision)}; để đạt recall 60% có thể chọn ngưỡng theo recall thay vì F1 và hiệu chỉnh xác suất. Phát lại Yagi cho thấy mưa sau khi bão vào bờ bị bỏ sót, nên hướng feature tiếp là thông tin từ xa hơn hoặc phía đầu gió. Nhãn là ERA5 trên ô 25 km, chỉ đạt 50 mm ở ${pct(no.hit / no.heavy_days)} số ngày mưa lớn tại trạm đo. Làn streaming chạy M4 chính thức qua một broker Kafka; vận hành thật cần nhiều broker có nhân bản. ERA5 công bố trễ khoảng 5 ngày nên chạy thật cần producer từ Forecast API và kiểm chứng lại. Spark chạy local, silver/gold nằm trên ổ cục bộ; bước tiếp là chạy trên YARN với lake trên HDFS, và chạy thí nghiệm hiệu năng E6 ở đó.`);
 },
 
 // ---------------- Kết luận + phân công
@@ -369,7 +436,7 @@ conclusions: (IC) => {
   const m4 = R("M4"), per = R("persistence_rain24h"), d4 = DL("M4 - M1"), d2 = DL("M2 - M1"), d3 = DL("M3 - M1");
   const S = slide("CONTENT", SE(), t("Conclusions and team contributions", "Kết luận và phân công"));
   // chuỗi pipeline
-  const chain = ["CDS ERA5", "raw · bronze (HDFS)", "silver", "gold", "Spark ML", "Streaming", "MongoDB"];
+  const chain = ["CDS ERA5", "raw · bronze (HDFS)", "silver · gold", "Spark ML", "Kafka", "Streaming", "MongoDB · web"];
   const gap = 0.3, cw = (W - 2 * MX - gap * (chain.length - 1)) / chain.length;
   chain.forEach((c, i) => {
     const x = MX + i * (cw + gap);
@@ -389,7 +456,7 @@ conclusions: (IC) => {
   // phân công
   [["V", t("Mr. Viet", "Mr. Việt"), t("Batch layer", "Batch layer"), t("ingestion, 63 → 34 mapping, bronze → gold, MapReduce, Spark SQL", "thu thập, ánh xạ 63 → 34, bronze → gold, MapReduce, Spark SQL")],
    ["L", t("Mr. Luan", "Mr. Luân"), t("ML & evaluation", "ML & đánh giá"), t("EDA, NOAA check, features, RF + ablation, performance plan", "EDA, đối chiếu NOAA, feature, RF + ablation, kế hoạch hiệu năng")],
-   ["T", t("Mr. Thinh", "Mr. Thịnh"), t("Streaming & serving", "Streaming & phục vụ"), t("replay producer, Structured Streaming, MongoDB model + read-back", "bộ phát lại, Structured Streaming, MongoDB + đọc lại")]].forEach(([ini, who, role, what], i) => {
+   ["T", t("Mr. Thinh", "Mr. Thịnh"), t("Streaming & serving", "Streaming & phục vụ"), t("Kafka producer + junk tests, Structured Streaming, MongoDB, web dashboard", "producer Kafka + kiểm thử dữ liệu rác, Structured Streaming, MongoDB, web dashboard")]].forEach(([ini, who, role, what], i) => {
     const x = MX + i * cw3, y = 4.55;
     S.addText(ini, { shape: "ellipse", x, y: y + 0.1, w: 0.8, h: 0.8, fill: { color: "EAF3F4" }, line: { color: "EAF3F4" }, color: C.text2,
       fontSize: 24, bold: true, align: "center", valign: "middle", margin: 0 });

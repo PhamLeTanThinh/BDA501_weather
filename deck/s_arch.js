@@ -2,6 +2,8 @@
 const K = require("./common");
 const { pres, C, D, HEX, W, H, MX, t, f, pct, n, slide, card, bullets, table, source, pill, iconCircle, arrow, badge, CT, SEL } = K;
 const SEC = () => t("Architecture & pipeline", "Kiến trúc & pipeline");
+const SR = (() => { const q = require("path").join(K.ROOT, "reports", "streaming", "stream_report.json");
+  return require("fs").existsSync(q) ? JSON.parse(require("fs").readFileSync(q, "utf8")) : null; })();
 const FINAL = (() => {
   const d = D.official_ablation && D.official_ablation.deltas.find((x) => x.comparison === "M4 - M1");
   return d && d.ci_lo > 0 ? "M4" : "M1";
@@ -76,24 +78,24 @@ module.exports = [
   df.ext(0.6, 2.9, 1.65, 0.85, "NOAA", t("rain gauges", "trạm đo mưa"));
   // NOAA không vào pipeline: chỉ dùng để đối chiếu nhãn ERA5 (E0) → đường đứt, không mũi tên
   S.addShape("line", { x: 1.42, y: 2.4, w: 0.0001, h: 0.5, line: { color: C.accent4, width: 1.25, dashType: "dash" } });
-  S.addText(t("cross-check (E0)", "đối chiếu (E0)"), { x: 1.5, y: 2.52, w: 0.9, h: 0.25, fontSize: 8.5, italic: true, color: C.accent4, margin: 0, isTextBox: true });
+  S.addText(t("label check", "đối chiếu nhãn"), { x: 1.5, y: 2.52, w: 0.9, h: 0.25, fontSize: 8.5, italic: true, color: C.accent4, margin: 0, isTextBox: true });
   df.proc(0.6, 4.0, 1.65, "Forecast API", t("live feed", "dữ liệu trực tiếp"), true);
   // ingestion
   df.proc(2.55, 1.6, 1.75, t("Download + bronze", "Tải + bronze"), "cds_jobs · cds_bronze");
   df.store(2.55, 2.75, 1.2, "cells_land.csv", t("493 cells → 34 prov.", "493 ô → 34 tỉnh"));
-  df.proc(2.55, 4.0, 1.75, t("Replay producer", "Bộ phát lại"), "Python");
+  df.proc(2.55, 4.0, 1.75, t("Replay producer", "Bộ phát lại"), t("silver → Kafka + junk", "silver → Kafka + rác"));
   // storage
   df.store(4.7, 1.5, 2.0, t("Data lake", "Data lake"), t("raw · bronze (HDFS) · silver · gold", "raw · bronze (HDFS) · silver · gold"));
   df.store(4.7, 2.7, 2.0, "models/", t(`${FINAL} + threshold`, `${FINAL} + ngưỡng`));
-  df.store(4.7, 3.9, 2.0, "stream_in/", t("new JSON files", "file JSON mới"));
+  df.store(4.7, 3.9, 2.0, "Kafka", t("topic · 3 partitions", "topic · 3 partition"));
   // processing
   df.proc(7.15, 1.6, 3.0, t("Spark batch", "Spark batch"), t("clean · EDA · features · Spark SQL", "làm sạch · EDA · feature · Spark SQL"));
   df.proc(7.15, 2.8, 1.45, "Spark ML", t("train RF M1–M4", "train RF M1–M4"));
   df.proc(8.7, 2.8, 1.45, "MapReduce", "YARN · HDFS");
-  df.proc(7.15, 4.0, 3.0, "Structured Streaming", t("features at t · predict", "feature tại t · dự đoán"));
+  df.proc(7.15, 4.0, 3.0, "Structured Streaming", t("watermark · dedup · M4", "watermark · khử trùng · M4"));
   // serving
   df.store(10.55, 2.1, 2.1, "MongoDB", t("forecasts + batch stats", "dự báo + thống kê batch"));
-  df.proc(10.55, 3.65, 2.1, "API + dashboard", t("reads MongoDB", "đọc MongoDB"), true);
+  df.proc(10.55, 3.65, 2.1, t("Web dashboard", "Web dashboard"), t("FastAPI · map", "FastAPI · bản đồ"));
   // batch flows
   df.flow(2.25, 1.98, 2.55, 1.98, "", B);
   df.flow(3.15, 2.75, 3.15, 2.55, "", B);
@@ -101,8 +103,11 @@ module.exports = [
   df.flow(6.7, 1.9, 7.15, 1.9, "", B);
   df.flow(7.15, 2.3, 6.7, 2.3, "", B);
   df.flow(10.15, 2.1, 10.55, 2.45, "daily_stats", { ...B, dx: -0.05, dy: -0.15 });
-  df.flow(7.9, 2.55, 7.9, 2.8, "", B);
-  df.flow(9.4, 2.55, 9.4, 2.8, "", B);
+  // Spark ML và MapReduce đọc từ lake (gold / mr/ CSV trên HDFS), không nhận trực tiếp từ Spark batch
+  df.flow(6.72, 2.5, 7.15, 3.1, "", B);                 // lake (gold) → Spark ML
+  df.flow(6.72, 2.6, 9.4, 2.8, "", B);                  // lake (mr/ CSV trên HDFS) → MapReduce, đi qua khe giữa các khung
+  S.addText("gold", { x: 6.7, y: 2.82, w: 0.3, h: 0.2, fontSize: 8.5, bold: true, color: C.accent2, margin: 0, isTextBox: true });
+  S.addText("mr/ CSV", { x: 8.75, y: 2.55, w: 0.7, h: 0.2, fontSize: 9, bold: true, color: C.accent2, margin: 0, isTextBox: true });
   df.flow(7.15, 3.27, 6.7, 3.27, "", B);
   df.flow(10.15, 3.15, 10.55, 2.95, "climatology", { ...B, dy: 0.42 });
   // streaming flows
@@ -157,56 +162,72 @@ module.exports = [
   df.flow(mid(3) + 0.35, sy, mid(4) - 0.35, 2.3);        // gold → train
   df.flow(mid(4), 2.3, mid(4), sy);                      // → models
   df.flow(2.15, 3.05, px[1] + 0.15, 2.3, t("land cells", "ô đất liền"), { dx: -1.15, dy: 0.32 });
-  // consumers
-  df.proc(2.75, 4.75, 2.2, t("EDA + data checks", "EDA + kiểm tra dữ liệu"), t("Spark SQL on silver/gold", "Spark SQL trên silver/gold"));
-  df.store(5.45, 4.7, 1.9, "MongoDB", "climatology · daily_stats");
-  df.proc(7.75, 4.75, 1.85, "MapReduce", t(`YARN · ${mv.mismatches ?? "–"} diff vs Spark`, `YARN · lệch ${mv.mismatches ?? "–"} so với Spark`));
-  df.store(9.95, 4.7, 1.25, "mr/", t("CSV on HDFS", "CSV trên HDFS"));
-  df.proc(11.45, 4.75, 1.3, t("Streaming", "Streaming"), t("loads the model", "nạp model"), true);
-  df.flow(mid(2) - 0.2, 4.1, 4.6, 4.75);                         // silver → EDA
-  df.flow(4.95, 5.25, 5.45, 5.25);  // daily_stats (tên collection ghi trên MongoDB)
-  df.flow(mid(3) + 0.3, 4.1, 10.4, 4.7, "CSV", { dx: 0.5, dy: 0.12 });   // gold → mr
-  df.flow(9.95, 5.25, 9.6, 5.25);                                // mr → MapReduce
-  df.flow(7.75, 5.25, 7.35, 5.25);  // climatology
-  df.flow(mid(4) + 0.3, 4.1, 12.1, 4.75);                         // models → streaming
-  df.legend(6.1);
-  source(S, C, t("EDA runs on silver before features are built: if counts, nulls or units fail, the pipeline stops. silver/, gold/, models/ live on the local Spark volume; raw/, bronze/ and mr/ are also on the lab HDFS.",
-    "EDA chạy trên silver trước khi tạo feature: số dòng, giá trị thiếu hoặc đơn vị sai thì pipeline dừng. silver/, gold/, models/ nằm trên volume Spark cục bộ; raw/, bronze/ và mr/ có cả trên HDFS của cụm lab."), 6.72);
-  S.addNotes(t("Gold goes to MapReduce as CSV (not JSON). Batch results reach users through MongoDB: climatology from MapReduce, daily_stats from Spark SQL.",
-    "Gold đi sang MapReduce dưới dạng CSV (không phải JSON). Kết quả batch đến người dùng qua MongoDB: climatology từ MapReduce, daily_stats từ Spark SQL."));
+  // bên dưới lake: ai đọc tầng nào, ghi ra đâu
+  const ry = 4.8;
+  df.store(0.6, ry - 0.05, 1.4, "reports/", t("EDA + quality", "EDA + chất lượng"));
+  df.proc(2.25, ry, 1.9, t("EDA + data checks", "EDA + kiểm tra dữ liệu"), t("Spark · stop if wrong", "Spark · sai thì dừng"));
+  df.proc(4.55, ry, 1.9, t("Daily stats", "Thống kê ngày"), t("Spark SQL on gold", "Spark SQL trên gold"));
+  df.store(6.85, ry - 0.05, 1.8, "MongoDB", "daily_stats · climatology");
+  df.proc(9.05, ry, 1.8, "MapReduce", t(`YARN · ${mv.mismatches ?? "–"} diff vs Spark`, `YARN · lệch ${mv.mismatches ?? "–"} so với Spark`));
+  df.store(11.25, ry - 0.05, 1.5, "mr/", t("CSV on HDFS", "CSV trên HDFS"));
+  df.flow(mid(2) - 0.25, 4.1, 3.4, ry);     // silver → EDA
+  df.flow(mid(3) - 0.35, 4.1, 3.85, ry);     // gold → EDA
+  df.flow(mid(3) - 0.1, 4.1, 6.0, ry);                                         // gold → thống kê ngày
+  df.flow(mid(3) + 0.3, 4.1, 11.75, ry);       // gold → mr/
+  df.flow(2.25, ry + 0.47, 2.0, ry + 0.47);                                    // EDA → reports
+  df.flow(6.45, ry + 0.47, 6.85, ry + 0.47);      // → MongoDB
+  df.flow(11.25, ry + 0.47, 10.85, ry + 0.47);                                 // mr/ → MapReduce
+  df.flow(9.05, ry + 0.47, 8.65, ry + 0.47);      // → MongoDB
+  const lab = (txt, x, y) => S.addText(txt, { x, y, w: 0.55, h: 0.2, fontSize: 9, bold: true, color: C.accent2, align: "center", margin: 0, isTextBox: true });
+  lab("silver", 6.32, 3.92); lab("gold", 8.37, 3.92); lab("CSV", 10.45, 4.5);
+  // phục vụ: API + dashboard đọc MongoDB (thiết kế, viền đứt) — giống slide tổng quan
+  S.addText([{ text: "API + dashboard", options: { bold: true, fontSize: 13, color: C.text2 } },
+    { text: t("   reads MongoDB · design", "   đọc MongoDB · thiết kế"), options: { fontSize: 10, color: C.accent1 } }],
+    { shape: "roundRect", rectRadius: 0.1, x: 6.3, y: 6.05, w: 2.9, h: 0.55, fill: { color: C.background1 },
+      line: { color: C.accent4, width: 1.25, dashType: "dash" }, align: "center", valign: "middle", margin: 0 });
+  df.flow(7.75, 5.85, 7.75, 6.05);
+  S.addNotes(t("Below the lake, who reads which layer. EDA and data checks read silver (row counts, missing hours, units, time zone, cross-check with Open-Meteo) and gold (label rates, feature correlation); they write only reports, and the pipeline stops if a check fails. Users reach batch results through an API + dashboard that reads MongoDB (design, not built). silver/, gold/, models/ live on the local Spark volume; raw/, bronze/ and mr/ are also on the lab HDFS; models/ feeds the streaming lane. Daily stats: Spark SQL on gold sums hourly rain into daily rain and a heavy-day flag per cell, upserted into MongoDB daily_stats. MapReduce: gold is exported as CSV to mr/ on HDFS because Hadoop Streaming reads text lines; the job writes the climatology table, loaded into MongoDB and checked against Spark SQL with zero differences.",
+    "Bên dưới lake: ai đọc tầng nào. EDA và kiểm tra dữ liệu đọc silver (số dòng, giờ thiếu, đơn vị, múi giờ, đối chiếu Open-Meteo) và gold (tỷ lệ nhãn, tương quan feature); chỉ ghi ra báo cáo, kiểm tra sai thì pipeline dừng. Người dùng xem kết quả batch qua API + dashboard đọc MongoDB (thiết kế, chưa dựng). silver/, gold/, models/ nằm trên volume Spark cục bộ; raw/, bronze/ và mr/ có cả trên HDFS của cụm lab; models/ cấp model cho làn streaming. Thống kê ngày: Spark SQL trên gold cộng mưa giờ thành mưa ngày và cờ ngày mưa lớn theo ô, upsert vào MongoDB daily_stats. MapReduce: gold được export thành CSV vào mr/ trên HDFS vì Hadoop Streaming đọc từng dòng chữ; job ghi ra bảng climatology, nạp vào MongoDB và đối chiếu với Spark SQL, không khác biệt."));
 },
 
 // streaming lane in detail — data-flow diagram
 (IC) => {
-  const mc = D.mongo ? D.mongo.counts : {};
   const S = slide("CONTENT", SEC(), t("Streaming lane in detail: data-flow diagram", "Chi tiết làn streaming: sơ đồ luồng dữ liệu"));
   const df = dfd(S);
-  df.zone(4.3, 1.15, 5.05, 3.3, t("Spark Structured Streaming · micro-batch every 15 s", "Spark Structured Streaming · micro-batch mỗi 15 giây"));
-  df.store(0.6, 1.4, 1.5, "silver/", t("Yagi 01–10/09/2024", "Yagi 01–10/09/2024"));
-  df.proc(2.45, 1.45, 1.75, t("Replay", "Phát lại"), "replay_producer.py");
-  df.store(2.55, 3.15, 1.5, "stream_in/", t(`${n(D.stream.files)} JSON files`, `${n(D.stream.files)} file JSON`));
-  df.proc(4.5, 1.6, 2.15, t("Read + features", "Đọc + feature"), t("dedup · 96 h buffer", "lọc trùng · bộ đệm 96 h"));
-  df.proc(7.0, 1.6, 2.15, t("Predict", "Dự đoán"), t(`${K.SEL} (demo) · province = max`, `${K.SEL} (demo) · tỉnh = max`));
-  df.store(4.5, 3.15, 1.5, "checkpoint/", t(`${n(D.stream.checkpoint_commits)} batches`, `${n(D.stream.checkpoint_commits)} batch`));
-  df.store(6.05, 3.15, 1.5, t("history/", "history/"), t("last 96 h", "96 giờ gần nhất"));
-  df.store(7.75, 3.15, 1.4, "models/", t("from batch", "từ batch"));
-  df.store(9.9, 1.4, 1.65, "MongoDB", t(`${n(mc.predictions || 0)} docs`, `${n(mc.predictions || 0)} document`));
-  df.proc(9.85, 3.25, 2.0, t("API + dashboard", "API + dashboard"), t("reads MongoDB", "đọc MongoDB"), true);
-  df.flow(2.1, 1.95, 2.45, 1.95);
-  df.flow(3.3, 2.4, 3.3, 3.15, t("1 file / h", "1 file / giờ"), { dx: 0.55 });
-  df.flow(4.05, 3.3, 4.75, 2.55);
-  df.flow(5.3, 2.55, 5.2, 3.15);
-  df.flow(6.1, 2.55, 6.7, 3.15);
-  df.flow(6.45, 3.15, 5.85, 2.55);  // bộ đệm 96 h được đọc lại ở micro-batch sau
-  df.flow(6.65, 2.05, 7.0, 2.05);
-  df.flow(8.4, 3.15, 8.2, 2.55);
-  df.flow(9.15, 2.05, 9.9, 2.05, "upsert _id");
-  df.flow(10.8, 2.5, 10.8, 3.25);
+  df.zone(4.35, 1.15, 5.35, 3.45, t("Spark Structured Streaming · micro-batch every 10 s", "Spark Structured Streaming · micro-batch mỗi 10 giây"));
+  df.store(0.55, 1.4, 1.35, "silver/", t("Yagi 01–10/09/2024", "Yagi 01–10/09/2024"));
+  df.proc(2.15, 1.45, 1.95, t("Producer", "Producer"), t("replay 1 h / 5 s + junk", "phát 1 giờ / 5 s + rác"));
+  df.store(2.4, 3.15, 1.5, "Kafka", t("topic · 3 partitions", "topic · 3 partition"));
+  df.proc(4.5, 1.55, 1.55, t("Parse + check", "Đọc + kiểm tra"), t("schema, range, cell", "schema, khoảng, ô"));
+  df.proc(6.25, 1.55, 1.6, t("Watermark 6 h", "Watermark 6 giờ"), t("+ dedup (cell, hour)", "+ khử trùng (ô, giờ)"));
+  df.proc(8.05, 1.55, 1.5, t("Features + M4", "Feature + M4"), t("same code as batch", "cùng code batch"));
+  df.store(4.5, 3.25, 1.45, "checkpoint/", t("offsets + state", "offset + state"));
+  df.store(6.3, 3.25, 1.5, "history/", t("last 120 h", "120 giờ gần nhất"));
+  df.store(8.1, 3.25, 1.4, "models/", t("M4 from batch", "M4 từ batch"));
+  df.store(10.05, 1.4, 1.6, "MongoDB", t("predictions · rejects", "dự báo · bị cách ly"));
+  df.proc(10.0, 3.25, 1.75, t("Web dashboard", "Web dashboard"), t("FastAPI · map", "FastAPI · bản đồ"));
+  df.flow(1.9, 1.95, 2.15, 1.95);
+  df.flow(3.15, 2.4, 3.15, 3.15, "JSON", { dx: 0.45 });
+  df.flow(3.9, 3.6, 4.5, 2.25);                       // Kafka → đọc
+  df.flow(6.05, 2.02, 6.25, 2.02);
+  df.flow(7.85, 2.02, 8.05, 2.02);
+  df.flow(7.05, 2.5, 7.05, 3.25);                     // state → checkpoint (qua history)
+  df.flow(8.4, 2.5, 7.75, 3.25);                      // ghi bộ đệm
+  df.flow(7.3, 3.25, 8.2, 2.5);                       // đọc lại bộ đệm 120 giờ
+  df.flow(8.8, 3.25, 8.8, 2.5);                       // nạp model
+  df.flow(9.55, 1.95, 10.05, 1.95, "upsert");
+  // cách ly: đi vòng phía trên các khung xử lý, không cắt ngang
+  S.addShape("line", { x: 5.27, y: 1.27, w: 0, h: 0.28, line: { color: C.accent2, width: 1.75 } });
+  S.addShape("line", { x: 5.27, y: 1.27, w: 5.53, h: 0, line: { color: C.accent2, width: 1.75 } });
+  arrow(S, C, 10.8, 1.27, 10.8, 1.48, { color: C.accent2, width: 1.75 });
+  S.addText(t("quarantine (broken records)", "cách ly (bản ghi hỏng)"), { x: 6.3, y: 1.31, w: 2.6, h: 0.22, fontSize: 9, bold: true, color: C.accent2, align: "center", margin: 0, isTextBox: true });
+  df.flow(10.85, 2.5, 10.85, 3.25);
+  const s = SR ? Object.fromEntries(SR.junk.map((r) => [r.case, r])) : null;
   const gu = [
-    [t("Each file counted once", "Mỗi file chỉ tính một lần"), t("checkpoint + upsert by _id", "checkpoint + upsert theo _id")],
-    [t("No future data", "Không dùng tương lai"), t("features use hours ≤ t only", "feature chỉ dùng giờ ≤ t")],
-    [t("Same features as training", "Feature giống lúc train"), t("one shared function, tested", "dùng chung một hàm, có test")],
-    [t("No Kafka", "Không dùng Kafka"), t("a folder plays the topic", "thư mục đóng vai trò topic")],
+    [t("Duplicates removed", "Bỏ bản trùng"), s ? t(`${n(s["duplicate (immediate + later)"].handled)} of ${n(s["duplicate (immediate + later)"].injected)} injected`, `${n(s["duplicate (immediate + later)"].handled)} / ${n(s["duplicate (immediate + later)"].injected)} đã chèn`) : ""],
+    [t("Late data", "Dữ liệu trễ"), t("≤ 6 h: accepted, recomputed · > 6 h: dropped", "≤ 6 giờ: nhận, tính lại · > 6 giờ: bỏ")],
+    [t("Broken records quarantined", "Bản ghi hỏng bị cách ly"), SR ? t(`${n(SR.rows.rejected_records)} records`, `${n(SR.rows.rejected_records)} bản ghi`) : ""],
+    [t("Crash-safe", "Chịu được sự cố"), t("kill + restart: 0 lost, 0 duplicates", "tắt + chạy lại: 0 mất, 0 trùng")],
   ];
   const gw = (W - 2 * MX - 0.3) / 4;
   gu.forEach(([h, d], i) => {
@@ -216,10 +237,9 @@ module.exports = [
       { x: x + 0.5, y: 4.92, w: gw - 0.55, h: 0.75, color: C.text1, margin: 0, valign: "top", isTextBox: true });
   });
   df.legend(6.1);
-  source(S, C, t(`Demo: Typhoon Yagi replay, Hai Phong + Quang Ninh, pilot data with ${K.SEL}; the final model ${FINAL} plugs into the same lane. Dashed shape = design only.`,
-    `Demo: phát lại bão Yagi, Hải Phòng + Quảng Ninh, dữ liệu pilot với ${K.SEL}; model cuối ${FINAL} gắn vào cùng làn này. Hình viền đứt = chỉ là thiết kế.`), 6.72);
+  S.addNotes(t("Producer replays silver for 01–10/09/2024 (493 cells) into a Kafka topic, one hour of data every 5 seconds, and injects junk: duplicates, late and out-of-order messages, messages more than 6 hours late, broken JSON, missing fields, impossible values, unknown cells, a 20-hour burst and 5 cells with missing hours. Spark runs two queries on the topic: rejects (quarantine to MongoDB) and forecast (watermark 6 h + dropDuplicatesWithinWatermark on cell and hour, then foreachBatch: 120-hour history buffer on the lake, the same feature functions as batch, model M4 with the 2023 threshold, upsert to MongoDB by cell|hour). Offsets and dedup state live in the checkpoint, so after a crash the job continues where it stopped. In the demo the producer first replays 72 hours at full speed to warm up the features, then waits for the Start button on the web page.",
+    "Producer phát lại silver 01–10/09/2024 (493 ô) vào một topic Kafka, mỗi giờ dữ liệu 5 giây, và chèn rác: bản trùng, bản tin trễ và sai thứ tự, bản tin trễ quá 6 giờ, JSON hỏng, thiếu trường, giá trị vô lý, ô không tồn tại, một đợt dồn 20 giờ và 5 ô bị thiếu giờ. Spark chạy hai truy vấn trên topic: rejects (cách ly vào MongoDB) và forecast (watermark 6 giờ + dropDuplicatesWithinWatermark theo ô và giờ, rồi foreachBatch: bộ đệm lịch sử 120 giờ trên lake, cùng hàm feature với batch, model M4 với ngưỡng 2023, upsert vào MongoDB theo ô|giờ). Offset và state khử trùng nằm trong checkpoint nên sau sự cố job chạy tiếp từ chỗ dừng. Khi demo, producer phát dồn 72 giờ đầu để làm nóng feature rồi chờ nút Bắt đầu trên trang web."));
 },
-
 // ingestion
 (IC) => {
   const ing = D.ingest;
@@ -420,10 +440,21 @@ module.exports = [
     { text: t(`same table from Spark SQL — ${mv.keys_mapreduce}/${mv.keys_spark} keys, ${mv.mismatches} differences`,
       `Spark SQL tính lại cùng bảng — ${mv.keys_mapreduce}/${mv.keys_spark} khóa, ${mv.mismatches} khác biệt`) }],
     { x: MX, y: 5.4, w: W - 2 * MX, h: 0.45, fontSize: 15, color: C.text1, margin: 0, isTextBox: true });
-  // ghi chú cho người trình bày
+  // ghi chú cho người trình bày: shuffle là gì + vì sao combiner vẫn đúng
+  const nm = logv("Launched map tasks"), nr = logv("Launched reduce tasks"), nk = logv("Reduce output records");
   S.addNotes(t(
-    "Why the combiner is safe: adding and taking the max give the same answer whether done in parts or all at once. Rate and mean are computed only at the very end in the reducer — an average of averages would be wrong. A test runs the job with and without the combiner and gets identical output.",
-    "Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết quả dù làm từng phần hay làm một lần. Tỷ lệ và trung bình chỉ tính ở bước cuối trong reducer — lấy trung bình của các trung bình sẽ sai. Có test chạy job khi bật và tắt combiner, kết quả giống hệt."));
+`Shuffle (step 3) is done by Hadoop itself, not by our code: it moves and groups data over the network so that every record with the same key reaches one reducer.
+Why it is needed: the input is split across ${nm} mappers running in parallel, each reading part of the file, so the same key (e.g. HUE|10, Hue in October) appears in all ${nm} mappers. To compute Hue-October correctly, all its pieces must meet in one place.
+What it does: (1) partition — decide which reducer gets each key, by hash(key) mod ${nr}, so a key always goes to the same reducer; (2) transfer — send the data from mapper machines to reducer machines over the network, the most expensive part of MapReduce; (3) sort — each reducer receives its records sorted by key and adds them up key by key.
+"${nm} map → ${nr} reduce on YARN": YARN ran ${nm} map tasks and ${nr} reduce tasks; shuffle carries data from the ${nm} on the left to the ${nr} on the right (${nk} keys in total = 12 cities × 12 months).
+Why the combiner matters: because each mapper adds up its own records first, shuffle only sends ${n(cout)} records instead of ${n(cin)} raw rows (${Math.round(cin / cout)}× less).
+Why the combiner is safe: adding and taking the max give the same answer whether done in parts or all at once. Rate and mean are computed only at the very end in the reducer — an average of averages would be wrong. A test runs the job with and without the combiner and gets identical output.`,
+`Shuffle (bước 3) do Hadoop tự làm, nhóm không viết code: chuyển và gom dữ liệu qua mạng sao cho mọi bản ghi cùng một khóa đến đúng một reducer.
+Vì sao cần: dữ liệu được chia cho ${nm} mapper chạy song song, mỗi mapper đọc một phần file, nên cùng một khóa (ví dụ HUE|10, Huế tháng 10) xuất hiện ở cả ${nm} mapper. Muốn tính đúng Huế tháng 10 thì phải gom mọi mảnh của khóa đó về một chỗ.
+Shuffle làm ba việc: (1) chia — quyết định khóa nào về reducer nào bằng hash(khóa) chia lấy dư cho ${nr}, cùng khóa luôn về cùng reducer; (2) chuyển — gửi dữ liệu từ máy chạy mapper sang máy chạy reducer qua mạng, đây là phần tốn kém nhất của MapReduce; (3) sắp xếp — mỗi reducer nhận dữ liệu đã xếp theo khóa và cộng dồn lần lượt từng khóa.
+"${nm} map → ${nr} reduce trên YARN": YARN chạy ${nm} task map và ${nr} task reduce; shuffle chuyển dữ liệu từ ${nm} task bên trái sang ${nr} task bên phải (tổng ${nk} khóa = 12 thành phố × 12 tháng).
+Vì sao cần combiner: nhờ mỗi mapper cộng sẵn phần của mình, shuffle chỉ gửi ${n(cout)} bản ghi thay vì ${n(cin)} dòng gốc (ít hơn ${Math.round(cin / cout)} lần).
+Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết quả dù làm từng phần hay làm một lần. Tỷ lệ và trung bình chỉ tính ở bước cuối trong reducer — lấy trung bình của các trung bình sẽ sai. Có test chạy job khi bật và tắt combiner, kết quả giống hệt.`));
 },
 
 // MapReduce worked example

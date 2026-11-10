@@ -82,39 +82,44 @@ module.exports = [
 (IC) => {
   const OA = D.official_ablation;
   const S = slide("CONTENT", SEC(), t("Feature selection: only the atmosphere helps", "Chọn feature: chỉ khí quyển có giúp"));
+  // chỉ kết quả chính thức: từ M1, thêm từng nhóm feature, nhóm nào giúp thì nói giúp
   const ores = (m) => OA.results.find((r) => r.model === m && r.split === "test");
-  S.addChart(pres.ChartType.bar, [{ name: "PR-AUC", labels: ["M1", t("M2 terrain", "M2 địa hình"), t("M3 + neighb.", "M3 + lân cận"), t("M4 atmosph.", "M4 khí quyển")],
-    values: ["M1", "M2", "M3", "M4"].map((m) => ores(m).pr_auc) }],
-    Object.assign(CT(), { x: MX, y: 1.3, w: 5.0, h: 3.6, barDir: "col", chartColors: [HEX.accent1, HEX.accent4, HEX.accent4, HEX.accent3], showValue: true,
-      dataLabelPosition: "outEnd", dataLabelFormatCode: "0.000", valAxisMinVal: 0, valAxisMaxVal: 0.5, valAxisMajorUnit: 0.1, valAxisLabelFormatCode: "0.0",
-      showLegend: false, showTitle: true, title: t("Test PR-AUC 2024–2025, official data (483 cells)", "PR-AUC trên test 2024–2025, dữ liệu chính thức (483 ô)") }));
-  const short = (d) => (d.ci_lo > 0 ? t("better", "tốt hơn") : d.ci_hi < 0 ? t("worse", "kém đi") : t("no real change", "không khác biệt"));
-  const sgn = (x) => (Math.abs(x) < 0.0005 ? "0.000" : `${x > 0 ? "+" : "−"}${f(Math.abs(x), 3)}`);
-  const cell = (d) => (d ? { text: [
-    { text: `Δ ${sgn(d.delta_pr_auc)}`, options: { bold: true, fontSize: 14, color: dcol(d), breakLine: true } },
-    { text: short(d), options: { bold: true, fontSize: 11, color: dcol(d), breakLine: true } },
-    { text: `CI ${sgn(d.ci_lo)} … ${sgn(d.ci_hi)}`, options: { fontSize: 9.5, color: C.accent4 } }], options: { align: "center", valign: "middle" } }
-    : { text: t("not available", "không có dữ liệu"), options: { align: "center", color: C.accent4, fontSize: 10.5 } });
-  const runs = [{ head: t("Official · 483 cells 2015–2025", "Chính thức · 483 ô 2015–2025"), del: OA.deltas }];
-  if (P8) runs.push({ head: t(`Pilot · ${P8.locations.length} lowland points`, `Pilot · ${P8.locations.length} điểm đồng bằng`), del: P8.deltas });
-  runs.push({ head: t(`Pilot · ${nLoc} points`, `Pilot · ${nLoc} điểm`), del: A.deltas });
-  if (lolo) runs.push({ head: t("Pilot · unseen points", "Pilot · điểm chưa thấy"), del: lolo.del });
-  const pick = (dl, c) => dl.find((d) => d.comparison === c);
-  const label = (a, b) => ({ text: [{ text: a, options: { bold: true, breakLine: true } }, { text: b, options: { fontSize: 10, color: C.accent4 } }] });
-  table(S, C, [[t("Added to M1", "Thêm vào M1"), ...runs.map((r) => r.head)],
-    [label(t("+ Terrain", "+ Địa hình"), "M2 vs M1"), ...runs.map((r) => cell(pick(r.del, "M2 - M1")))],
-    [label(t("+ Terrain + neighbours", "+ Địa hình + ô lân cận"), "M3 vs M1"), ...runs.map((r) => cell(pick(r.del, "M3 - M1")))],
-    [label(t("+ Atmosphere", "+ Khí quyển"), "M4 vs M1"), ...runs.map((r) => cell(pick(r.del, "M4 - M1")))],
-  ], { x: 5.85, y: 1.3, w: W - MX - 5.85, colW: [1.45, ...runs.map(() => (W - MX - 5.85 - 1.45) / runs.length)], rowH: [0.62, 0.95, 0.95, 0.95], fontSize: 11, headSize: 10 });
-  const d4 = OA.deltas.find((d) => d.comparison === "M4 - M1");
-  card(S, C, MX, 5.1, W - 2 * MX, 1.25, { title: t("Decision: train the final model on M4 = local weather + atmosphere", "Quyết định: model cuối train trên M4 = thời tiết tại chỗ + khí quyển"), titleSize: 14, body: bullets([
-    t(`Only the atmosphere group passes the rule (95% CI above zero): +${f(d4.delta_pr_auc, 3)} PR-AUC on 2024–2025. Terrain and neighbours give no real change, on the pilot and again on the full data.`,
-      `Chỉ nhóm khí quyển qua được quy tắc (CI 95% nằm trên 0): +${f(d4.delta_pr_auc, 3)} PR-AUC trên 2024–2025. Địa hình và ô lân cận không khác biệt, ở pilot lẫn trên dữ liệu đầy đủ.`),
-  ], 12.5) });
-  source(S, C, t("reports/official/model/ablation_*.csv (official) · reports/ablation_*.csv, runs/pilot8/ (pilot) · block bootstrap by day, paired, 500 resamples",
-    "reports/official/model/ablation_*.csv (chính thức) · reports/ablation_*.csv, runs/pilot8/ (pilot) · bootstrap theo khối ngày, ghép cặp, 500 lần"));
-  S.addNotes(t("Read the CIs. On 8.5 million test cell-hours the atmosphere adds about six PR-AUC points; terrain and neighbours never clear zero.",
-    "Đọc khoảng tin cậy. Trên 8,5 triệu ô-giờ test, khí quyển thêm khoảng sáu điểm PR-AUC; địa hình và ô lân cận không lần nào vượt 0."));
+  const dl = (c) => OA.deltas.find((d) => d.comparison === c);
+  S.addText(t("Start from local weather, add one group of features at a time, keep only what clearly helps",
+    "Bắt đầu từ thời tiết tại chỗ, thêm từng nhóm feature, chỉ giữ nhóm nào giúp rõ ràng"),
+    { x: MX, y: 1.2, w: W - 2 * MX, h: 0.5, fontSize: 18, bold: true, color: C.text2, margin: 0, isTextBox: true });
+  const rows = [
+    ["M1", t("Local weather", "Thời tiết tại chỗ"), t("rain, humidity, pressure, wind, temperature, cloud", "mưa, độ ẩm, áp suất, gió, nhiệt độ, mây"), null],
+    ["M2", t("+ Terrain", "+ Địa hình"), t("elevation, distance to coast, slope", "độ cao, khoảng cách tới biển, độ dốc"), dl("M2 - M1")],
+    ["M3", t("+ Neighbouring cells", "+ Ô lân cận"), t("rain and wind in the cells around", "mưa và gió ở các ô xung quanh"), dl("M3 - M1")],
+    ["M4", t("+ Atmosphere", "+ Khí quyển"), t("water vapour, moisture flow, CAPE, K-index", "hơi nước, dòng ẩm, CAPE, chỉ số K"), dl("M4 - M1")],
+  ];
+  const bx = 5.0, sc = 4.4 / 0.45, base = ores("M1").pr_auc;
+  rows.forEach(([m, name, what, d], i) => {
+    const y = 2.55 + i * 0.8, v = ores(m).pr_auc, good = d && d.ci_lo > 0, col = !d ? C.accent1 : good ? C.accent3 : C.accent4;
+    S.addText([{ text: name, options: { bold: true, fontSize: 17, color: !d ? C.text2 : good ? C.accent3 : C.text2, breakLine: true } }, { text: what, options: { fontSize: 11.5, color: C.text1 } }],
+      { x: MX, y, w: 4.25, h: 0.8, margin: 0, valign: "middle", isTextBox: true });
+    S.addShape("rect", { x: bx, y: y + 0.2, w: v * sc, h: 0.4, fill: { color: col }, line: { color: col } });
+    S.addText(f(v), { x: bx + v * sc + 0.1, y: y + 0.15, w: 0.8, h: 0.5, fontSize: 15, bold: true, color: col, margin: 0, valign: "middle", isTextBox: true });
+    const verdict = !d ? t("starting point", "điểm xuất phát") : good ? t(`helps  +${f(d.delta_pr_auc, 3)}`, `có ích  +${f(d.delta_pr_auc, 3)}`) : t("no gain", "không giúp");
+    S.addText(verdict, { shape: "roundRect", rectRadius: 0.08, x: 10.75, y: y + 0.15, w: W - MX - 10.75, h: 0.5,
+      fill: { color: !d ? C.background2 : good ? C.accent3 : C.background2 }, line: { color: !d ? C.background2 : good ? C.accent3 : C.background2 },
+      fontSize: 14, bold: true, color: good ? C.background1 : C.text2, align: "center", valign: "middle", margin: 0 });
+  });
+  S.addShape("line", { x: bx + base * sc, y: 2.6, w: 0, h: 3.15, line: { color: C.accent1, width: 1, dashType: "dash" } });
+  // chú thích trục: đây là PR-AUC, càng cao càng tốt; vạch đứt = mức của M1
+  const prev = ores("M1").positives / ores("M1").n;
+  S.addText([{ text: t("PR-AUC on test 2024–2025", "PR-AUC trên test 2024–2025"), options: { bold: true, color: C.text2, breakLine: true } },
+    { text: t(`higher is better · random guess ≈ ${f(prev, 3)}`, `càng cao càng tốt · đoán ngẫu nhiên ≈ ${f(prev, 3)}`), options: { color: C.text1, fontSize: 11 } }],
+    { x: bx, y: 1.95, w: 5.6, h: 0.55, fontSize: 13, margin: 0, valign: "bottom", isTextBox: true });
+  S.addText(t("dashed line = M1 level", "vạch đứt = mức của M1"), { x: bx + base * sc - 1.5, y: 5.75, w: 3.0, h: 0.3, fontSize: 11, italic: true, color: C.accent1, align: "center", margin: 0, isTextBox: true });
+  S.addText([{ text: t("Decision: ", "Quyết định: "), options: { color: C.accent2 } },
+    { text: t("final model M4 = local weather + atmosphere (33 features).", "model cuối M4 = thời tiết tại chỗ + khí quyển (33 feature).") }],
+    { x: MX, y: 6.15, w: W - 2 * MX, h: 0.45, fontSize: 18, bold: true, color: C.text2, margin: 0, isTextBox: true });
+  const d2 = dl("M2 - M1"), d3 = dl("M3 - M1"), d4 = dl("M4 - M1");
+  const pd = (x, c) => { const d = x && x.find((e) => e.comparison === c); return d ? `${f(d.delta_pr_auc, 3)} (CI ${f(d.ci_lo, 3)} to ${f(d.ci_hi, 3)})` : "–"; };
+  S.addNotes(t(`Official run, 483 cells, test 2024–2025, block bootstrap by day with 500 paired resamples. Terrain: +${f(d2.delta_pr_auc, 3)}, CI ${f(d2.ci_lo, 3)} to ${f(d2.ci_hi, 3)} — crosses zero, no real change. Neighbouring cells: +${f(d3.delta_pr_auc, 3)}, CI ${f(d3.ci_lo, 3)} to ${f(d3.ci_hi, 3)} — no real change. Atmosphere: +${f(d4.delta_pr_auc, 3)}, CI ${f(d4.ci_lo, 3)} to ${f(d4.ci_hi, 3)} — entirely above zero, the only group kept. The pilot (Open-Meteo points, 2019–2025) gave the same answer for terrain: 8 lowland points ${pd(P8 && P8.deltas, "M2 - M1")}, 12 points incl. 4 highland ${pd(A.deltas, "M2 - M1")}, and on unseen points (leave-one-point-out) terrain was worse ${pd(lolo && lolo.del, "M2 - M1")}.`,
+    `Bản chính thức, 483 ô, test 2024–2025, bootstrap theo khối ngày 500 lần ghép cặp. Địa hình: +${f(d2.delta_pr_auc, 3)}, khoảng tin cậy ${f(d2.ci_lo, 3)} đến ${f(d2.ci_hi, 3)} — cắt qua 0, không khác biệt. Ô lân cận: +${f(d3.delta_pr_auc, 3)}, khoảng tin cậy ${f(d3.ci_lo, 3)} đến ${f(d3.ci_hi, 3)} — không khác biệt. Khí quyển: +${f(d4.delta_pr_auc, 3)}, khoảng tin cậy ${f(d4.ci_lo, 3)} đến ${f(d4.ci_hi, 3)} — nằm hẳn trên 0, là nhóm duy nhất được giữ. Pilot (điểm Open-Meteo, 2019–2025) cho cùng kết luận về địa hình: 8 điểm đồng bằng ${pd(P8 && P8.deltas, "M2 - M1")}, 12 điểm gồm 4 điểm vùng cao ${pd(A.deltas, "M2 - M1")}, và với điểm chưa thấy khi train (giữ riêng từng điểm) địa hình còn kém đi ${pd(lolo && lolo.del, "M2 - M1")}.`));
 },
 
 // sample: gold rows + predictions

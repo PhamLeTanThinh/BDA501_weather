@@ -6,6 +6,7 @@ const K = require("./common");
 const { renderIcons } = require("./icons");
 const { applyTheme } = require(process.env.PPTX_SKILL + "/scripts/apply_theme.js");
 const tail = require("./s_tail");
+const progress = require("./s_progress");
 const intro = require("./s_intro"), arch = require("./s_arch"), exp = require("./s_exp"), pilot = require("./s_pilot");
 const off = require("./s_official");
 const team = require("./s_team");
@@ -18,15 +19,15 @@ const divider = (en, vi, subEn, subVi) => () => {
 };
 
 const sections = [
-  ["Problem & data", [intro[0], team, intro[1], intro[2], intro[3], intro[5], intro[6], intro[9], intro[7], intro[8]]],
-  ["Experiments", [pilot.divider, intro[4], exp[1], exp[3], exp[5]]],
+  ["Problem & data", [intro[0], team, progress, intro[1], intro[2], intro[3], intro[5], intro[6], intro[9]]],
+  ["Experiments", [pilot.divider, intro[4], exp[3], exp[5]]],
   ["Official features", [pilot.decision]],
   // bản chính thức: mỗi bước (kéo dữ liệu, tọa độ, bronze, silver, EDA, gold) một slide, thay arch[4..8] của pilot
-  ["Architecture", [arch[0], arch[1], arch[2], arch[3], off.ingest, off.cells, off.bronze, off.silver, off.edaSeason, off.edaSpace,
+  ["Architecture", [arch[0], arch[1], arch[2], arch[3], off.ingest, off.cells, off.bronze, off.silver, off.edaSeason, off.edaSpace, off.edaYear,
     off.gold, off.storage, arch[9], arch[10],
     arch[11], tail.streaming, tail.mongo, tail.deploy]],
   ["Model building", [divider("Model building", "Xây dựng mô hình", "Which algorithm, and how it is trained without leaking the future",
-    "Chọn thuật toán nào, và train thế nào để không dùng dữ liệu tương lai"), tail.modelChoice, tail.protocol]],
+    "Chọn thuật toán nào, và train thế nào để không dùng dữ liệu tương lai"), tail.modelChoice, tail.modelCompare, tail.protocol]],
   ["Model evaluation", [divider("Model evaluation", "Đánh giá mô hình", "The official feature set on the held-out years 2024–2025",
     "Bộ feature chính thức trên các năm giữ riêng 2024–2025"), tail.e1]],
   ["Test", [divider("Test", "Kiểm thử", "End-to-end replay of Typhoon Yagi, correctness checks, performance plan, limits",

@@ -203,25 +203,37 @@ module.exports = [
 (IC) => {
   const O = JSON.parse(require("fs").readFileSync(path.join(K.ROOT, "reports", "official", "deck_official.json"), "utf8"));
   const S = slide("CONTENT", SEC(), t("What data we pull: 13 ERA5 variables from Copernicus CDS", "Dữ liệu kéo về: 13 biến ERA5 từ Copernicus CDS"));
-  const g = (txt, col) => ({ text: txt, options: { bold: true, color: C.background1, fill: { color: C[col] } } });
-  const S1 = t("Surface weather (7)", "Thời tiết bề mặt (7)"), A1 = t("Atmosphere (6)", "Khí quyển (6)");
-  table(S, C, [[t("Group", "Nhóm"), t("CDS variable", "Biến CDS"), t("Silver column · unit", "Cột silver · đơn vị"), t("What it measures", "Đo cái gì"), t("Used for", "Dùng cho")],
-    [g(S1, "accent1"), "tp", "precipitation · mm", t("rain fallen in the hour before the timestamp", "lượng mưa trong 1 giờ trước mốc giờ"), t("label + M1", "nhãn + M1")],
-    [g(S1, "accent1"), "t2m", "temperature_2m · °C", t("air temperature 2 m above ground", "nhiệt độ không khí ở độ cao 2 m"), "M1"],
-    [g(S1, "accent1"), "d2m", "dew_point_2m · °C, relative_humidity_2m · %", t("dew point; humidity from T and Td (Magnus)", "điểm sương; độ ẩm tính từ T và Td (Magnus)"), "M1"],
-    [g(S1, "accent1"), "msl", "pressure_msl · hPa", t("air pressure reduced to sea level", "áp suất quy về mực nước biển"), "M1"],
-    [g(S1, "accent1"), "tcc", "cloud_cover · %", t("share of the sky covered by cloud", "phần trăm bầu trời bị mây che"), "M1"],
-    [g(S1, "accent1"), "u10, v10", t("wind_speed_10m · km/h, direction · °", "wind_speed_10m · km/h, hướng · °"), t("wind 10 m above ground; direction it blows from", "gió ở 10 m; hướng gió thổi tới"), "M1"],
-    [g(A1, "accent2"), "tcwv", "tcwv · mm", t("water vapour in the whole air column", "hơi nước trong cả cột khí quyển"), "M4"],
-    [g(A1, "accent2"), "viwve, viwvn", "ivt_east, ivt_north · kg m⁻¹ s⁻¹", t("moisture carried east / north", "dòng ẩm vận chuyển về phía đông / bắc"), "M4"],
-    [g(A1, "accent2"), "vimd", t("vimd · kg m⁻² per hour", "vimd · kg m⁻² mỗi giờ"), t("moisture divergence (negative = converging)", "phân kỳ ẩm (âm = ẩm đang hội tụ)"), "M4"],
-    [g(A1, "accent2"), "cape", "cape · J/kg", t("energy available for storms", "năng lượng đối lưu cho dông"), "M4"],
-    [g(A1, "accent2"), "kx", "k_index · K", t("thunderstorm potential", "khả năng xảy ra dông"), "M4"],
-  ], { x: MX, y: 1.3, w: W - 2 * MX, colW: [2.2, 1.45, 3.6, 3.95, 0.93], fontSize: 11.5 });
+  // 13 ô, mỗi ô đúng một biến CDS: mã biến lớn, ý nghĩa ngắn, đơn vị sau khi làm sạch + dùng cho đâu
+  const V = [
+    [["tp", t("rain in the past hour", "mưa trong giờ qua"), t("mm · label + M1", "mm · nhãn + M1")],
+     ["t2m", t("air temperature at 2 m", "nhiệt độ ở 2 m"), "°C · M1"],
+     ["d2m", t("dew point at 2 m → humidity", "điểm sương 2 m → độ ẩm"), "°C, % · M1"],
+     ["msl", t("sea-level pressure", "áp suất mực biển"), "hPa · M1"],
+     ["tcc", t("cloud cover", "độ che phủ mây"), "% · M1"],
+     ["u10", t("wind towards east, 10 m", "gió hướng đông, 10 m"), t("→ speed, direction · M1", "→ tốc độ, hướng · M1")],
+     ["v10", t("wind towards north, 10 m", "gió hướng bắc, 10 m"), t("→ speed, direction · M1", "→ tốc độ, hướng · M1")]],
+    [["tcwv", t("water vapour in the whole column", "hơi nước cả cột khí quyển"), "mm · M4"],
+     ["viwve", t("moisture carried east", "dòng ẩm về phía đông"), "kg m⁻¹ s⁻¹ · M4"],
+     ["viwvn", t("moisture carried north", "dòng ẩm về phía bắc"), "kg m⁻¹ s⁻¹ · M4"],
+     ["vimd", t("moisture divergence (− = converging)", "phân kỳ ẩm (âm = hội tụ)"), t("per hour · M4", "mỗi giờ · M4")],
+     ["cape", t("energy for storms", "năng lượng đối lưu"), "J/kg · M4"],
+     ["kx", t("K-index: thunderstorm potential", "chỉ số K: khả năng dông"), "K · M4"]],
+  ];
+  const gap = 0.15, tw = (W - 2 * MX - 6 * gap) / 7, th = 1.75;
+  [[t("Surface weather · 7 variables", "Thời tiết bề mặt · 7 biến"), C.accent1, 1.3], [t("Atmosphere · 6 variables", "Khí quyển · 6 biến"), C.accent2, 3.85]].forEach(([head, col, y], gi) => {
+    S.addText(head, { x: MX, y, w: 6, h: 0.4, fontSize: 16, bold: true, color: col, margin: 0, isTextBox: true });
+    V[gi].forEach(([code, what, unit], i) => {
+      const x = MX + i * (tw + gap), ty = y + 0.5;
+      S.addShape("roundRect", { x, y: ty, w: tw, h: th, rectRadius: 0.08, fill: { color: C.background1 }, line: { color: col, width: 1.5 } });
+      S.addText(code, { x: x + 0.08, y: ty + 0.1, w: tw - 0.16, h: 0.55, fontSize: 22, bold: true, fontFace: "Consolas", color: col, align: "center", valign: "middle", margin: 0, isTextBox: true });
+      S.addText(what, { x: x + 0.08, y: ty + 0.68, w: tw - 0.16, h: 0.6, fontSize: 11.5, color: C.text1, align: "center", valign: "top", margin: 0, isTextBox: true });
+      S.addText(unit, { x: x + 0.08, y: ty + 1.3, w: tw - 0.16, h: 0.35, fontSize: 10.5, bold: true, color: C.text2, align: "center", valign: "middle", margin: 0, isTextBox: true });
+    });
+  });
   source(S, C, t(`Official pull: ${O.cells.n} land cells × 96,432 hours (2015–2025) × 13 variables = ${(O.volume.silver_rows / 1e6).toFixed(1)} M cell-hours. Terrain and neighbour-cell features were tested in the pilot and dropped.`,
     `Bản chính thức: ${O.cells.n} ô đất liền × 96.432 giờ (2015–2025) × 13 biến = ${(O.volume.silver_rows / 1e6).toFixed(1).replace(".", ",")} triệu ô-giờ. Feature địa hình và ô lân cận đã thử ở pilot và bị bỏ.`));
-  S.addNotes(t("Seven surface variables feed the 24 M1 features; six column variables feed the M4 experiment.",
-    "Bảy biến bề mặt tạo 24 feature M1; sáu biến cột khí quyển dùng cho thí nghiệm M4."));
+  S.addNotes(t("13 CDS variables, one per box. Seven surface variables feed the 24 M1 features and the label (tp); six column variables feed the 9 extra M4 features. In silver: rain m → mm, temperatures K → °C, pressure Pa → hPa, cloud 0–1 → %; relative humidity is derived from temperature and dew point (Magnus formula); u10 and v10 become wind speed (km/h) and the direction it blows from; viwve and viwvn become the moisture-transport magnitude ivt and its direction.",
+    "13 biến CDS, mỗi ô một biến. Bảy biến bề mặt tạo 24 feature M1 và nhãn (tp); sáu biến cột khí quyển tạo thêm 9 feature của M4. Ở silver: mưa m → mm, nhiệt độ K → °C, áp suất Pa → hPa, mây 0–1 → %; độ ẩm tương đối tính từ nhiệt độ và điểm sương (công thức Magnus); u10 và v10 thành tốc độ gió (km/h) và hướng gió thổi tới; viwve và viwvn thành độ lớn dòng ẩm ivt và hướng của nó."));
 },
 
 // 6 — why ERA5 (redesigned)
@@ -247,7 +259,7 @@ module.exports = [
       { text: t("Used to check ERA5", "Dùng để kiểm chứng ERA5"), options: { color: C.accent1, bold: true } }],
     [t("VNMHA stations", "Trạm KTTV quốc gia"), t("National gauge network", "Mạng trạm quốc gia"), t("dense · hourly", "dày · theo giờ"), Y, Y, Y,
       P(t("paid, on request", "trả phí, theo yêu cầu")), t("Not obtainable in 3 weeks", "Không kịp xin trong 3 tuần")],
-  ], { x: MX, y: 1.3, w: W - 2 * MX, colW: [1.75, 1.95, 2.05, 0.8, 1.85, 1.05, 1.1, 1.58], fontSize: 12 });
+  ], { x: MX, y: 1.3, w: W - 2 * MX, colW: [1.75, 1.95, 2.05, 0.8, 1.85, 1.05, 1.1, 1.58], fontSize: 11.5, rowH: [0.38, 0.47, 0.47, 0.47, 0.47, 0.47, 0.47, 0.47] });
   S.addText([{ text: t("* Predictors: ", "* Các biến: "), options: { bold: true } },
     { text: t("rain, temperature, humidity, dew point, sea-level pressure, cloud cover, wind speed and direction.",
       "lượng mưa, nhiệt độ, độ ẩm, điểm sương, áp suất mực nước biển, độ che phủ mây, tốc độ và hướng gió.") }],

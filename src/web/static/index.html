@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heavy-rain stream</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root { --teal: #0E7C86; --navy: #12495A; --orange: #E0712B; --green: #2F8F5B; --red: #B23A48; --grey: #8C9AA3;
+          --bg: #F6F8F9; --card: #FFFFFF; --line: #DCE5E8; --text: #1F2D33; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  header { display: flex; align-items: center; gap: 24px; padding: 12px 20px; background: var(--navy); color: #fff; flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  .clock { font-size: 26px; font-weight: 700; letter-spacing: .5px; }
+  .bar { flex: 1; min-width: 160px; height: 8px; background: rgba(255,255,255,.2); border-radius: 4px; overflow: hidden; }
+  .bar > div { height: 100%; background: var(--orange); width: 0; transition: width .5s; }
+  #ctl { font: 600 15px "Segoe UI", sans-serif; padding: 8px 18px; border: 0; border-radius: 8px; cursor: pointer; background: var(--orange); color: #fff; }
+  #ctl:disabled { background: rgba(255,255,255,.25); cursor: default; }
+  .pill { font-size: 12px; padding: 3px 10px; border-radius: 12px; background: rgba(255,255,255,.15); }
+  .live { display: flex; gap: 22px; padding: 8px 20px; background: #E9F1F3; border-bottom: 1px solid var(--line); font-size: 13px; flex-wrap: wrap; align-items: center; }
+  .live b { font-size: 15px; color: var(--navy); }
+  .live .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: var(--green); margin-right: 6px; transition: opacity .2s; }
+  .live .tickk { font-variant-numeric: tabular-nums; }
+  main { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; padding: 14px; }
+  .side, .side > *, .card { min-width: 0; }
+  .chartbox { position: relative; height: 230px; }
+  #warm { position: absolute; z-index: 500; left: 50%; top: 45%; transform: translate(-50%, -50%); background: rgba(18,73,90,.92); color: #fff; padding: 14px 18px; border-radius: 10px; text-align: center; font-size: 14px; pointer-events: none; }
+  #warm b { font-size: 22px; display: block; }
+  .mapwrap { position: relative; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .card h2 { font-size: 14px; margin: 0 0 8px; color: var(--navy); }
+  #map { height: 640px; border-radius: 8px; }
+  .side { display: grid; gap: 14px; align-content: start; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--grey); font-weight: 600; }
+  .ok { color: var(--green); font-weight: 700; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .kpi { text-align: center; }
+  .kpi b { display: block; font-size: 22px; }
+  .kpi span { font-size: 11px; color: var(--grey); }
+  .legend { font-size: 12px; display: flex; gap: 10px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+  .sw { width: 14px; height: 14px; display: inline-block; border-radius: 3px; vertical-align: middle; }
+  .rej { font-family: Consolas, monospace; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #555; }
+  .tag { font-size: 11px; padding: 1px 6px; border-radius: 8px; background: #F8E9EB; color: var(--red); margin-right: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Dự báo mưa lớn 24 giờ · Kafka → Spark Structured Streaming → MongoDB</h1>
+  <div class="clock" id="clock">–</div>
+  <button id="ctl" disabled>Đang làm nóng…</button>
+  <div class="bar"><div id="bar"></div></div>
+  <span class="pill" id="speed">–</span>
+  <span class="pill" id="model">model –</span>
+</header>
+<div class="live">
+  <span><i class="dot" id="dotP"></i>Producer → Kafka: <b class="tickk" id="lvSent">0</b> bản tin · gửi lần cuối <b class="tickk" id="lvPAge">–</b> trước</span>
+  <span><i class="dot" id="dotS"></i>Spark: micro-batch <b id="lvBatch">–</b> · xong <b class="tickk" id="lvSAge">–</b> trước · xử lý <b id="lvDur">–</b> · <b id="lvRows">–</b> dòng · batch kế tiếp ~<b class="tickk" id="lvNext">–</b></span>
+  <span>Web cập nhật <b class="tickk" id="lvWeb">–</b> trước</span>
+</div>
+<main>
+  <section class="card">
+    <h2>Xác suất mưa &gt; 50 mm trong 24 giờ tới · 493 ô đất liền · bấm vào ô để xem chuỗi thời gian</h2>
+    <div class="mapwrap"><div id="map"></div><div id="warm"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:#E8F1F2"></i> &lt; 0.2</span>
+      <span><i class="sw" style="background:#7FC4C9"></i> 0.2–0.5</span>
+      <span><i class="sw" style="background:#F2B27A"></i> 0.5–ngưỡng</span>
+      <span><i class="sw" style="background:#B23A48"></i> cảnh báo (≥ ngưỡng)</span>
+      <span><i class="sw" style="background:#C9CED1"></i> thiếu lịch sử (dữ liệu bị mất)</span>
+    </div>
+  </section>
+  <section class="side">
+    <div class="card">
+      <h2>Dữ liệu rác: producer chèn vào ↔ Spark phát hiện</h2>
+      <table id="junk"><thead><tr><th>Loại</th><th>Chèn vào</th><th>Spark xử lý</th><th>Cách xử lý</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card">
+      <h2>Kết quả dự báo (các giờ đã biết mưa thật, sau t + 24 h)</h2>
+      <div class="kpis">
+        <div class="kpi"><b id="tp" class="ok">0</b><span>báo đúng (TP)</span></div>
+        <div class="kpi"><b id="fp">0</b><span>báo nhầm (FP)</span></div>
+        <div class="kpi"><b id="fn" style="color:var(--red)">0</b><span>bỏ sót (FN)</span></div>
+        <div class="kpi"><b id="rev" style="color:var(--orange)">0</b><span>dự báo tính lại / bổ sung nhờ dữ liệu trễ</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 id="serTitle">Hải Phòng · ô 20.75°N 106.75°E</h2>
+      <div class="chartbox"><canvas id="chart"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Tỉnh rủi ro cao nhất ở giờ hiện tại</h2>
+      <table id="prov"><thead><tr><th>Tỉnh</th><th>p lớn nhất</th><th>Ô cảnh báo</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card">
+      <h2>Bản tin bị cách ly gần nhất</h2>
+      <div id="rej"></div>
+    </div>
+  </section>
+</main>
+<script>
+const map = L.map("map", { zoomSnap: 0.25 }).setView([16.2, 106.0], 5.5);
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", { maxZoom: 10, attribution: "Tiles © Esri" }).addTo(map);
+const rects = {};
+let threshold = 0.93, cell = "g20.75_106.75";
+const color = (c) => c.status !== "ok" ? "#C9CED1" : c.p >= threshold ? "#B23A48" : c.p >= 0.5 ? "#F2B27A" : c.p >= 0.2 ? "#7FC4C9" : "#E8F1F2";
+const fmt = (x) => (x ?? 0).toLocaleString("vi-VN");
+
+const chart = new Chart(document.getElementById("chart"), {
+  type: "line",
+  data: { labels: [], datasets: [
+    { label: "xác suất", data: [], borderColor: "#0E7C86", yAxisID: "y", pointRadius: 0, tension: .2 },
+    { label: "ngưỡng", data: [], borderColor: "#B23A48", borderDash: [5, 4], yAxisID: "y", pointRadius: 0 },
+    { label: "mưa thật 24 h (mm)", data: [], borderColor: "#E0712B", yAxisID: "y2", pointRadius: 0, tension: .2 } ] },
+  options: { animation: false, maintainAspectRatio: false, scales: { y: { min: 0, max: 1 }, y2: { position: "right", min: 0, grid: { display: false } },
+    x: { ticks: { maxTicksLimit: 8 } } }, plugins: { legend: { labels: { boxWidth: 12, font: { size: 11 } } } } }
+});
+
+// vẽ đủ 493 ô ngay từ đầu (màu xám = chưa có dự báo)
+let predictFrom = "2024-09-04 00:00";
+fetch("/api/cells").then((r) => r.json()).then((d) => {
+  predictFrom = d.predict_from;
+  d.cells.forEach((c) => {
+    rects[c.cell] = L.rectangle([[c.lat - .125, c.lon - .125], [c.lat + .125, c.lon + .125]],
+      { weight: .3, color: "#fff", fillOpacity: .85, fillColor: "#C9CED1" })
+      .addTo(map).bindTooltip(`${c.province}<br>chưa có dự báo`).on("click", () => { cell = c.cell; loadSeries(); });
+  });
+});
+
+async function loadSeries() {
+  const s = await (await fetch(`/api/series/${cell}`)).json();
+  chart.data.labels = s.map((r) => r.ts.slice(8, 10) + "/" + r.ts.slice(5, 7) + " " + r.ts.slice(11, 13) + "h");
+  chart.data.datasets[0].data = s.map((r) => r.p);
+  chart.data.datasets[1].data = s.map(() => threshold);
+  chart.data.datasets[2].data = s.map((r) => r.observed_24h_mm ?? null);
+  chart.update();
+  if (s.length) document.getElementById("serTitle").textContent = `${s[0].province} · ô ${cell.slice(1).replace("_", "°N ")}°E`;
+}
+
+// nút điều khiển producer: làm nóng → sẵn sàng → chạy ⇄ tạm dừng → xong
+let ctlCmd = null;
+document.getElementById("ctl").onclick = async () => {
+  if (!ctlCmd) return;
+  await fetch(`/api/control/${ctlCmd}`, { method: "POST" });
+  tick();
+};
+function setControl(pr) {
+  const b = document.getElementById("ctl");
+  const st = pr.state || "warmup";
+  const map = { warmup: [`Đang làm nóng ${pr.hours_done || 0}/${pr.warmup_hours || 72} giờ…`, null],
+    ready: ["▶ Bắt đầu stream", "run"], paused: ["▶ Tiếp tục", "run"], running: ["⏸ Tạm dừng", "pause"],
+    finished: ["Đã phát xong", null] };
+  const [label, cmd] = map[st] || map.warmup;
+  b.textContent = label; b.disabled = !cmd; ctlCmd = cmd;
+}
+
+// bộ đếm thời gian thật: đếm lên mỗi giây giữa hai lần hỏi API
+let live = null, liveAt = 0, webAt = 0, lastBatch = null, lastSent = null;
+const TRIGGER = 10;
+const sec = (x) => x == null ? "–" : `${Math.max(0, x).toFixed(0)} s`;
+function blink(id) { const d = document.getElementById(id); d.style.opacity = .15; setTimeout(() => d.style.opacity = 1, 250); }
+setInterval(() => {
+  if (!live) return;
+  const dt = (Date.now() - liveAt) / 1000;
+  const pa = live.producer_age_s == null ? null : live.producer_age_s + dt, sa = live.batch_age_s == null ? null : live.batch_age_s + dt;
+  document.getElementById("lvPAge").textContent = sec(pa);
+  document.getElementById("lvSAge").textContent = sec(sa);
+  document.getElementById("lvNext").textContent = sa == null ? "–" : sec(TRIGGER - (sa % TRIGGER));
+  document.getElementById("lvWeb").textContent = sec((Date.now() - webAt) / 1000);
+  document.getElementById("dotP").style.background = pa != null && pa < 15 ? "var(--green)" : "var(--grey)";
+  document.getElementById("dotS").style.background = sa != null && sa < 30 ? "var(--green)" : "var(--red)";
+}, 1000);
+
+async function tick() {
+  let st;
+  try { st = await (await fetch("/api/state")).json(); } catch (e) { return; }
+  const pr = st.producer, pl = st.pipeline;
+  setControl(pr);
+  live = st.live; liveAt = Date.now(); webAt = Date.now();
+  document.getElementById("lvSent").textContent = fmt(pr.sent);
+  document.getElementById("lvBatch").textContent = pl.last_batch == null ? "–" : `#${pl.last_batch}`;
+  document.getElementById("lvDur").textContent = pl.last_batch_seconds == null ? "–" : `${pl.last_batch_seconds} s`;
+  document.getElementById("lvRows").textContent = fmt(pl.last_batch_rows);
+  if (pl.last_batch !== lastBatch) { if (lastBatch !== null) blink("dotS"); lastBatch = pl.last_batch; }
+  if (pr.sent !== lastSent) { if (lastSent !== null) blink("dotP"); lastSent = pr.sent; }
+  document.getElementById("clock").textContent = pl.clock ? pl.clock.replace(/(\d+)-(\d+)-(\d+) /, "$3/$2/$1 ") : "đang chờ dữ liệu…";
+  document.getElementById("bar").style.width = pr.hours_total ? `${100 * pr.hours_done / pr.hours_total}%` : "0";
+  document.getElementById("speed").textContent = pr.burst ? "DỒN CỤC: phát liền 20 giờ" : pr.seconds_per_hour ? `1 giờ dữ liệu / ${pr.seconds_per_hour} s` : "phát dồn";
+  if (st.cells.length) threshold = st.cells.find((c) => c.status === "ok")?.threshold ?? threshold;
+  document.getElementById("model").textContent = `M4 · ngưỡng ${threshold.toFixed(3)} · ${fmt(pl.processed_rows_per_s)} dòng/s`;
+  // thông báo làm nóng: model cần 72 giờ lịch sử trước giờ dự báo đầu tiên
+  const warm = document.getElementById("warm");
+  if (!st.cells.length) {
+    const t0 = new Date("2024-09-01T00:00:00+07:00"), t1 = new Date(predictFrom.replace(" ", "T") + ":00+07:00");
+    const now = pl.clock ? new Date(pl.clock.replace(" ", "T") + ":00+07:00") : t0;
+    const h = Math.max(0, Math.round((now - t0) / 3.6e6)), need = Math.round((t1 - t0) / 3.6e6);
+    warm.style.display = "block";
+    warm.innerHTML = `<b>Đang làm nóng ${Math.min(h, need)}/${need} giờ</b>feature cần 72 giờ dữ liệu trước giờ dự báo đầu tiên (${predictFrom.slice(8, 10)}/09 00:00)`;
+  } else warm.style.display = "none";
+  st.cells.forEach((c) => {
+    if (!rects[c.cell]) return;
+    rects[c.cell].setStyle({ fillColor: color(c) })
+      .bindTooltip(`${c.province}<br>p = ${c.p == null ? "–" : c.p.toFixed(2)}${c.revisions > 1 ? ` · tính lại ${c.revisions - 1} lần` : ""}`);
+  });
+  const inj = pr.injected || {}, rj = pl.rejected || {};
+  const rows = [
+    ["Trùng (ngay + muộn)", (inj.duplicate || 0) + (inj.duplicate_later || 0), pl.dropped_duplicates, "watermark + khử trùng (ô, giờ)"],
+    ["Trễ trong 6 giờ + sai thứ tự", (inj.late || 0) + (inj.reordered || 0), pl.late_accepted, "nhận, tính lại dự báo"],
+    ["Trễ quá 6 giờ", inj.too_late, pl.dropped_late, "watermark bỏ"],
+    ["JSON hỏng", inj.malformed, rj.malformed_json, "cách ly"],
+    ["Thiếu trường", inj.missing_field, rj.missing_field, "cách ly"],
+    ["Giá trị vô lý", inj.out_of_range, rj.out_of_range, "cách ly"],
+    ["Ô không tồn tại", inj.unknown_cell, rj.unknown_cell, "cách ly"],
+    ["Thiếu giờ ở vài ô (không gửi)", inj.missing_hours, "–", "feature null → ô màu xám"],
+  ];
+  document.querySelector("#junk tbody").innerHTML = rows.map(([k, a, b, h]) =>
+    `<tr><td>${k}</td><td>${fmt(a)}</td><td class="ok">${typeof b === "string" ? b : fmt(b)}</td><td style="text-align:left;color:#667">${h}</td></tr>`).join("")
+    + `<tr><td><b>Bản tin hợp lệ</b></td><td>${fmt(pr.sent)} gửi</td><td class="ok">${fmt(pl.valid_rows)}</td><td style="text-align:left;color:#667">vào dự báo</td></tr>`;
+  const sc = st.score || {};
+  ["tp", "fp", "fn"].forEach((k) => document.getElementById(k).textContent = fmt(sc[k]));
+  document.getElementById("rev").textContent = fmt(sc.revised);
+  document.querySelector("#prov tbody").innerHTML = st.provinces.map((p) =>
+    `<tr><td>${p.province}</td><td>${p.p_max.toFixed(2)}</td><td>${p.alert_cells}/${p.cells}</td></tr>`).join("");
+  document.getElementById("rej").innerHTML = st.rejects.map((r) =>
+    `<div class="rej"><span class="tag">${r.reason}</span>${r.raw.replace(/</g, "&lt;")}</div>`).join("");
+  loadSeries();
+}
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>

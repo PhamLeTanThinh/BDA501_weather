@@ -1,0 +1,4 @@
+comparison,bootstrap_mean,ci_lo,ci_hi,share_resamples_le_0
+Random Forest - Logistic regression,0.05161771529800606,0.02219327138360714,0.07704833215640214,0.0
+Gradient-boosted trees - Logistic regression,0.04516052389624669,0.014949838309975655,0.07420405482844554,0.004
+Gradient-boosted trees - Random Forest,-0.006457191401759374,-0.027189271113239717,0.01291994209524337,0.738

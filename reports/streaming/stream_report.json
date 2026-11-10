@@ -1,0 +1,97 @@
+{
+  "created_utc": "2026-11-10T16:46:48.005709+00:00",
+  "kafka": {
+    "messages_in_topic": 125939,
+    "read_by_forecast_query": 125939,
+    "read_by_rejects_query": 125939,
+    "forecast_batches": 72,
+    "no_loss_no_double_read": true
+  },
+  "junk": [
+    {
+      "case": "duplicate (immediate + later)",
+      "injected": 5766,
+      "handled": 5766,
+      "how": "watermark + dropDuplicatesWithinWatermark"
+    },
+    {
+      "case": "late within 6 h + out of order",
+      "injected": 6984,
+      "handled": 6889,
+      "how": "accepted, affected hours recomputed"
+    },
+    {
+      "case": "late beyond 6 h",
+      "injected": 89,
+      "handled": 44,
+      "how": "dropped by watermark"
+    },
+    {
+      "case": "malformed JSON",
+      "injected": 599,
+      "handled": 599,
+      "how": "quarantined"
+    },
+    {
+      "case": "missing field",
+      "injected": 383,
+      "handled": 383,
+      "how": "quarantined"
+    },
+    {
+      "case": "out-of-range value",
+      "injected": 575,
+      "handled": 575,
+      "how": "quarantined"
+    },
+    {
+      "case": "unknown cell",
+      "injected": 326,
+      "handled": 326,
+      "how": "quarantined"
+    },
+    {
+      "case": "missing hours (never sent)",
+      "injected": 30,
+      "handled": null,
+      "how": "features null → missing_history"
+    }
+  ],
+  "rows": {
+    "sent": 125939,
+    "valid_into_forecast": 118246,
+    "rejected_records": 1883,
+    "dropped_duplicates": 5766,
+    "dropped_late": 44,
+    "dropped_total": 7693
+  },
+  "mongo": {
+    "prediction_docs": 82750,
+    "status_ok": 79993,
+    "status_missing_history": 2757,
+    "duplicate_cell_hours": 0
+  },
+  "accepted": {
+    "rows": 118246,
+    "distinct_cell_hours": 118246,
+    "duplicates_reaching_foreachBatch": 0
+  },
+  "parity_stream_vs_batch_same_rows": {
+    "cell_hours_both_scored": 79993,
+    "max_abs_diff_p": 4.9998850551680185e-05,
+    "identical_p": 79993,
+    "alert_mismatch": 0,
+    "scored_only_stream": 0,
+    "scored_only_batch": 0
+  },
+  "stream_vs_clean_silver": {
+    "cell_hours_both_scored": 79993,
+    "max_abs_diff_p": 4.9998850551680185e-05,
+    "identical_p": 79993,
+    "alert_mismatch": 0,
+    "scored_only_stream": 0,
+    "scored_only_silver": 2831
+  },
+  "silver_rows_in_period": 118320,
+  "accepted_vs_silver_missing_cell_hours": 74
+}
