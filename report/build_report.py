@@ -52,10 +52,10 @@ UL("Pipeline: CDS download → raw/bronze (also on HDFS) → silver → gold on 
    "MapReduce and the three Spark SQL queries were validated on the pilot data only.")
 
 TB(["Member", "Main technical responsibility"],
-   [["Mr. Việt [full name, student ID]", "Batch layer: ingestion, 63 → 34 province mapping, bronze → gold, cleaning rules, MapReduce, Spark SQL"],
-    ["Mr. Luân [full name, student ID]", "ML & evaluation: EDA, NOAA validation, features, Random Forest + ablation, class imbalance, performance experiment"],
+   [["Trần Quốc Việt (25MS23304)", "Batch layer: ingestion, 63 → 34 province mapping, bronze → gold, cleaning rules, MapReduce, Spark SQL"],
+    ["Nguyễn Phạm Thành Luân (25MS23265)", "ML & evaluation: EDA, NOAA validation, features, Random Forest + ablation, class imbalance, performance experiment"],
     ["Phạm Lê Tấn Thịnh (25MS23273)", "Streaming & serving: Kafka producer and junk tests, Structured Streaming, MongoDB data model, web dashboard"]],
-   "Table 1. Team contributions (as presented in the deck; team to confirm names and IDs).")
+   "Table 1. Team contributions.")
 
 # ---------------------------------------------------------------- 1. problem
 H1("1. Problem and Big Data justification")
@@ -424,7 +424,7 @@ def write_docx(path):
 
 
 def write_md(path):
-    out = [f"# {TITLE}", "", f"*{SUB}* — Team: Việt · Luân · Thịnh — November 2026", ""]
+    out = [f"# {TITLE}", "", f"*{SUB}* — Team 1: Trần Quốc Việt (25MS23304) · Nguyễn Phạm Thành Luân (25MS23265) · Phạm Lê Tấn Thịnh (25MS23273) — November 2026", ""]
     for b in C:
         kind = b[0]
         if kind == "h1":

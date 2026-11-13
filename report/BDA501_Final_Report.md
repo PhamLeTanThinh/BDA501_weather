@@ -1,6 +1,6 @@
 # Heavy-Rain Forecasting for Vietnam's 34 Provinces with a Big Data Pipeline
 
-*BDA501 Big Data Analytics — Final Project Report* — Team: Việt · Luân · Thịnh — November 2026
+*BDA501 Big Data Analytics — Final Project Report* — Team 1: Trần Quốc Việt (25MS23304) · Nguyễn Phạm Thành Luân (25MS23265) · Phạm Lê Tấn Thịnh (25MS23273) — November 2026
 
 ## Executive summary
 
@@ -14,11 +14,11 @@ We built an end-to-end Big Data system that forecasts, for every 0.25° ERA5 gri
 
 | Member | Main technical responsibility |
 |---|---|
-| Mr. Việt [full name, student ID] | Batch layer: ingestion, 63 → 34 province mapping, bronze → gold, cleaning rules, MapReduce, Spark SQL |
-| Mr. Luân [full name, student ID] | ML & evaluation: EDA, NOAA validation, features, Random Forest + ablation, class imbalance, performance experiment |
+| Trần Quốc Việt (25MS23304) | Batch layer: ingestion, 63 → 34 province mapping, bronze → gold, cleaning rules, MapReduce, Spark SQL |
+| Nguyễn Phạm Thành Luân (25MS23265) | ML & evaluation: EDA, NOAA validation, features, Random Forest + ablation, class imbalance, performance experiment |
 | Phạm Lê Tấn Thịnh (25MS23273) | Streaming & serving: Kafka producer and junk tests, Structured Streaming, MongoDB data model, web dashboard |
 
-*Table 1. Team contributions (as presented in the deck; team to confirm names and IDs).*
+*Table 1. Team contributions.*
 
 ## 1. Problem and Big Data justification
 
