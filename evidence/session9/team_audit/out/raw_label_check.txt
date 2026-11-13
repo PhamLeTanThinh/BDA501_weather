@@ -1,0 +1,16 @@
+raw zip: 68; giờ trong khung VN 2015-2025: 96,432 (kỳ vọng 96,432); giờ thiếu: 0; ô: 493
+precipitation NaN: 0
+[PASS] train: rows 34,561,272 vs Spark 34,561,272; positives 313,169 vs Spark 313,169 (diff 0)
+[PASS] validation: rows 4,306,848 vs Spark 4,306,848; positives 28,683 vs Spark 28,683 (diff 0)
+[PASS] test: rows 8,637,360 vs Spark 8,637,360; positives 104,439 vs Spark 104,439 (diff 0)
+[PASS] per-cell labelled rows & positives vs label_by_cell.csv: 493/493 ô khớp; lệch: []
+truy vết g20.75_106.75 @ 2024-09-07 00:00 VN: rain_next_24h = 177.5 mm, label = 1, rain_24h quá khứ = 17.0 mm
+expver theo năm (số giờ): 2014:0001=24, 2015:0001=8760, 2016:0001=8784, 2017:0001=8760, 2018:0001=8760, 2019:0001=8760, 2020:0001=8784, 2021:0001=8760, 2022:0001=8760, 2023:0001=8760, 2024:0001=8784, 2025:0001=8760
+nhãn tỉnh (test 2024-2025, 34 tỉnh x giờ): {'test_hours': 595680, 'pos_any_area': 20138, 'pos_coverage25': 9918, 'pos_p90': 13783}
+  Lâm Đồng: 35 ô; any-area 355 giờ, coverage25 31, p90 91 (/17520); tỷ lệ ô-giờ dương 0.00197
+  Gia Lai: 31 ô; any-area 878 giờ, coverage25 243, p90 453 (/17520); tỷ lệ ô-giờ dương 0.01077
+  Đắk Lắk: 26 ô; any-area 600 giờ, coverage25 160, p90 354 (/17520); tỷ lệ ô-giờ dương 0.00675
+  Hưng Yên: 3 ô; any-area 366 giờ, coverage25 366, p90 352 (/17520); tỷ lệ ô-giờ dương 0.01644
+  Hải Phòng: 4 ô; any-area 330 giờ, coverage25 330, p90 312 (/17520); tỷ lệ ô-giờ dương 0.01474
+  Bắc Ninh: 6 ô; any-area 307 giờ, coverage25 208, p90 270 (/17520); tỷ lệ ô-giờ dương 0.01006
+thời gian chạy 13s

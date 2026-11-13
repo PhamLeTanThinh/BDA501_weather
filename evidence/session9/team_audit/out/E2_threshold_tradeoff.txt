@@ -1,0 +1,12 @@
+Đơn vị đếm: (ô ERA5, giờ phát hành t) trong cohort test 2024-2025, 483 ô; KHÔNG phải số 'đợt mưa'.
+validation f1       thr=0.9321 TP=  8001 FP=  19381 FN= 20145 P=0.292 R=0.284 miss=71.6% FP/TP=2.42
+validation prec30   thr=0.9351 TP=  7729 FP=  18033 FN= 20417 P=0.300 R=0.275 miss=72.5% FP/TP=2.33
+validation recall60 thr=0.7394 TP= 16888 FP= 125325 FN= 11258 P=0.119 R=0.600 miss=40.0% FP/TP=7.42
+test       f1       thr=0.9321 TP= 47714 FP=  60688 FN= 55164 P=0.440 R=0.464 miss=53.6% FP/TP=1.27
+test       prec30   thr=0.9351 TP= 46616 FP=  56860 FN= 56262 P=0.451 R=0.453 miss=54.7% FP/TP=1.22
+test       recall60 thr=0.7394 TP= 75687 FP= 331316 FN= 27191 P=0.186 R=0.736 miss=26.4% FP/TP=4.38
+test: f1 -> recall60: +27,973 TP, -27,973 FN, +270,628 FP => 9.67 FP thêm cho mỗi TP thêm; số cảnh báo x3.75
+test cohort rows 8,462,129 => alert rate f1 1.28%, recall60 4.81%
+Yagi replay (pilot M1) HPHO: n=144 positives=53 TP=18 FP=2 FN=35
+Yagi replay (pilot M1) QNIN: n=144 positives=72 TP=17 FP=4 FN=55
+Yagi replay (pilot M1) ALL: n=288 positives=125 TP=35 FP=6 FN=90

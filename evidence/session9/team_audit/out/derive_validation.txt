@@ -1,0 +1,45 @@
+[PASS] silver rows = cells x hours 2015-2025 (VN): expected=47540976 observed=47540976  (reports/official/quality/silver_summary.json)
+[PASS] bronze - silver = 24 h/cell trimmed by UTC->VN window: expected=11832 observed=11832  (silver_summary.json)
+[PASS] gold rows = silver rows (1 row / cell-hour): expected=47540976 observed=47540976  (gold_summary.json)
+[PASS] duplicate (cell, hour) keys in silver: expected=0 observed=0  (silver_summary.json)
+[PASS] duplicate (location_id, ts) keys in gold: expected=0 observed=0  (gold_summary.json)
+[PASS] cell-years incomplete: expected=0 observed=0  (silver_summary.json)
+[PASS] cells in silver = cells in map (join coverage): expected=493 observed=493  (silver_summary.json)
+[PASS] gold split rows train = cells x (hours - 24 purged): expected=34561272 observed=34561272  (gold_summary.json)
+[PASS] gold split rows validation = cells x (hours - 24 purged): expected=4306848 observed=4306848  (gold_summary.json)
+[PASS] gold split rows test = cells x (hours - 24 purged): expected=8637360 observed=8637360  (gold_summary.json)
+[PASS] gold excluded rows = cells x 72 (3 boundaries x 24 h): expected=35496 observed=35496  (gold_summary.json)
+[PASS] sum of split rows = gold rows: expected=47540976 observed=47540976  (gold_summary.json)
+[PASS] label null rows (last 24 h of 2025, no future): expected=11832 observed=11832  (gold_by_split.csv)
+[PASS] train null rain_72h = cells x 71 (warm-up at 2015-01-01): expected=35003 observed=35003  (gold_by_split.csv)
+positives train: 313,169 / 34,561,272 = 0.00906
+positives validation: 28,683 / 4,306,848 = 0.00666
+positives test: 104,439 / 8,637,360 = 0.01209
+[PASS] ablation cohort validation ~ 483 x 8,736 minus rows with null k_index: expected=4219486 observed=4219486  (ablation_manifest.json + gold_by_split null_k_index=2)
+cohort test: 483 x 17,520 = 8,462,160; observed 8,462,129 (diff 31 rows with null cape/cape_max_24h/k_index)
+cohort train: 33,825,728 rows, positives 308,098; gold train positives 313,169
+cells: gold 493, cells with >=1 neighbour 492, ablation cohort 483 (=> 10 cells dropped because M3/M2 features null)
+train sample: neg_frac 0.03, rows 1,313,246, positives 308,098, w+ 3.26
+test persistence_rain24h  PR-AUC 0.1467  ROC-AUC 0.8723  P 0.195 R 0.343  TP 35332 FP 145520 FN 67546
+test M1                   PR-AUC 0.3611  ROC-AUC 0.9415  P 0.387 R 0.446  TP 45914 FP 72659 FN 56964
+[PASS] M1 test TP+FN = cohort test positives: expected=102878 observed=102878  (ablation_results.csv)
+test M2                   PR-AUC 0.3629  ROC-AUC 0.9423  P 0.379 R 0.452  TP 46450 FP 76016 FN 56428
+[PASS] M2 test TP+FN = cohort test positives: expected=102878 observed=102878  (ablation_results.csv)
+test M3                   PR-AUC 0.3630  ROC-AUC 0.9426  P 0.381 R 0.443  TP 45566 FP 74105 FN 57312
+[PASS] M3 test TP+FN = cohort test positives: expected=102878 observed=102878  (ablation_results.csv)
+test M4                   PR-AUC 0.4197  ROC-AUC 0.9553  P 0.440 R 0.464  TP 47714 FP 60688 FN 55164
+[PASS] M4 test TP+FN = cohort test positives: expected=102878 observed=102878  (ablation_results.csv)
+no-skill PR-AUC on test = prevalence = 0.0122
+[PASS] NOAA: station heavy-rain days (VN day), 14 stations: expected=1185 observed=1185  (validation/results_cds.csv)
+[PASS] NOAA: ERA5 same-day hits: expected=292 observed=292  (validation/report_cds.md)
+NOAA VN-day: hit 292/1185 = 24.6%, +-1 day 416 = 35.1%, false alarms 286, median daily corr 0.52 (14 stations)
+Open-Meteo crosscheck (63 points): median daily precip corr 0.9998, median hourly 0.9996
+provinces in label_by_cell: 34; cells per province min 3, max 35
+  An Giang: 16 cells, cell positive_rate min 0.0011 max 0.0099 (x8.8)
+  Đắk Lắk: 26 cells, cell positive_rate min 0.0022 max 0.0136 (x6.1)
+  Gia Lai: 31 cells, cell positive_rate min 0.0046 max 0.0196 (x4.2)
+  Lâm Đồng: 35 cells, cell positive_rate min 0.0013 max 0.0055 (x4.1)
+  Quảng Ngãi: 23 cells, cell positive_rate min 0.0066 max 0.0273 (x4.1)
+[PASS] MapReduce vs Spark SQL keys mismatch (pilot): expected=0 observed=0  (reports/mapreduce/validation.json)
+[PASS] MapReduce vs Spark SQL rows (pilot): expected=420480 observed=420480  (reports/mapreduce/validation.json)
+expected official MR keys if rerun on official gold: 493 x 12 = 5,916; expected rows = train rows with label & precip not null = 34,561,272

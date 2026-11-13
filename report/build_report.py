@@ -92,6 +92,10 @@ P("The download box contains 61 × 33 = 2,013 grid points. Each 0.25° cell is s
   "points fall inside Vietnam (493 cells); its old province is the one containing most points (247 cells straddle a "
   "border), and the old → new lookup gives one of the 34 merged provinces. Forecasts stay per cell; a province's risk is "
   "the maximum probability over its cells and it is alerted if any cell is above the threshold.")
+P("The province definition matters: on the test years there are 20,138 positive province-hours with any-area "
+  "(≥ 1 cell > 50 mm), 13,783 with the 90th percentile and 9,918 with coverage ≥ 25 % of cells — 11 × apart for Lâm Đồng "
+  "(35 cells), almost equal for 3–4-cell provinces. We keep any-area so local extremes are not missed and show the share "
+  "of alerted cells next to it.")
 FG("cells.png", "Figure 1. Assigning ERA5 cells to provinces (deck slide).")
 
 # ---------------------------------------------------------------- 3. architecture
@@ -150,7 +154,8 @@ P("Hadoop Streaming job (Python mapper/combiner/reducer on YARN) computing the c
   "reducers. On the pilot data: 420,480 input rows, 4 map and 2 reduce tasks, the combiner cut shuffled records from "
   "420,480 to 576 (730 ×), 144 output keys, and an independent Spark SQL computation agrees on 144/144 keys with 0 "
   "differences. The output feeds MongoDB (collection climatology) for look-up; it is not an input to the model "
-  "(the evaluation baseline is recomputed in Spark).")
+  "(the evaluation baseline is recomputed in Spark). The same mapper/combiner/reducer were also run locally in "
+  "Python on the full official train set: 34,561,272 rows → 47,328 combined records → 5,916 keys, 0 differences.")
 FG("mapreduce.png", "Figure 8. MapReduce flow (pilot run).", 15)
 P("Spark SQL: three analytical queries (pilot data) — heavy-rain rate by region × month (GROUP BY, one shuffle), "
   "heavy-rain days by province × year joined with location and terrain tables (broadcast joins), top-5 wettest 24 h "
@@ -164,8 +169,9 @@ H2("7.1 Protocol")
 UL("Training sample: all heavy-rain rows plus 3 % of the others (1.31 M rows), positive weight × 3.26 (N0/N1 in the "
    "sample), so the model sees enough positives without running out of memory.",
    "Same hyper-parameters for every feature set: Random Forest, 100 trees, depth 12, min 20 rows per leaf, seed 42.",
-   "Selection only on validation 2023: feature set and algorithm by PR-AUC, alert threshold by best F1; frozen before "
-   "the single evaluation on 2024–2025.",
+   "Algorithm (by PR-AUC) and alert threshold (best F1) chosen on validation 2023 and frozen. The feature-set rule "
+   "'keep a group only if the bootstrap CI of its gain is above zero' was applied on the test years; re-checked on "
+   "validation alone it gives the same choice (M4 0.210 vs 0.171-0.176 for M1-M3).",
    "Metric: PR-AUC (average precision), because accuracy of \"always no\" is 98.8 % and ROC-AUC is inflated by the huge "
    "number of dry hours (0.955 for our model). Uncertainty: block bootstrap by day (500 paired resamples).")
 FG("protocol.png", "Figure 9. Training and evaluation protocol.", 15)
@@ -200,7 +206,9 @@ TB(["Threshold (chosen on 2023)", "TP", "FP", "FN", "Precision", "Recall"],
 FG("e1.png", "Figure 11. Final model versus baselines on the test years.", 15)
 P("No threshold reaches recall ≥ 60 % and precision ≥ 30 % at the same time. The F1 threshold misses about half of the "
   "heavy-rain cell-hours, so the safe claim is decision support for forecasters; the recall-first threshold halves the "
-  "misses at the cost of about 5.5 × more false alarms. The 0.932 threshold is a score cut-off, not a 93 % probability: "
+  "misses at the cost of about 5.5 × more false alarms: each extra heavy-rain cell-hour caught costs 9.7 extra "
+  "false alarms, so recall-first is justified only if one miss costs more than about ten false alarms. We propose two "
+  "levels: watch at p ≥ 0.739, warning at p ≥ 0.932. The 0.932 threshold is a score cut-off, not a 93 % probability: "
   "the rebalanced training sample inflates scores and Random Forest probabilities are not calibrated.")
 
 # ---------------------------------------------------------------- 8. streaming + serving
@@ -272,8 +280,9 @@ TB(["Check", "Result"],
     ["Completeness / nulls", "5,423 cell-years, 0 incomplete; nulls only cape (2) and k_index (243)"],
     ["Independent processing check", "same ERA5 via Open-Meteo at 63 points: daily rain correlation 0.9998; hourly correlation highest at lag 0 (0.989 vs 0.70 at ±1 h) ⇒ time zone correct"],
     ["Label vs real gauges", "14 NOAA gauges: totals ratio 1.04; ERA5 reaches 50 mm on 25 % of gauge heavy days ⇒ the label is cell-average heavy rain"],
-    ["Leakage", "unit tests change future data and check past features are unchanged; exact label window; split purge"],
-    ["MapReduce vs Spark SQL", "144 / 144 keys, 0 differences (pilot)"],
+    ["Leakage", "unit tests change future data and check past features are unchanged; exact label window; split purge; expver = ERA5 final (0001) for every hour 2015–2025, so no later revision mixes into training"],
+    ["Labels from raw", "recomputed with numpy from the NetCDF files: identical to Spark (train 313,169 / val 28,683 / test 104,439 positives)"],
+    ["MapReduce vs Spark SQL", "144 / 144 keys, 0 differences (pilot, YARN); full official train set 34.6 M rows: 5,916 keys, 0 differences (local Python run of the same mapper/combiner/reducer)"],
     ["Stream vs batch", "81,710 cell-hours and 21,714 feature values identical"]],
    "Table 11. Validation evidence (details in evidence/session9/).")
 

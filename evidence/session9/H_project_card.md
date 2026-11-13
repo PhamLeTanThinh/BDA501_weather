@@ -57,6 +57,33 @@ seen in previous micro-batches**, not wall-clock. During bursts (warm-up, 20-hou
 arrived before the watermark had advanced and were accepted (clean run: 89 injected, 20 dropped; an earlier run dropped 44 — it depends on how batches fall). Replay speed therefore changes
 which late events survive; correctness of the outputs is protected by recomputation + upsert, not by the watermark.
 
+## Added checks (measured, `team_audit/`)
+
+- **Reanalysis revisions:** the `expver` variable in all 68 raw files is `0001` (ERA5 final) for every hour 2015–2025,
+  no `0005` (ERA5T). Train, validation and test use the same product version; no later revision leaks into training.
+  Residual risk: operation would use ERA5T/NWP with a different distribution (E1).
+- **Labels from raw:** recomputed with numpy from the NetCDF files: train 313,169 / val 28,683 / test 104,439 positives,
+  identical to Spark (diff 0, 493/493 cells).
+- **False-alarm cost (E2):** moving from 0.932 to 0.739 buys +27,973 TP for +270,628 FP = **9.7 false alarms per extra
+  heavy-rain cell-hour caught**. Decision rule: use the recall-first threshold only if one missed event costs more than
+  ~10 false alarms. Two-level use: "watch" at p ≥ 0.739, "warning" at p ≥ 0.932.
+- **Province label definitions (test 2024–2025, 34 provinces × 17,520 h = 595,680 province-hours):**
+
+| Definition | Positive province-hours | Lâm Đồng (35 cells) | Gia Lai (31) | Hưng Yên (3) | Hải Phòng (4) |
+|---|---|---|---|---|---|
+| any-area (MAX, ≥ 1 cell > 50 mm) — **used** | 20,138 | 355 | 878 | 366 | 330 |
+| p90 of cells > 50 mm | 13,783 | 91 | 453 | 352 | 312 |
+| coverage ≥ 25 % of cells | 9,918 | 31 | 243 | 366 | 330 |
+
+  The definition changes alerted province-hours ~2× nationally and 11× for Lâm Đồng, almost nothing for 3–4-cell
+  provinces ⇒ we keep any-area (do not miss local extremes) and publish the share of alerted cells next to it.
+- **MapReduce on the full official train set:** the repo's mapper/combiner/reducer run locally in Python on 34,561,272
+  rows: combiner → 47,328 records, 5,916 keys (493 × 12), 0 mismatches vs numpy (not Hadoop/YARN; the YARN run
+  remains pilot).
+- **Feature-set selection — correction:** `selection.py` applies the "CI above zero" rule on the **test** bootstrap,
+  so the feature set was chosen on test. Re-checked on validation 2023 only: M1 0.172, M2 0.176, M3 0.171, **M4 0.210**
+  ⇒ the same choice (M4). Algorithm and thresholds were chosen on validation.
+
 ## Other Card E prompts
 
 - **Province label:** province risk = **MAX** probability over its cells; a province is alerted if **any** cell is above the
