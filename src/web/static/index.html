@@ -161,7 +161,7 @@ function setControl(pr) {
 }
 
 // bộ đếm thời gian thật: đếm lên mỗi giây giữa hai lần hỏi API
-let live = null, liveAt = 0, webAt = 0, lastBatch = null, lastSent = null;
+let live = null, liveAt = 0, webAt = 0, lastBatch = null, lastSent = null, liveState = null;
 const TRIGGER = 10;
 const sec = (x) => x == null ? "–" : `${Math.max(0, x).toFixed(0)} s`;
 function blink(id) { const d = document.getElementById(id); d.style.opacity = .15; setTimeout(() => d.style.opacity = 1, 250); }
@@ -174,7 +174,9 @@ setInterval(() => {
   document.getElementById("lvNext").textContent = sa == null ? "–" : sec(TRIGGER - (sa % TRIGGER));
   document.getElementById("lvWeb").textContent = sec((Date.now() - webAt) / 1000);
   document.getElementById("dotP").style.background = pa != null && pa < 15 ? "var(--green)" : "var(--grey)";
-  document.getElementById("dotS").style.background = sa != null && sa < 30 ? "var(--green)" : "var(--red)";
+  // đang chờ nút / tạm dừng / đã xong: Spark rảnh là bình thường → xám; đang chạy mà >30 s không xong batch → đỏ
+  const idle = ["ready", "paused", "finished"].includes(liveState);
+  document.getElementById("dotS").style.background = sa != null && sa < 30 ? "var(--green)" : idle ? "var(--grey)" : "var(--red)";
 }, 1000);
 
 async function tick() {
@@ -182,7 +184,7 @@ async function tick() {
   try { st = await (await fetch("/api/state")).json(); } catch (e) { return; }
   const pr = st.producer, pl = st.pipeline;
   setControl(pr);
-  live = st.live; liveAt = Date.now(); webAt = Date.now();
+  live = st.live; liveAt = Date.now(); webAt = Date.now(); liveState = pr.state;
   document.getElementById("lvSent").textContent = fmt(pr.sent);
   document.getElementById("lvBatch").textContent = pl.last_batch == null ? "–" : `#${pl.last_batch}`;
   document.getElementById("lvDur").textContent = pl.last_batch_seconds == null ? "–" : `${pl.last_batch_seconds} s`;
@@ -201,7 +203,9 @@ async function tick() {
     const now = pl.clock ? new Date(pl.clock.replace(" ", "T") + ":00+07:00") : t0;
     const h = Math.max(0, Math.round((now - t0) / 3.6e6)), need = Math.round((t1 - t0) / 3.6e6);
     warm.style.display = "block";
-    warm.innerHTML = `<b>Đang làm nóng ${Math.min(h, need)}/${need} giờ</b>feature cần 72 giờ dữ liệu trước giờ dự báo đầu tiên (${predictFrom.slice(8, 10)}/09 00:00)`;
+    warm.innerHTML = pr.state === "ready" && h >= need - 1
+      ? `<b>Đã làm nóng xong ${need}/${need} giờ</b>bấm ▶ Bắt đầu stream để dự báo từ ${predictFrom.slice(8, 10)}/09 00:00`
+      : `<b>Đang làm nóng ${Math.min(h, need)}/${need} giờ</b>feature cần 72 giờ dữ liệu trước giờ dự báo đầu tiên (${predictFrom.slice(8, 10)}/09 00:00)`;
   } else warm.style.display = "none";
   st.cells.forEach((c) => {
     if (!rects[c.cell]) return;

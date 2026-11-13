@@ -211,7 +211,8 @@ module.exports = [
   df.flow(3.9, 3.6, 4.5, 2.25);                       // Kafka → đọc
   df.flow(6.05, 2.02, 6.25, 2.02);
   df.flow(7.85, 2.02, 8.05, 2.02);
-  df.flow(7.05, 2.5, 7.05, 3.25);                     // state → checkpoint (qua history)
+  df.flow(6.55, 2.5, 5.55, 3.25, "state", { dx: -0.35, dy: 0.05 });   // watermark + khóa khử trùng → checkpoint
+  df.flow(4.95, 2.5, 4.95, 3.25, "offsets", { dx: 0.5 });            // offset Kafka đã đọc → checkpoint
   df.flow(8.4, 2.5, 7.75, 3.25);                      // ghi bộ đệm
   df.flow(7.3, 3.25, 8.2, 2.5);                       // đọc lại bộ đệm 120 giờ
   df.flow(8.8, 3.25, 8.8, 2.5);                       // nạp model
