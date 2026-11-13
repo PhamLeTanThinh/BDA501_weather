@@ -373,7 +373,7 @@ def write_docx(path):
     r.bold, r.font.size, r.font.color.rgb = True, Pt(20), TEAL
     s = doc.add_paragraph()
     s.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    s.add_run(SUB + "\nTeam: Việt · Luân · Thịnh   |   [class / team code]   |   November 2026").font.size = Pt(12)
+    s.add_run(SUB + "\nTeam 1: Trần Quốc Việt (25MS23304) · Nguyễn Phạm Thành Luân (25MS23265) · Phạm Lê Tấn Thịnh (25MS23273)\nNovember 2026").font.size = Pt(12)
     if (FIG / "arch_overview.png").exists():
         doc.add_picture(str(FIG / "arch_overview.png"), width=Cm(15))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
