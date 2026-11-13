@@ -17,7 +17,7 @@
 | Cloud/cluster deployment design | [x] | `G_deployment.md` 6.1 (design review) |
 | Validation | [x] | `D_data_validation.md`, `E_model_validation.md` |
 | Reproducibility | [x] | README from raw CDS, versions, seed 42 (`G_deployment.md` 6.2) |
-| Final report + README + code package | [~] | README + code on GitHub `main`; written report to be confirmed by the team |
+| Final report + README + code package | [x] | `report/BDA501_Final_Report.docx` (+ `.md`, built by `report/build_report.py`); README + code on GitHub `main` |
 | Team contribution statement | [x] | deck "Conclusions and team contributions" |
 | Demo evidence | [x] | `scripts/stream_demo.sh up` → web map; Spark UI |
 
@@ -44,7 +44,7 @@
 | Completeness of product | 25 | 21 | end-to-end implemented; cluster deployment design-only |
 | Presentation & expression | 10 | 8 | bilingual deck, live web demo |
 | Application of theory | 20 | 16 | shuffle/partition/broadcast measured; CAP and watermark semantics explained |
-| Timeliness & requirements | 5 | 4 | written report status to confirm |
+| Timeliness & requirements | 5 | 4 | report written; team to fill names/IDs |
 | **Total** | 100 | **82** | |
 
 ## Top three corrections before Session 10
