@@ -39,7 +39,7 @@ module.exports = (IC) => {
     [B(t("8. Alert threshold", "8. Ngưỡng cảnh báo")), t("threshold for F1 vs for recall, chosen on 2023", "ngưỡng theo F1 và theo recall, chọn trên 2023"),
       t(`recall ${f(100 * res("M4").recall, 0)}% at F1 threshold; 60% target not yet met`, `recall ${f(100 * res("M4").recall, 0)}% ở ngưỡng F1; chưa đạt mục tiêu 60%`), ST.part],
     [B(t("9. Spark performance (E6)", "9. Hiệu năng Spark (E6)")), t("shuffle partitions and join strategy", "số shuffle partition và cách join"),
-      t("script ready, not measured yet", "script sẵn sàng, chưa đo"), ST.plan],
+      t("measured on official data: 4 partitions fastest on 3 cores; broadcast halves shuffle, not faster", "đã đo trên dữ liệu chính thức: 4 partition nhanh nhất trên 3 lõi; broadcast giảm nửa shuffle, không nhanh hơn"), ST.done],
   ];
   table(S, C, rows, { x: MX, y: 1.25, w: W - 2 * MX, colW: [2.35, 4.6, 4.03, 1.15], fontSize: 11.5,
     rowH: [0.38, 0.5, 0.5, 0.5, 0.5, 0.5, 0.58, 0.58, 0.5, 0.5] });

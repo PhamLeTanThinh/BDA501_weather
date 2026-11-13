@@ -1,0 +1,45 @@
+{
+  "spark": "4.2.0",
+  "master": "local[3]",
+  "cores": 3,
+  "driver_memory": "4g",
+  "python": "3.11.18",
+  "os": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "cpu_count_container": 16,
+  "aqe": "off",
+  "E1_input": "silver grid_weather, 60 cells × 2015–2025 = 5,785,920 rows",
+  "E2_input": "gold features_hourly, all cells = 47,540,976 rows",
+  "repeats": "E1: 1 warm-up + 2; E2: 1 warm-up + 3",
+  "E2_top_result": [
+    {
+      "new_province": "Quảng Trị",
+      "year": 2020,
+      "heavy_days": 305,
+      "max_day_mm": 455.08480072021484
+    },
+    {
+      "new_province": "Quảng Trị",
+      "year": 2025,
+      "heavy_days": 240,
+      "max_day_mm": 244.68469619750977
+    },
+    {
+      "new_province": "Quảng Ngãi",
+      "year": 2021,
+      "heavy_days": 230,
+      "max_day_mm": 373.3334541320801
+    },
+    {
+      "new_province": "Đà Nẵng",
+      "year": 2021,
+      "heavy_days": 228,
+      "max_day_mm": 374.56226348876953
+    },
+    {
+      "new_province": "Đà Nẵng",
+      "year": 2020,
+      "heavy_days": 222,
+      "max_day_mm": 285.9678268432617
+    }
+  ]
+}

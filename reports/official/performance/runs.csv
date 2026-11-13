@@ -1,0 +1,15 @@
+experiment,setting,repeat,seconds,tasks,shuffle_write_mb,shuffle_read_mb
+E1_shuffle_partitions,4,1,32.42,36,508.1,508.1
+E1_shuffle_partitions,4,2,26.01,36,508.1,508.1
+E1_shuffle_partitions,16,1,33.56,48,508.1,508.1
+E1_shuffle_partitions,16,2,46.19,48,508.1,508.1
+E1_shuffle_partitions,64,1,37.93,96,508.2,508.2
+E1_shuffle_partitions,64,2,38.03,96,508.2,508.2
+E1_shuffle_partitions,200,1,36.0,232,508.2,508.2
+E1_shuffle_partitions,200,2,37.78,232,508.2,508.2
+E2_join_strategy,broadcast,1,31.97,111,23.2,23.2
+E2_join_strategy,broadcast,2,36.31,111,23.2,23.2
+E2_join_strategy,broadcast,3,30.54,111,23.2,23.2
+E2_join_strategy,sortmerge,1,29.98,127,45.5,45.5
+E2_join_strategy,sortmerge,2,29.83,127,45.5,45.5
+E2_join_strategy,sortmerge,3,31.43,127,45.5,45.5

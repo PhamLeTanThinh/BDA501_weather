@@ -18,7 +18,9 @@ case "${1:-up}" in
          sleep 20
          "${DC[@]}" up -d producer
          echo "web: http://localhost:8000 (đợi làm nóng xong rồi bấm ▶ Bắt đầu stream) · Spark UI: http://localhost:4040" ;;
-  reset) "${DC[@]}" stop producer spark || true
+  reset) "${DC[@]}" up -d kafka mongo
+         until "${DC[@]}" exec -T kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1; do sleep 3; done
+         "${DC[@]}" stop producer spark || true
          "${DC[@]}" exec -T kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
            --delete --topic weather.silver.hourly || true
          "${DC[@]}" exec -T mongo mongosh --quiet rain_stream --eval "db.dropDatabase()" || true

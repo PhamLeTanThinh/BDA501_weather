@@ -30,8 +30,8 @@ const sections = [
     "Chọn thuật toán nào, và train thế nào để không dùng dữ liệu tương lai"), tail.modelChoice, tail.modelCompare, tail.protocol]],
   ["Model evaluation", [divider("Model evaluation", "Đánh giá mô hình", "The official feature set on the held-out years 2024–2025",
     "Bộ feature chính thức trên các năm giữ riêng 2024–2025"), tail.e1]],
-  ["Test", [divider("Test", "Kiểm thử", "End-to-end replay of Typhoon Yagi, correctness checks, performance plan, limits",
-    "Chạy thử trọn luồng với bão Yagi, kiểm tra tính đúng, kế hoạch đo hiệu năng, giới hạn"), tail.yagiChart, tail.yagiSample, tail.checks, tail.perf, tail.limits, tail.conclusions]],
+  ["Test", [divider("Test", "Kiểm thử", "End-to-end replay of Typhoon Yagi, correctness checks, measured performance, limits",
+    "Chạy thử trọn luồng với bão Yagi, kiểm tra tính đúng, đo hiệu năng, giới hạn"), tail.yagiChart, tail.yagiSample, tail.checks, tail.perf, tail.limits, tail.readiness, tail.conclusions]],
 ];
 
 (async () => {

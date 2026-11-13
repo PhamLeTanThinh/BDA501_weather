@@ -9,6 +9,16 @@ const mil = (x) => t(`${f(x / 1e6, 1)} M`, `${f(x / 1e6, 1).replace(".", ",")} t
 // kết quả lượt streaming (Kafka, M4): đo lường + parity, và dữ liệu cho slide Yagi
 const rd = (f) => { const q = path.join(K.ROOT, "reports", "streaming", f); return fs.existsSync(q) ? JSON.parse(fs.readFileSync(q, "utf8")) : null; };
 const SR = rd("stream_report.json"), SD = rd("stream_deck.json");
+// thí nghiệm hiệu năng có kiểm soát (perf_official): summary.csv + environment.json
+const PF = (() => {
+  const d = path.join(K.ROOT, "reports", "official", "performance");
+  if (!fs.existsSync(path.join(d, "summary.csv"))) return null;
+  const [h, ...r] = fs.readFileSync(path.join(d, "summary.csv"), "utf8").trim().split(/\r?\n/);
+  const k = h.split(",");
+  const sum = r.map((l) => Object.fromEntries(l.split(",").map((v, i) => [k[i], isNaN(+v) || v === "" ? v : +v])));
+  sum.forEach((x) => { x.setting = String(x.setting); });
+  return { sum, env: JSON.parse(fs.readFileSync(path.join(d, "environment.json"), "utf8")) };
+})();
 // so sánh ba thuật toán (Logistic regression, Random Forest, GBT) trên cùng dữ liệu M4
 const MC = (() => {
   const d = path.join(K.ROOT, "reports", "official", "model"), csv = (f) => fs.readFileSync(path.join(d, f), "utf8").trim().split(/\r?\n/);
@@ -383,29 +393,78 @@ checks: (IC) => {
 
 // ---------------- E6: thí nghiệm hiệu năng (dự kiến)
 perf: (IC) => {
-  const S = slide("CONTENT", SE(), t("E6 · Spark performance experiment (planned)", "E6 · Thí nghiệm hiệu năng Spark (dự kiến)"));
-  pill(S, C, W - MX - 1.15, 0.55, "proposed");
-  lead(S, t("Two knobs, measured on the full official data so the timings reflect the real scale",
-    "Hai nút chỉnh, đo trên toàn bộ dữ liệu chính thức để thời gian phản ánh đúng quy mô thật"));
-  const chips = (x, y, vals, col) => vals.forEach((v, i) => S.addText(v, { shape: "roundRect", rectRadius: 0.1, x: x + i * 1.35, y, w: 1.2, h: 0.75,
-    fill: { color: C.background1 }, line: { color: col, width: 1.75 }, fontSize: 20, bold: true, color: col, align: "center", valign: "middle", margin: 0 }));
-  const half = (W - 2 * MX - 0.4) / 2;
-  [[t("1 · Shuffle partitions", "1 · Số shuffle partition"), ["4", "16", "64", "200"], C.accent1, t("gold feature build: rolling windows + join", "dựng feature gold: cửa sổ trượt + join")],
-   [t("2 · Join strategy", "2 · Cách join"), ["Broadcast", "SortMerge"], C.accent2, t("query Q2: daily rain ⋈ cities ⋈ geography", "truy vấn Q2: mưa ngày ⋈ thành phố ⋈ địa lý")]].forEach(([h, vals, col, job], i) => {
-    const x = MX + i * (half + 0.4);
-    S.addText(h, { x, y: 2.1, w: half, h: 0.45, fontSize: 18, bold: true, color: col, margin: 0, isTextBox: true });
-    if (vals.length > 2) chips(x, 2.75, vals, col);
-    else vals.forEach((v, k) => S.addText(v, { shape: "roundRect", rectRadius: 0.1, x: x + k * 2.75, y: 2.75, w: 2.5, h: 0.75,
-      fill: { color: C.background1 }, line: { color: col, width: 1.75 }, fontSize: 20, bold: true, color: col, align: "center", valign: "middle", margin: 0 }));
-    S.addText(job, { x, y: 3.7, w: half, h: 0.4, fontSize: 13, color: C.text1, margin: 0, isTextBox: true });
+  const S = slide("CONTENT", SE(), t("E6 · Spark performance experiment (measured)", "E6 · Thí nghiệm hiệu năng Spark (đã đo)"));
+  if (!PF) return;
+  const e1 = PF.sum.filter((r) => r.experiment === "E1_shuffle_partitions"), e2 = PF.sum.filter((r) => r.experiment === "E2_join_strategy");
+  const best1 = e1.reduce((a, b) => (b.mean_s < a.mean_s ? b : a));
+  lead(S, t("Change one factor at a time on the official data, measure, explain", "Đổi một yếu tố mỗi lần trên dữ liệu chính thức, đo, rồi giải thích"));
+  // thí nghiệm 1: cột thời gian theo số partition
+  const half = (W - 2 * MX - 0.5) / 2, base = 4.55, hmax = 2.0, mx1 = Math.max(...e1.map((r) => r.max_s));
+  S.addText([{ text: t("1 · shuffle partitions", "1 · số shuffle partition"), options: { bold: true, color: C.accent1, fontSize: 15, breakLine: true } },
+    { text: t(`M4 feature build, ${PF.env.E1_input.split("=")[1].trim()}, AQE off`, `dựng feature M4, ${PF.env.E1_input.split("=")[1].trim().replace("rows", "dòng")}, tắt AQE`), options: { fontSize: 11, color: C.text1 } }],
+    { x: MX, y: 1.85, w: half, h: 0.6, margin: 0, isTextBox: true });
+  const bw1 = half / e1.length;
+  e1.forEach((r, i) => {
+    const x = MX + i * bw1, h = (r.mean_s / mx1) * hmax, hl = r === best1, col = hl ? C.accent2 : C.accent1;
+    S.addShape("rect", { x: x + bw1 * 0.2, y: base - h, w: bw1 * 0.6, h, fill: { color: col }, line: { color: col } });
+    S.addText(`${f(r.mean_s, 1)} s`, { x, y: base - h - 0.3, w: bw1, h: 0.28, fontSize: 12, bold: true, color: col, align: "center", margin: 0, isTextBox: true });
+    S.addText([{ text: `${r.setting}`, options: { bold: true, breakLine: true } }, { text: t(`${r.tasks} tasks`, `${r.tasks} task`), options: { fontSize: 10 } }],
+      { x, y: base + 0.05, w: bw1, h: 0.45, fontSize: 12, color: C.text1, align: "center", margin: 0, isTextBox: true });
   });
-  flow(S, 4.55, [
-    { head: t("Warm up", "Làm nóng"), sub: t("1 run, not timed", "1 lần, không tính giờ") },
-    { head: t("Time", "Đo"), sub: t("3 runs per setting, noop sink", "3 lần mỗi mức, sink noop") },
-    { head: t("Report", "Báo cáo"), sub: t("time + plan + hardware + Spark version", "thời gian + plan + phần cứng + phiên bản Spark") },
-  ], 1.05);
-  note(S, "Factor 1 changes spark.sql.shuffle.partitions over 4, 16, 64 and 200 with adaptive query execution turned off, on the gold feature build (rolling windows plus the neighbour join). Factor 2 forces BroadcastHashJoin versus SortMergeJoin on query Q2. Each setting gets one warm-up and three timed runs writing to a noop sink. The script is ready; results will be reported with hardware, Spark version, row count, both query plans and the observed trend.",
-    "Yếu tố 1 đổi spark.sql.shuffle.partitions qua 4, 16, 64 và 200, tắt adaptive query execution, trên bước dựng feature gold (cửa sổ trượt và join ô lân cận). Yếu tố 2 ép BroadcastHashJoin so với SortMergeJoin trên truy vấn Q2. Mỗi mức chạy 1 lần làm nóng và 3 lần đo, ghi ra sink noop. Script đã sẵn sàng; kết quả sẽ báo cáo kèm phần cứng, phiên bản Spark, số dòng, cả hai query plan và xu hướng quan sát được.");
+  // thí nghiệm 2: broadcast vs sort-merge
+  const x2 = MX + half + 0.5, mx2 = Math.max(...e2.map((r) => r.max_s)), bw2 = half / 2;
+  S.addText([{ text: t("2 · join strategy", "2 · cách join"), options: { bold: true, color: C.accent5, fontSize: 15, breakLine: true } },
+    { text: t(`heavy-rain cell-days per province × year on gold, ${PF.env.E2_input.split("=")[1].trim()}`, `số ô-ngày mưa lớn theo tỉnh × năm trên gold, ${PF.env.E2_input.split("=")[1].trim().replace("rows", "dòng")}`), options: { fontSize: 11, color: C.text1 } }],
+    { x: x2, y: 1.85, w: half, h: 0.6, margin: 0, isTextBox: true });
+  e2.forEach((r, i) => {
+    const x = x2 + i * bw2, h = (r.mean_s / mx2) * hmax, col = i === 0 ? C.accent5 : C.accent4;
+    S.addShape("rect", { x: x + bw2 * 0.25, y: base - h, w: bw2 * 0.5, h, fill: { color: col }, line: { color: col } });
+    S.addText(`${f(r.mean_s, 1)} s`, { x, y: base - h - 0.3, w: bw2, h: 0.28, fontSize: 12, bold: true, color: col, align: "center", margin: 0, isTextBox: true });
+    S.addText([{ text: r.setting === "broadcast" ? "BroadcastHashJoin" : "SortMergeJoin", options: { bold: true, breakLine: true } },
+      { text: t(`shuffle ${f(r.shuffle_write_mb, 0)} MB`, `shuffle ${f(r.shuffle_write_mb, 0)} MB`), options: { fontSize: 10 } }],
+      { x, y: base + 0.05, w: bw2, h: 0.45, fontSize: 12, color: C.text1, align: "center", margin: 0, isTextBox: true });
+  });
+  const b = e2.find((r) => r.setting === "broadcast"), s = e2.find((r) => r.setting === "sortmerge");
+  S.addText([{ text: t("Reading: ", "Đọc kết quả: "), options: { bold: true, color: C.accent2 } },
+    { text: t(`fastest at ${best1.setting} partitions: on 3 cores, more partitions only add task overhead, the ~${f(e1[0].shuffle_write_mb, 0)} MB shuffle stays the same. Broadcast halves the shuffle (${f(b.shuffle_write_mb, 0)} vs ${f(s.shuffle_write_mb, 0)} MB) but is not faster (${f(b.mean_s, 1)} vs ${f(s.mean_s, 1)} s): the join comes after aggregation to ~2 M cell-days, so reading 47.5 M rows dominates.`,
+      `nhanh nhất ở ${best1.setting} partition: máy 3 lõi nên thêm partition chỉ tăng chi phí task, shuffle ~${f(e1[0].shuffle_write_mb, 0)} MB không đổi. Broadcast giảm một nửa shuffle (${f(b.shuffle_write_mb, 0)} so với ${f(s.shuffle_write_mb, 0)} MB) nhưng không nhanh hơn (${f(b.mean_s, 1)} so với ${f(s.mean_s, 1)} s): join diễn ra sau khi đã gom còn ~2 triệu ô-ngày, nên đọc 47,5 triệu dòng mới là phần tốn thời gian.`) }],
+    { x: MX, y: 5.25, w: W - 2 * MX, h: 0.75, fontSize: 13, color: C.text1, margin: 0, valign: "top", isTextBox: true });
+  source(S, C, t(`Spark ${PF.env.spark} local[3], driver ${PF.env.driver_memory}, one laptop · mean of ${PF.env.repeats} · reports/official/performance/`,
+    `Spark ${PF.env.spark} local[3], driver ${PF.env.driver_memory}, một laptop · trung bình ${PF.env.repeats} · reports/official/performance/`));
+  const rows = PF.sum.map((r) => `${r.experiment} ${r.setting}: mean ${f(r.mean_s, 1)} s (min ${f(r.min_s, 1)}, max ${f(r.max_s, 1)}), tasks ${r.tasks}, shuffle write ${f(r.shuffle_write_mb, 0)} MB`).join("; ");
+  note(S, `Controlled experiment on the official data, one factor at a time, AQE off so Spark does not merge partitions by itself, 1 warm-up run then timed runs, noop sink so only computation is timed. ${rows}. Limits: one laptop with 3 cores, so absolute times are noisy (other processes, disk cache) and cannot prove cluster scaling; on a cluster the best partition count grows with the number of executor cores and the data size. Shuffle volume is the same for every partition count — only how it is split changes. Broadcast helps while the small side fits in executor memory (10 MB threshold here; the cell table is a few KB).`,
+    `Thí nghiệm có kiểm soát trên dữ liệu chính thức, mỗi lần đổi một yếu tố, tắt AQE để Spark không tự gộp partition, chạy làm nóng 1 lần rồi đo, ghi ra sink noop để chỉ đo phần tính toán. ${rows}. Giới hạn: một laptop 3 lõi nên thời gian tuyệt đối còn nhiễu (tiến trình khác, cache đĩa) và không chứng minh được khả năng mở rộng trên cụm; trên cụm, số partition tốt nhất tăng theo số lõi executor và kích thước dữ liệu. Lượng shuffle như nhau ở mọi số partition — chỉ cách chia thay đổi. Broadcast có lợi khi bảng nhỏ vừa bộ nhớ executor (ngưỡng 10 MB; bảng ô chỉ vài KB).`);
+},
+
+// ---------------- Session 9: tổng kết mức sẵn sàng kỹ thuật
+readiness: (IC) => {
+  const S = slide("CONTENT", SE(), t("Session 9 Technical Readiness Summary", "Session 9: tổng kết mức sẵn sàng kỹ thuật"));
+  const m4 = R("M4"), per = R("persistence_rain24h"), d4 = DL("M4 - M1");
+  const e1 = PF ? PF.sum.filter((r) => r.experiment === "E1_shuffle_partitions") : [], e2 = PF ? PF.sum.filter((r) => r.experiment === "E2_join_strategy") : [];
+  const best1 = e1.length ? e1.reduce((a, b) => (b.mean_s < a.mean_s ? b : a)) : null;
+  const bb = e2.find((r) => r.setting === "broadcast"), ss = e2.find((r) => r.setting === "sortmerge");
+  const rows = [
+    [t("1 · Architecture truth", "1 · Kiến trúc thật"), t("every component tagged [I] / [I*] pilot / [P] design; MapReduce + Spark SQL marked pilot; daily ETL and cluster marked design; streaming labelled a replay (hindcast)",
+      "mọi thành phần gắn [I] / [I*] pilot / [P] thiết kế; MapReduce + Spark SQL ghi là pilot; ETL hằng ngày và cụm ghi là thiết kế; streaming ghi rõ là phát lại (hindcast)")],
+    [t("2 · Performance", "2 · Hiệu năng"), PF ? t(`shuffle partitions 4/16/64/200 → fastest ${best1.setting} (${f(best1.mean_s, 1)} s) on 3 cores; broadcast join halves shuffle but is not faster (${f(bb.mean_s, 1)} vs ${f(ss.mean_s, 1)} s, 47.5 M rows)`,
+      `shuffle partition 4/16/64/200 → nhanh nhất ${best1.setting} (${f(best1.mean_s, 1)} s) trên 3 lõi; broadcast join giảm nửa shuffle nhưng không nhanh hơn (${f(bb.mean_s, 1)} so với ${f(ss.mean_s, 1)} s, 47,5 triệu dòng)`) : "–"],
+    [t("3 · Validation", "3 · Kiểm chứng"), t(`data: 0 duplicate keys, bronze → silver reconciled (−493×24 h outside 2015–2025); ML: M4 PR-AUC ${f(m4.pr_auc)} vs ${f(per.pr_auc)} persistence, atmosphere +${f(d4.delta_pr_auc, 3)} (CI > 0)`,
+      `dữ liệu: 0 khóa trùng, bronze → silver khớp (−493×24 giờ ngoài 2015–2025); ML: M4 PR-AUC ${f(m4.pr_auc)} so với ${f(per.pr_auc)} persistence, khí quyển +${f(d4.delta_pr_auc, 3)} (KTC > 0)`)],
+    [t("4 · Operations", "4 · Vận hành"), SR ? t(`Kafka replay, not live (ERA5 ~5 days late); Spark killed mid-run: ${n(SR.kafka.read_by_forecast_query)} / ${n(SR.kafka.messages_in_topic)} read, 0 duplicate forecasts; README reruns from raw CDS; cluster = design`,
+      `Kafka phát lại, không phải trực tiếp (ERA5 trễ ~5 ngày); tắt Spark giữa chừng: đọc ${n(SR.kafka.read_by_forecast_query)} / ${n(SR.kafka.messages_in_topic)}, 0 dự báo trùng; README chạy lại từ CDS gốc; cụm = thiết kế`) : "–"],
+    [t("5 · Limitation", "5 · Giới hạn"), t(`recall ${pct(m4.recall)} at the F1 threshold → decision support for forecasters, not a stand-alone warning; recall-first threshold gives 74% recall at 19% precision`,
+      `recall ${pct(m4.recall)} ở ngưỡng F1 → hỗ trợ dự báo viên, chưa phải hệ thống cảnh báo độc lập; ngưỡng ưu tiên recall cho recall 74%, precision 19%`)],
+  ];
+  rows.forEach(([h, d], i) => {
+    const y = 1.3 + i * 0.98;
+    S.addShape("roundRect", { x: MX, y, w: W - 2 * MX, h: 0.85, rectRadius: 0.08, fill: { color: i % 2 ? C.background1 : C.background2 }, line: { color: C.background2 } });
+    S.addText(h, { x: MX + 0.2, y, w: 2.6, h: 0.85, fontSize: 15, bold: true, color: C.text2, valign: "middle", margin: 0, isTextBox: true });
+    S.addText(d, { x: MX + 2.9, y, w: W - 2 * MX - 3.1, h: 0.85, fontSize: 13, color: C.text1, valign: "middle", margin: 0, isTextBox: true });
+  });
+  source(S, C, t("Evidence: evidence/session9/ (A architecture · B benchmark · C query plan · D data · E model · F serving/stream · G deployment · H Card E · I readiness)",
+    "Bằng chứng: evidence/session9/ (A kiến trúc · B hiệu năng · C query plan · D dữ liệu · E model · F phục vụ/stream · G triển khai · H Card E · I sẵn sàng)"));
+  note(S, "One line per required item of the Session 9 handoff. Every number comes from a measured run on the official data, except the cluster deployment, which is a design. Details and file paths for each line are in evidence/session9/.",
+    "Mỗi dòng ứng với một mục bắt buộc của Session 9. Mọi con số đến từ lượt chạy đo thật trên dữ liệu chính thức, trừ phần triển khai cụm là thiết kế. Chi tiết và đường dẫn file của từng dòng nằm trong evidence/session9/.");
 },
 
 // ---------------- Giới hạn → bước tiếp theo
@@ -419,7 +478,7 @@ limits: (IC) => {
    [t(`Label = ERA5 on a 25 km cell (hits ${pct(no.hit / no.heavy_days)} of gauge heavy days)`, `Nhãn = ERA5 trên ô 25 km (trúng ${pct(no.hit / no.heavy_days)} ngày mưa lớn tại trạm)`), t("check against more rain gauges", "đối chiếu thêm nhiều trạm đo mưa")],
    [t("Kafka has one broker; Spark runs locally", "Kafka chỉ một broker; Spark chạy local"), t("3 brokers with replication; Spark on YARN", "3 broker có nhân bản; Spark trên YARN")],
    [t("ERA5 arrives ~5 days late", "ERA5 trễ khoảng 5 ngày"), t("Forecast API producer for a live stream", "producer từ Forecast API cho stream thật")],
-   [t("Spark in local mode; silver/gold not on HDFS", "Spark chạy local; silver/gold chưa lên HDFS"), t("run on YARN, lake on HDFS; run E6", "chạy trên YARN, lake trên HDFS; chạy E6")]].forEach(([a, b], i) => {
+   [t("Spark in local mode; silver/gold not on HDFS", "Spark chạy local; silver/gold chưa lên HDFS"), t("run on YARN, lake on HDFS; repeat E6 on the cluster", "chạy trên YARN, lake trên HDFS; đo lại E6 trên cụm")]].forEach(([a, b], i) => {
     const y = 1.8 + i * 0.75;
     S.addShape("roundRect", { x: MX, y, w: 5.6, h: 0.6, rectRadius: 0.08, fill: { color: "F8E9EB" }, line: { color: "F8E9EB" } });
     S.addText(a, { x: MX + 0.2, y, w: 5.3, h: 0.6, fontSize: 13.5, bold: true, color: C.text2, valign: "middle", margin: 0, isTextBox: true });

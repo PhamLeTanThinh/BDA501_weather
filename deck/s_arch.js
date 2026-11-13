@@ -66,7 +66,17 @@ module.exports = [
 // architecture overview — layered component diagram
 (IC) => {
   const S = slide("CONTENT", SEC(), t("Architecture overview: components and data flows", "Kiến trúc tổng thể: các thành phần và luồng dữ liệu"));
-  const df = dfd(S), Y = 1.2, HZ = 3.95;
+  const df0 = dfd(S), Y = 1.2, HZ = 3.95;
+  // nhãn Session 9: [I] đã làm · [P] chỉ thiết kế · [I*] đã làm trên dữ liệu pilot
+  const tag = (x, y, k) => S.addText(k, { shape: "roundRect", rectRadius: 0.04, x, y, w: k.length > 3 ? 0.36 : 0.3, h: 0.2,
+    fill: { color: k === "[P]" ? C.accent4 : k === "[I*]" ? C.accent2 : C.accent3 }, line: { color: C.background1, width: 0.5 },
+    color: C.background1, fontSize: 7.5, bold: true, align: "center", valign: "middle", margin: 0 });
+  const kindOf = (name) => (/Forecast API/.test(name) ? "[P]" : /MapReduce/.test(name) ? "[I*]" : "[I]");
+  const df = Object.assign({}, df0, {
+    proc: (x, y, w, title, tech, proposed = false) => { df0.proc(x, y, w, title, tech, proposed); tag(x + w - 0.33, y - 0.08, proposed ? "[P]" : kindOf(String(title))); },
+    store: (x, y, w, name, sub) => { df0.store(x, y, w, name, sub); tag(x + w - 0.33, y - 0.02, "[I]"); },
+    ext: (x, y, w, h, name, sub) => { df0.ext(x, y, w, h, name, sub); tag(x + w - 0.36, y, "[I]"); },
+  });
   const B = { color: C.accent2 }, ST = { color: C.accent5 }, V = { color: C.accent4, dash: "dash" };
   df.layer(0.5, Y, 1.85, HZ, t("Sources", "Nguồn"));
   df.layer(2.45, Y, 1.95, HZ, t("Ingestion", "Thu thập"));
@@ -119,7 +129,11 @@ module.exports = [
   df.flow(10.15, 4.3, 10.6, 3.2, "", ST);
   df.flow(11.6, 3.2, 11.6, 3.65, "", ST);
   df.legend(5.4);
-  S.addText([{ text: "→ ", options: { color: C.accent2, bold: true } }, { text: t("batch: daily ETL, monthly retrain   ", "batch: ETL hằng ngày, train lại hằng tháng   ") },
+  S.addText([{ text: "[I] ", options: { bold: true, color: C.accent3 } }, { text: t("implemented   ", "đã làm   ") },
+    { text: "[I*] ", options: { bold: true, color: C.accent2 } }, { text: t("implemented on pilot data   ", "đã làm trên dữ liệu pilot   ") },
+    { text: "[P] ", options: { bold: true, color: C.accent4 } }, { text: t("design only (dashed)", "chỉ thiết kế (nét đứt)") }],
+    { x: 7.2, y: 5.85, w: W - MX - 7.2, h: 0.3, fontSize: 11, color: C.text1, align: "right", margin: 0, isTextBox: true });
+  S.addText([{ text: "→ ", options: { color: C.accent2, bold: true } }, { text: t("batch: run on demand (daily ETL = design)   ", "batch: chạy khi cần (ETL hằng ngày = thiết kế)   ") },
     { text: "→ ", options: { color: C.accent5, bold: true } }, { text: t("streaming: every hour   ", "streaming: mỗi giờ   ") },
     { text: "⇢ ", options: { color: C.accent4, bold: true } }, { text: t("cross-check only", "chỉ để đối chiếu") }],
     { x: MX, y: 5.85, w: W - 2 * MX, h: 0.3, fontSize: 11.5, color: C.text1, margin: 0, isTextBox: true });

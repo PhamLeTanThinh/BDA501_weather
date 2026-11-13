@@ -1,0 +1,121 @@
+== Physical Plan ==
+* HashAggregate (20)
++- Exchange (19)
+   +- * HashAggregate (18)
+      +- * Project (17)
+         +- * SortMergeJoin Inner (16)
+            :- * Sort (9)
+            :  +- Exchange (8)
+            :     +- * HashAggregate (7)
+            :        +- Exchange (6)
+            :           +- * HashAggregate (5)
+            :              +- * Project (4)
+            :                 +- * Filter (3)
+            :                    +- * ColumnarToRow (2)
+            :                       +- Scan parquet  (1)
+            +- * Sort (15)
+               +- Exchange (14)
+                  +- * Project (13)
+                     +- * Filter (12)
+                        +- * ColumnarToRow (11)
+                           +- Scan parquet  (10)
+
+
+(1) Scan parquet 
+Output [4]: [location_id#26512, ts#26521, precipitation#26526, year#26562]
+Batched: true
+Location: InMemoryFileIndex [file:/data/lake/gold/features_hourly]
+PushedFilters: [IsNotNull(location_id)]
+ReadSchema: struct<location_id:string,ts:timestamp,precipitation:double>
+
+(2) ColumnarToRow [codegen id : 1]
+Input [4]: [location_id#26512, ts#26521, precipitation#26526, year#26562]
+
+(3) Filter [codegen id : 1]
+Input [4]: [location_id#26512, ts#26521, precipitation#26526, year#26562]
+Condition : isnotnull(location_id#26512)
+
+(4) Project [codegen id : 1]
+Output [3]: [location_id#26512, precipitation#26526, cast(ts#26521 as date) AS _groupingexpression#26738]
+Input [4]: [location_id#26512, ts#26521, precipitation#26526, year#26562]
+
+(5) HashAggregate [codegen id : 1]
+Input [3]: [location_id#26512, precipitation#26526, _groupingexpression#26738]
+Keys [2]: [location_id#26512, _groupingexpression#26738]
+Functions [1]: [partial_sum(precipitation#26526)]
+Aggregate Attributes [1]: [sum#26743]
+Results [3]: [location_id#26512, _groupingexpression#26738, sum#26744]
+
+(6) Exchange
+Input [3]: [location_id#26512, _groupingexpression#26738, sum#26744]
+Arguments: hashpartitioning(location_id#26512, _groupingexpression#26738, 16), ENSURE_REQUIREMENTS, [plan_id=1652]
+
+(7) HashAggregate [codegen id : 2]
+Input [3]: [location_id#26512, _groupingexpression#26738, sum#26744]
+Keys [2]: [location_id#26512, _groupingexpression#26738]
+Functions [1]: [sum(precipitation#26526)]
+Aggregate Attributes [1]: [sum(precipitation#26526)#26727]
+Results [3]: [location_id#26512, _groupingexpression#26738 AS day#26722, sum(precipitation#26526)#26727 AS rain_day#26723]
+
+(8) Exchange
+Input [3]: [location_id#26512, day#26722, rain_day#26723]
+Arguments: hashpartitioning(location_id#26512, 16), ENSURE_REQUIREMENTS, [plan_id=1656]
+
+(9) Sort [codegen id : 3]
+Input [3]: [location_id#26512, day#26722, rain_day#26723]
+Arguments: [location_id#26512 ASC NULLS FIRST], false, 0
+
+(10) Scan parquet 
+Output [2]: [grid_id#26564, new_province#26569]
+Batched: true
+Location: InMemoryFileIndex [file:/data/lake/silver/cells]
+PushedFilters: [IsNotNull(grid_id)]
+ReadSchema: struct<grid_id:string,new_province:string>
+
+(11) ColumnarToRow [codegen id : 4]
+Input [2]: [grid_id#26564, new_province#26569]
+
+(12) Filter [codegen id : 4]
+Input [2]: [grid_id#26564, new_province#26569]
+Condition : isnotnull(grid_id#26564)
+
+(13) Project [codegen id : 4]
+Output [2]: [grid_id#26564 AS location_id#26573, new_province#26569]
+Input [2]: [grid_id#26564, new_province#26569]
+
+(14) Exchange
+Input [2]: [location_id#26573, new_province#26569]
+Arguments: hashpartitioning(location_id#26573, 16), ENSURE_REQUIREMENTS, [plan_id=1666]
+
+(15) Sort [codegen id : 5]
+Input [2]: [location_id#26573, new_province#26569]
+Arguments: [location_id#26573 ASC NULLS FIRST], false, 0
+
+(16) SortMergeJoin [codegen id : 6]
+Left keys [1]: [location_id#26512]
+Right keys [1]: [location_id#26573]
+Join type: Inner
+Join condition: None
+
+(17) Project [codegen id : 6]
+Output [3]: [rain_day#26723, new_province#26569, year(day#26722) AS _groupingexpression#26737]
+Input [5]: [location_id#26512, day#26722, rain_day#26723, location_id#26573, new_province#26569]
+
+(18) HashAggregate [codegen id : 6]
+Input [3]: [rain_day#26723, new_province#26569, _groupingexpression#26737]
+Keys [2]: [new_province#26569, _groupingexpression#26737]
+Functions [2]: [partial_sum(cast((rain_day#26723 > 50.0) as int)), partial_max(rain_day#26723)]
+Aggregate Attributes [2]: [sum#26739L, max#26740]
+Results [4]: [new_province#26569, _groupingexpression#26737, sum#26741L, max#26742]
+
+(19) Exchange
+Input [4]: [new_province#26569, _groupingexpression#26737, sum#26741L, max#26742]
+Arguments: hashpartitioning(new_province#26569, _groupingexpression#26737, 16), ENSURE_REQUIREMENTS, [plan_id=1675]
+
+(20) HashAggregate [codegen id : 7]
+Input [4]: [new_province#26569, _groupingexpression#26737, sum#26741L, max#26742]
+Keys [2]: [new_province#26569, _groupingexpression#26737]
+Functions [2]: [sum(cast((rain_day#26723 > 50.0) as int)), max(rain_day#26723)]
+Aggregate Attributes [2]: [sum(cast((rain_day#26723 > 50.0) as int))#26736L, max(rain_day#26723)#26735]
+Results [4]: [new_province#26569, _groupingexpression#26737 AS year#26728, sum(cast((rain_day#26723 > 50.0) as int))#26736L AS heavy_days#26729L, max(rain_day#26723)#26735 AS max_day_mm#26730]
+

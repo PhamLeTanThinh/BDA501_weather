@@ -41,6 +41,7 @@ from src.pipeline.cds_silver import VARS
 VN = timezone(timedelta(hours=7))
 RATES = {"duplicate": 0.03, "duplicate_later": 0.02, "late": 0.03, "too_late": 0.001,
          "malformed": 0.005, "missing_field": 0.003, "out_of_range": 0.005, "unknown_cell": 0.003}
+SAMPLE_CELLS = ["g20.75_106.75", "g21.00_107.00", "g16.50_107.50", "g19.25_105.50"]  # Hải Phòng, Quảng Ninh, Huế, Nghệ An
 BAD_VALUES = [("precipitation", -12.0), ("temperature_2m", 85.0), ("relative_humidity_2m", 140.0),
               ("pressure_msl", 420.0), ("cape", -500.0)]
 
@@ -103,6 +104,15 @@ def main():
         stats.update_one({"_id": "producer"}, {"$set": {"state": "running"}})
     counts = Counter()
     pending = defaultdict(list)  # giờ phát lại → bản tin bị giữ lại (trễ / trùng muộn)
+    # nhật ký rác của vài ô mẫu (event time, loại, gửi cùng giờ phát lại thứ mấy) để kiểm tra stream vs batch
+    junk_log = stats.database["junk_log"]
+    sample = set(SAMPLE_CELLS)
+    logbuf = []
+
+    def log(kind, m, at):
+        if m.get("grid_id") in sample:
+            logbuf.append({"cell": m["grid_id"], "event_time": m.get("event_time"), "kind": kind,
+                           "sent_at_replay_index": at})
 
     def send(key, text):
         prod.send(args.topic, key=key or "junk", value=text)
@@ -132,23 +142,30 @@ def main():
             m = message(row, ep)
             if reordered and idx < i:
                 counts["reordered"] += 1
+                log("out_of_order", m, i)
             text = json.dumps(m)
             u = rnd.random()
             if u < RATES["late"]:
-                pending[i + rnd.randint(1, 4)].append((m["grid_id"], text))
+                k = rnd.randint(1, 4)
+                pending[i + k].append((m["grid_id"], text))
                 counts["late"] += 1
+                log(f"late_{k}h", m, i + k)
                 continue
             if u < RATES["late"] + RATES["too_late"]:
                 pending[i + 12].append((m["grid_id"], text))
                 counts["too_late"] += 1
+                log("too_late_12h", m, i + 12)
                 continue
             send(m["grid_id"], text)
             if rnd.random() < RATES["duplicate"]:
                 send(m["grid_id"], text)
                 counts["duplicate"] += 1
+                log("duplicate", m, i)
             if rnd.random() < RATES["duplicate_later"]:
-                pending[i + rnd.randint(1, 3)].append((m["grid_id"], text))
+                k = rnd.randint(1, 3)
+                pending[i + k].append((m["grid_id"], text))
                 counts["duplicate_later"] += 1
+                log(f"duplicate_later_{k}h", m, i + k)
             if rnd.random() < RATES["out_of_range"]:
                 col, val = rnd.choice(BAD_VALUES)
                 send(m["grid_id"], json.dumps({**m, col: val, "msg_id": uuid.uuid4().hex}))
@@ -167,6 +184,9 @@ def main():
         for key, text in pending.pop(i, []):
             send(key, text)
         prod.flush()
+        if logbuf:
+            junk_log.insert_many(logbuf)
+            logbuf.clear()
         clock = datetime.fromtimestamp(ep, VN)
         stats.update_one({"_id": "producer"}, {"$set": {
             "replay_hour": clock.isoformat(), "hours_done": i + 1, "hours_total": len(epochs),

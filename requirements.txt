@@ -8,3 +8,9 @@ pyyaml
 pytest
 matplotlib
 pymongo
+kafka-python-ng
+fastapi
+uvicorn[standard]
+cdsapi
+xarray
+netCDF4

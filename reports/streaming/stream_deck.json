@@ -560,8 +560,8 @@
    {
     "alert": true,
     "p": 0.9421,
-    "ts": "2024-09-06 21:00",
     "revisions": 1,
+    "ts": "2024-09-06 21:00",
     "label": 1,
     "observed_24h_mm": 158.8
    },
@@ -1080,8 +1080,8 @@
    {
     "alert": false,
     "p": 0.6078,
-    "ts": "2024-09-09 14:00",
     "revisions": 1,
+    "ts": "2024-09-09 14:00",
     "label": 1,
     "observed_24h_mm": 60.8
    },
@@ -1112,8 +1112,8 @@
    {
     "alert": false,
     "p": 0.7374,
-    "revisions": 1,
     "ts": "2024-09-09 18:00",
+    "revisions": 1,
     "label": 1,
     "observed_24h_mm": 64.7
    },
@@ -1202,14 +1202,14 @@
    {
     "alert": false,
     "p": 0.9217,
-    "ts": "2024-09-10 07:00",
-    "revisions": 1
+    "revisions": 1,
+    "ts": "2024-09-10 07:00"
    },
    {
     "alert": false,
     "p": 0.9298,
-    "ts": "2024-09-10 08:00",
-    "revisions": 1
+    "revisions": 1,
+    "ts": "2024-09-10 08:00"
    },
    {
     "alert": false,
@@ -1250,8 +1250,8 @@
    {
     "alert": false,
     "p": 0.9248,
-    "ts": "2024-09-10 15:00",
-    "revisions": 1
+    "revisions": 1,
+    "ts": "2024-09-10 15:00"
    },
    {
     "alert": false,
@@ -2050,24 +2050,24 @@
    {
     "alert": false,
     "p": 0.8944,
-    "revisions": 1,
     "ts": "2024-09-07 21:00",
+    "revisions": 1,
     "label": 1,
     "observed_24h_mm": 77.9
    },
    {
     "alert": false,
     "p": 0.9106,
-    "revisions": 1,
     "ts": "2024-09-07 22:00",
+    "revisions": 1,
     "label": 1,
     "observed_24h_mm": 78.9
    },
    {
     "alert": false,
     "p": 0.9151,
-    "revisions": 1,
     "ts": "2024-09-07 23:00",
+    "revisions": 1,
     "label": 1,
     "observed_24h_mm": 79.0
    },
@@ -2330,8 +2330,8 @@
    {
     "alert": false,
     "p": 0.403,
-    "ts": "2024-09-09 08:00",
     "revisions": 1,
+    "ts": "2024-09-09 08:00",
     "label": 0,
     "observed_24h_mm": 42.8
    },
@@ -2378,8 +2378,8 @@
    {
     "alert": false,
     "p": 0.7324,
-    "ts": "2024-09-09 14:00",
     "revisions": 1,
+    "ts": "2024-09-09 14:00",
     "label": 1,
     "observed_24h_mm": 62.4
    },
@@ -2548,8 +2548,8 @@
    {
     "alert": false,
     "p": 0.9269,
-    "ts": "2024-09-10 15:00",
-    "revisions": 1
+    "revisions": 1,
+    "ts": "2024-09-10 15:00"
    },
    {
     "alert": true,
@@ -2604,7 +2604,7 @@
  "sample_doc": {
   "_id": "g20.75_106.75|2024-09-06 19:00",
   "alert": true,
-  "batch_id": 28,
+  "batch_id": 18,
   "cell": "g20.75_106.75",
   "lat": 20.75,
   "lon": 106.75,
@@ -2620,20 +2620,20 @@
   "observed_24h_mm": 146.4
  },
  "confusion_all_cells": {
-  "fp": 2306,
-  "tp": 6680,
-  "tn": 55836,
-  "fn": 2815
+  "tn": 57388,
+  "fn": 2938,
+  "tp": 7017,
+  "fp": 2439
  },
  "batches": {
-  "n": 70,
-  "mean_seconds": 8.9,
-  "max_seconds": 13.4
+  "n": 49,
+  "mean_seconds": 13.5,
+  "max_seconds": 27.5
  },
- "alerts": 9857,
- "revised": 2977,
+ "alerts": 10268,
+ "revised": 1948,
  "scenario": {
-  "killed_at": "2026-11-10 16:36:29.548000",
+  "killed_at": "2026-11-13 12:57:49.567000",
   "killed_at_hour": 110
  }
 }

@@ -53,6 +53,41 @@ def predict(spark, wx, model, features, predict_from):
     return out.rename(columns={"location_id": "cell"})
 
 
+def batch_features(spark, wx, features, cells, predict_from):
+    """Vector feature M4 tính bằng batch (cùng hàm local_features + atmos_features) cho các ô mẫu."""
+    df = (wx.where(F.col("grid_id").isin(cells)).withColumnRenamed("grid_id", "location_id")
+          .withColumn("ts_epoch", F.unix_timestamp("ts")))
+    f = atmos_features(local_features(df, key="location_id"), key="location_id").where(F.col("ts") >= F.lit(predict_from))
+    out = f.select("location_id", "ts", *features).toPandas()
+    out["ts"] = pd.to_datetime(out["ts"]).dt.strftime("%Y-%m-%d %H:%M")
+    return out
+
+
+def feature_parity(spark, db, accepted, silver, features, predict_from):
+    """E3: so từng feature của stream (vector lưu trong foreachBatch, lần tính cuối của mỗi ô-giờ) với batch."""
+    raw = spark.read.parquet("/data/lake/stream_kafka/features/b*").toPandas()
+    raw["ts"] = pd.to_datetime(raw["ts"]).dt.strftime("%Y-%m-%d %H:%M")
+    cells = sorted(raw.location_id.unique())
+    st = raw.sort_values("batch_id").drop_duplicates(["location_id", "ts"], keep="last")   # bản tính cuối (sau dữ liệu trễ)
+    recomputed = int(raw.groupby(["location_id", "ts"]).size().gt(1).sum())
+    out = {"cells": cells, "stream_cell_hours": len(st), "recomputed_cell_hours": recomputed}
+    for name, src in (("same_accepted_rows", accepted), ("clean_silver", silver)):
+        b = batch_features(spark, src, features, cells, predict_from).dropna(subset=features)
+        m = st.merge(b, on=["location_id", "ts"], suffixes=("_s", "_b"))
+        diff = pd.DataFrame({c: (m[f"{c}_s"] - m[f"{c}_b"]).abs() for c in features})
+        bad = diff.gt(1e-6 + 1e-6 * pd.DataFrame({c: m[f"{c}_b"].abs() for c in features})).any(axis=1)
+        out[name] = {"cell_hours_compared": int(len(m)), "features_per_vector": len(features),
+                     "values_compared": int(len(m) * len(features)), "cell_hours_with_any_mismatch": int(bad.sum()),
+                     "max_abs_diff": float(diff.max().max()) if len(m) else None,
+                     "features_with_mismatch": sorted(c for c in features if (diff[c] > 1e-6 + 1e-6 * m[f"{c}_b"].abs()).any()),
+                     "examples_mismatch": m.loc[bad, ["location_id", "ts"]].head(5).to_dict("records")}
+    log = pd.DataFrame(list(db.junk_log.find({}, {"_id": 0})))
+    out["junk_log_events"] = int(len(log))
+    out["junk_log_by_kind"] = log.groupby("kind").size().to_dict() if len(log) else {}
+    out["junk_log_sample"] = log.sort_values(["cell", "event_time"]).head(12).to_dict("records") if len(log) else []
+    return out
+
+
 def compare(a, b, la, lb, threshold):
     m = a.merge(b, on=["cell", "ts"], how="outer", suffixes=(f"_{la}", f"_{lb}"), indicator=True)
     both = m[(m["_merge"] == "both") & m[f"p_{la}"].notna() & m[f"p_{lb}"].notna()]
@@ -144,6 +179,8 @@ def main():
     rep["stream_vs_clean_silver"] = compare(stream, batch_clean, "stream", "silver", thr)
     rep["silver_rows_in_period"] = silver.count()
     rep["accepted_vs_silver_missing_cell_hours"] = rep["silver_rows_in_period"] - n_acc_d
+    rep["feature_parity"] = feature_parity(spark, db, acc.dropDuplicates(["grid_id", "ts"]).select("grid_id", "ts", *VARS),
+                                           silver, feats, pf)
     spark.stop()
 
     out = ROOT / "reports" / "streaming"
@@ -161,7 +198,9 @@ def main():
               f"Parity (stream vs batch on the same accepted rows; p is stored rounded to 4 decimals, so |diff| ≤ 5e-5 means equal): "
               f"{json.dumps(rep['parity_stream_vs_batch_same_rows'])}",
               f"Stream vs clean silver: {json.dumps(rep['stream_vs_clean_silver'])}",
-              f"Cell-hours missing from accepted vs silver: {rep['accepted_vs_silver_missing_cell_hours']:,}"]
+              f"Cell-hours missing from accepted vs silver: {rep['accepted_vs_silver_missing_cell_hours']:,}",
+              "", "## E3 feature-vector parity (sample cells)", "",
+              "```", json.dumps(rep["feature_parity"], indent=1, ensure_ascii=False, default=str), "```"]
     (out / "stream_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
 

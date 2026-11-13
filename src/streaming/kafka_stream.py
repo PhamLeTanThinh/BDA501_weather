@@ -41,6 +41,7 @@ from src.pipeline.cds_silver import VALID, VARS
 KAFKA_PKG = "org.apache.spark:spark-sql-kafka-0-10_2.13:4.2.0"
 SCHEMA = StructType([StructField("grid_id", StringType()), StructField("event_time", StringType())]
                     + [StructField(v, DoubleType()) for v in VARS] + [StructField("msg_id", StringType())])
+SAMPLE_CELLS = ["g20.75_106.75", "g21.00_107.00", "g16.50_107.50", "g19.25_105.50"]  # Hải Phòng, Quảng Ninh, Huế, Nghệ An
 KEEP_HOURS = 120          # bộ đệm: 72 giờ cửa sổ + 24 giờ lag + chỗ cho dữ liệu trễ
 WATERMARK = "6 hours"
 
@@ -129,6 +130,9 @@ class Forecaster:
         ok = F.lit(True)
         for c in self.features:
             ok = ok & F.col(c).isNotNull()
+        # vector feature của vài ô mẫu (ghi đè theo batch id) để so stream vs batch từng feature
+        (target.where(ok & F.col("location_id").isin(SAMPLE_CELLS)).select("location_id", "ts", *self.features)
+         .withColumn("batch_id", F.lit(bid)).write.mode("overwrite").parquet(str(self.lake / "stream_kafka" / "features" / f"b{bid:06d}")))
         scored = (self.model.transform(self.asm.transform(target.where(ok)))
                   .select("location_id", "ts", "lat", "lon", "new_province", "region",
                           vector_to_array("probability")[1].alias("p"))).collect()
