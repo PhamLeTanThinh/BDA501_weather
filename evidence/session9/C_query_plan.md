@@ -3,7 +3,8 @@
 Query (from `src/experiments/perf_official.py`): heavy-rain **cell-days** per new province × year on gold (47.5 M rows):
 `gold → groupBy(location_id, date) sum(precipitation) → join cells (493 rows) on location_id → groupBy(new_province, year)
 count(rain_day > 50 mm), max(rain_day)`. Formatted plans: `C_query_plan_broadcast.txt`, `C_query_plan_sortmerge.txt`
-(`explain(mode="formatted")`). Top result: Quảng Trị 2020 = 305 heavy cell-days (max 455 mm in one day).
+(`explain(mode="formatted")`).
+Command: `scripts/run_in_spark.sh src.experiments.perf_official --profile official` (Spark 4.2 local[3], AQE off; also writes `reports/official/performance/plan_{broadcast,sortmerge}.txt`). Top result: Quảng Trị 2020 = 305 heavy cell-days (max 455 mm in one day).
 
 | Check | Evidence / answer |
 |---|---|

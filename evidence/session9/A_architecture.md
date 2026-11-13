@@ -1,5 +1,7 @@
 # A — End-to-end integration truth audit
 
+Diagram (Deliverable A, exported from the deck): ![overview](A_architecture.png) — batch lane `A_architecture_batch.png`, streaming lane `A_architecture_stream.png`. Solid = implemented, dashed = design-only; tags [I] / [I*] pilot / [P].
+
 Diagram: deck slides "Architecture overview" (29), "Batch lane in detail" (31), "Streaming lane in detail" (35),
 in `deck/BDA501_Heavy_Rain_Forecast.pptx`. Solid boxes/arrows = implemented, dashed = design only.
 
