@@ -1,7 +1,7 @@
-"""Session 9 - Card E2: đánh đổi ngưỡng cảnh báo, tính từ output đã lưu (không cần Spark).
+"""Session 9 - Card E2: warning-threshold trade-off computed from saved outputs (no Spark needed).
 
-Đọc reports/official/model/m4_threshold_choice.csv (M4 chính thức, ngưỡng chọn trên validation 2023, áp lên
-test 2024-2025) và reports/yagi_replay_backtest.csv (pilot M1, replay Yagi). Ghi evidence/session9/out/E2_*.csv/txt.
+Reads reports/official/model/m4_threshold_choice.csv (official M4, thresholds chosen on validation 2023, applied to
+test 2024-2025) and reports/yagi_replay_backtest.csv (pilot M1, Yagi replay). Writes evidence/session9/out/E2_*.csv/txt.
 
     python evidence/session9/scripts/s9_e2_threshold.py
 """
@@ -30,19 +30,19 @@ def main():
     f1 = next(d for d in table if d["split"] == "test" and d["rule"] == "f1")
     r60 = next(d for d in table if d["split"] == "test" and d["rule"] == "recall60")
     extra_tp, extra_fp = r60["TP"] - f1["TP"], r60["FP"] - f1["FP"]
-    lines.append("Đơn vị đếm: (ô ERA5, giờ phát hành t) trong cohort test 2024-2025, 483 ô; KHÔNG phải số 'đợt mưa'.")
+    lines.append("Counting unit: (ERA5 cell, issue hour t) in the test cohort 2024-2025, 483 cells; NOT the number of rain events.")
     for d in table:
         lines.append(f"{d['split']:<10} {d['rule']:<8} thr={d['threshold']:.4f} TP={d['TP']:>6} FP={d['FP']:>7} FN={d['FN']:>6} "
                      f"P={d['precision']:.3f} R={d['recall']:.3f} miss={d['missed_share']:.1%} FP/TP={d['FP_per_TP']}")
     lines.append(f"test: f1 -> recall60: +{extra_tp:,} TP, -{f1['FN'] - r60['FN']:,} FN, +{extra_fp:,} FP "
-                 f"=> {extra_fp / extra_tp:.2f} FP thêm cho mỗi TP thêm; số cảnh báo x{r60['alerts'] / f1['alerts']:.2f}")
+                 f"=> {extra_fp / extra_tp:.2f} extra FP per extra TP; alerts x{r60['alerts'] / f1['alerts']:.2f}")
     lines.append(f"test cohort rows 8,462,129 => alert rate f1 {f1['alerts'] / 8462129:.2%}, recall60 {r60['alerts'] / 8462129:.2%}")
     with open(OUT / "E2_threshold_tradeoff.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(table[0]))
         w.writeheader()
         w.writerows(table)
 
-    # Yagi replay backtest (pilot M1, ngưỡng 0,8478 khóa trên validation 2023)
+    # Yagi replay backtest (pilot M1, threshold 0.8478 frozen on validation 2023)
     with open(ROOT / "reports/yagi_replay_backtest.csv", encoding="utf-8") as f:
         yb = list(csv.DictReader(f))
     for loc in sorted({r["location_id"] for r in yb}) + ["ALL"]:

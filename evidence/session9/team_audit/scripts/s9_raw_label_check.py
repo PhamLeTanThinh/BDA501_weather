@@ -1,15 +1,15 @@
-"""Session 9 - kiểm tra độc lập (known answer) nhãn mưa lớn từ RAW CDS, KHÔNG dùng Spark và KHÔNG dùng code pipeline.
+"""Session 9 - independent (known-answer) check of the heavy-rain label from RAW CDS, WITHOUT Spark and WITHOUT the pipeline code.
 
-Tự cài đặt lại định nghĩa nhãn bằng numpy trực tiếp từ zip NetCDF gốc (biến tp):
-  precipitation(t) = max(tp, 0) * 1000 mm trong giờ (t-1h, t]; ts = valid_time UTC + 7 h (giờ VN)
-  rain_next_24h(t) = sum precipitation(t+1h .. t+24h), đủ 24 giờ; label = rain_next_24h > 50
-  split theo t (giờ VN), purge khi t+24h vượt cuối split.
-So với output Spark đã lưu: reports/official/quality/gold_by_split.csv và reports/official/eda/label_by_cell.csv.
-Kèm: nhãn cấp tỉnh theo 3 định nghĩa (any-area/MAX, coverage >= 25%, p90 > 50 mm) trên split test,
-     và kiểm tra expver (0001 = ERA5 final, 0005 = ERA5T) trong raw.
+Re-implements the label definition in numpy directly from the original NetCDF zips (variable tp):
+  precipitation(t) = max(tp, 0) * 1000 mm in hour (t-1h, t]; ts = valid_time UTC + 7 h (Vietnam time)
+  rain_next_24h(t) = sum precipitation(t+1h .. t+24h), all 24 hours present; label = rain_next_24h > 50
+  split by t (Vietnam time), purged when t+24h passes the end of the split.
+Compared with the saved Spark outputs: reports/official/quality/gold_by_split.csv and reports/official/eda/label_by_cell.csv.
+Also: province labels under 3 definitions (any-area/MAX, coverage >= 25%, p90 > 50 mm) on the test split,
+     and an expver check (0001 = ERA5 final, 0005 = ERA5T) in the raw files.
 
-Cần: numpy, netCDF4 (venv riêng; KHÔNG có trong requirements.txt của repo).
-    python -I evidence/session9/scripts/s9_raw_label_check.py <thư mục raw era5_cds> <cells_land.csv>
+Needs: numpy, netCDF4.
+    python -I evidence/session9/scripts/s9_raw_label_check.py <raw era5_cds folder> <cells_land.csv>
 """
 import csv
 import io
@@ -29,7 +29,7 @@ SPLITS = {"train": ("2015-01-01T00", "2022-12-31T23"), "validation": ("2023-01-0
           "test": ("2024-01-01T00", "2025-12-31T23")}
 
 
-def vn_epoch(s):  # "YYYY-MM-DDTHH" giờ VN -> epoch giây UTC
+def vn_epoch(s):  # "YYYY-MM-DDTHH" Vietnam time -> UTC epoch seconds
     return int(np.datetime64(s + ":00:00", "s").astype("int64")) - 7 * H
 
 
@@ -58,13 +58,13 @@ def main():
                         expver[(str(np.datetime64(int(t), "s"))[:4], "".join(map(str, np.atleast_1d(e))) if not isinstance(e, str) else e)] += 1
                     for k, t in enumerate(vt):
                         chunks[int(t)] = tp[k]
-        print(f"{zp.name}: {len(chunks):,} giờ tích lũy, {time.time() - t0:.0f}s", flush=True)
+        print(f"{zp.name}: {len(chunks):,} accumulated hours, {time.time() - t0:.0f}s", flush=True)
 
     start, end = vn_epoch("2015-01-01T00"), vn_epoch("2025-12-31T23")
     times = np.arange(start, end + H, H)
     missing = [t for t in times if t not in chunks]
-    P = np.stack([chunks[int(t)] for t in times]).astype("float64")  # (giờ, ô)
-    P = np.maximum(P, 0.0) * 1000.0  # NaN giữ NaN
+    P = np.stack([chunks[int(t)] for t in times]).astype("float64")  # (hour, cell)
+    P = np.maximum(P, 0.0) * 1000.0  # NaN stays NaN
     nh, nc = P.shape
     valid = ~np.isnan(P)
     Pz = np.where(valid, P, 0.0)
@@ -83,7 +83,7 @@ def main():
         m = (times >= a) & (times <= b) & (times + 24 * H <= b)
         split[m] = name
 
-    lines = [f"raw zip: {len(zips)}; giờ trong khung VN 2015-2025: {nh:,} (kỳ vọng 96,432); giờ thiếu: {len(missing)}; ô: {nc}",
+    lines = [f"raw zip: {len(zips)}; hours in the Vietnam-time frame 2015-2025: {nh:,} (expected 96,432); missing hours: {len(missing)}; cells: {nc}",
              f"precipitation NaN: {int((~valid).sum())}"]
     with open(ROOT / "reports/official/quality/gold_by_split.csv", encoding="utf-8") as f:
         ref = {r["split"]: r for r in csv.DictReader(f)}
@@ -104,16 +104,16 @@ def main():
         if r is None or int(r["rows"]) != n_lab or int(float(r["positives"])) != p:
             diffs.append((c["grid_id"], n_lab, p, r and r["rows"], r and r["positives"]))
     lines.append(f"[{'PASS' if not diffs else 'FAIL'}] per-cell labelled rows & positives vs label_by_cell.csv: "
-                 f"{nc - len(diffs)}/{nc} ô khớp; lệch: {diffs[:5]}")
-    # điểm truy vết Yagi
+                 f"{nc - len(diffs)}/{nc} cells match; differences: {diffs[:5]}")
+    # Yagi trace point
     j = next(k for k, c in enumerate(cells) if c["grid_id"] == "g20.75_106.75")
     i = int(np.where(times == vn_epoch("2024-09-07T00"))[0][0])
-    lines.append(f"truy vết g20.75_106.75 @ 2024-09-07 00:00 VN: rain_next_24h = {nxt[i, j]:.1f} mm, label = {label[i, j]:.0f}, "
-                 f"rain_24h quá khứ = {Pz[i - 23:i + 1, j].sum():.1f} mm")
+    lines.append(f"trace g20.75_106.75 @ 2024-09-07 00:00 Vietnam time: rain_next_24h = {nxt[i, j]:.1f} mm, label = {label[i, j]:.0f}, "
+                 f"past rain_24h = {Pz[i - 23:i + 1, j].sum():.1f} mm")
     # expver
-    lines.append("expver theo năm (số giờ): " + ", ".join(f"{y}:{e}={n}" for (y, e), n in sorted(expver.items())))
+    lines.append("expver by year (hours): " + ", ".join(f"{y}:{e}={n}" for (y, e), n in sorted(expver.items())))
 
-    # nhãn cấp tỉnh trên test
+    # province-level labels on test
     prov = defaultdict(list)
     for k, c in enumerate(cells):
         prov[c["new_province"]].append(k)
@@ -135,12 +135,12 @@ def main():
         w.writeheader()
         w.writerows(out_rows)
     tot = {k: sum(r[k] for r in out_rows) for k in ("test_hours", "pos_any_area", "pos_coverage25", "pos_p90")}
-    lines.append(f"nhãn tỉnh (test 2024-2025, 34 tỉnh x giờ): {tot}")
+    lines.append(f"province labels (test 2024-2025, 34 provinces x hours): {tot}")
     big = sorted(out_rows, key=lambda r: -r["cells"])[:3] + sorted(out_rows, key=lambda r: r["cells"])[:3]
     for r in big:
-        lines.append(f"  {r['new_province']}: {r['cells']} ô; any-area {r['pos_any_area']} giờ, coverage25 {r['pos_coverage25']}, "
-                     f"p90 {r['pos_p90']} (/{r['test_hours']}); tỷ lệ ô-giờ dương {r['pos_mean_cell_rate']}")
-    lines.append(f"thời gian chạy {time.time() - t0:.0f}s")
+        lines.append(f"  {r['new_province']}: {r['cells']} cells; any-area {r['pos_any_area']} hours, coverage25 {r['pos_coverage25']}, "
+                     f"p90 {r['pos_p90']} (/{r['test_hours']}); positive cell-hour rate {r['pos_mean_cell_rate']}")
+    lines.append(f"run time {time.time() - t0:.0f}s")
     (OUT / "raw_label_check.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
 

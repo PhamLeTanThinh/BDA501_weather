@@ -1,10 +1,10 @@
-"""Session 9 - tái dẫn xuất số liệu kiểm chứng dữ liệu từ output đã lưu trong reports/ (không cần Spark).
+"""Session 9 - re-derive data-validation figures from the saved outputs in reports/ (no Spark needed).
 
-Đọc: reports/official/quality/{silver_summary,gold_summary,neighbor_summary}.json, gold_by_split.csv,
+Reads: reports/official/quality/{silver_summary,gold_summary,neighbor_summary}.json, gold_by_split.csv,
      reports/official/model/ablation_manifest.json, ablation_results.csv,
      reports/official/eda/{volume.json,label_by_cell.csv,label_by_new_province.csv}, validation/results_cds.csv,
      reports/mapreduce/validation.json
-Ghi: evidence/session9/D_data_validation.csv và evidence/session9/out/derive_validation.txt
+Writes: evidence/session9/D_data_validation.csv and evidence/session9/out/derive_validation.txt
 
     python evidence/session9/scripts/s9_derive_validation.py
 """
@@ -22,7 +22,7 @@ def jload(p):
     return json.loads((ROOT / p).read_text(encoding="utf-8"))
 
 
-def hours(d0, d1):  # số giờ từ 00:00 ngày d0 đến 23:00 ngày d1 (giờ VN, không có DST)
+def hours(d0, d1):  # hours from 00:00 on d0 to 23:00 on d1 (Vietnam time, no DST)
     return ((d1 - d0).days + 1) * 24
 
 
@@ -53,7 +53,7 @@ def main():
     check("duplicate (location_id, ts) keys in gold", "groupBy(location_id, ts).count>1", 0, gd["duplicate_keys"], "gold_summary.json")
     check("cell-years incomplete", "count(hours) < 8760/8784 per (cell, year)", 0, sv["cell_years_incomplete"], "silver_summary.json")
     check("cells in silver = cells in map (join coverage)", "distinct grid_id vs cells_land.csv", sv["cells_in_map"], sv["cells"], "silver_summary.json")
-    # split: mỗi split mất 24 giờ cuối do purge cửa sổ nhãn
+    # split: each split loses its last 24 hours to the label-window purge
     sp = {"train": (date(2015, 1, 1), date(2022, 12, 31)), "validation": (date(2023, 1, 1), date(2023, 12, 31)),
           "test": (date(2024, 1, 1), date(2025, 12, 31))}
     for k, (a, b) in sp.items():
@@ -62,7 +62,7 @@ def main():
     check("gold excluded rows = cells x 72 (3 boundaries x 24 h)", "split_excluded_reason", cells * 72, gd["split_rows"]["excluded"], "gold_summary.json")
     check("sum of split rows = gold rows", "train+val+test+excluded", gd["rows"], sum(gd["split_rows"].values()), "gold_summary.json")
 
-    # gold_by_split: label null chỉ có ở 24 giờ cuối 2025 (tương lai không có)
+    # gold_by_split: null labels only in the last 24 hours of 2025 (no future data)
     with open(R / "official/quality/gold_by_split.csv", encoding="utf-8") as f:
         gbs = {r["split"]: r for r in csv.DictReader(f)}
     check("label null rows (last 24 h of 2025, no future)", "gold_by_split.label_null(excluded)", cells * 24,
@@ -73,7 +73,7 @@ def main():
     for k, (p, n) in pos.items():
         lines.append(f"positives {k}: {p:,} / {n:,} = {p / n:.5f}")
 
-    # cohort ablation (483 ô có đủ M1..M4 + địa hình + lân cận)
+    # ablation cohort (483 cells with M1..M4 + terrain + neighbours)
     coh = {c["split"]: c for c in man["cohort"]}
     c_cells = man["cells"]
     check("ablation cohort validation ~ 483 x 8,736 minus rows with null k_index", "ablation_manifest.cohort",
@@ -98,7 +98,7 @@ def main():
     prev = coh["test"]["positives"] / coh["test"]["rows"]
     lines.append(f"no-skill PR-AUC on test = prevalence = {prev:.4f}")
 
-    # NOAA crosscheck: tổng hợp lại từ results_cds.csv (ngày VN)
+    # NOAA cross-check: re-aggregated from results_cds.csv (Vietnam days)
     with open(ROOT / "validation/results_cds.csv", encoding="utf-8") as f:
         nr = [r for r in csv.DictReader(f) if r["day"] == "VN"]
     heavy = sum(int(r["heavy_station"]) for r in nr)
@@ -114,7 +114,7 @@ def main():
     lines.append(f"Open-Meteo crosscheck (63 points): median daily precip corr {vol['crosscheck_openmeteo']['median_daily_precip_corr']:.4f}, "
                  f"median hourly {vol['crosscheck_openmeteo']['median_hourly_precip_corr']:.4f}")
 
-    # province labels: tỷ lệ dương theo ô trong mỗi tỉnh (để thấy MAX vs MEAN khác nhau)
+    # province labels: positive rate per cell within each province (shows MAX vs MEAN differ)
     with open(R / "official/eda/label_by_cell.csv", encoding="utf-8") as f:
         lc = list(csv.DictReader(f))
     byp = {}

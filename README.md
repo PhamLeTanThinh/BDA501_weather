@@ -1,150 +1,160 @@
-# BDA501 — Dự báo mưa lớn 24 giờ tới cho 34 tỉnh Việt Nam
+# BDA501 — 24-hour heavy-rain forecasting for Vietnam's 34 provinces
 
-Bài toán: tại giờ t, với mỗi ô lưới ERA5 0,25° trên đất liền Việt Nam (493 ô), tổng mưa trong (t, t+24h]
-có vượt 50 mm không (QĐ 18/2021/QĐ-TTg). Dự báo theo ô, gom lên 34 tỉnh mới bằng xác suất lớn nhất của các ô.
+Task: at hour t, for every 0.25° ERA5 grid cell over Vietnam's land (493 cells), will the total rain in (t, t+24h]
+exceed 50 mm (Decision 18/2021/QĐ-TTg)? Forecasts are made per cell and rolled up to the 34 new provinces using the
+maximum probability over each province's cells.
 
-**Bản chính thức** (mục này): ERA5 tải từ Copernicus CDS, 13 biến, theo giờ 2015–2025, 47,5 triệu ô-giờ.
-Bản pilot cũ (Open-Meteo, 12 điểm, 2019–2025) vẫn còn trong code với `--profile pilot`; MapReduce và
-Spark SQL hiện mới chạy trên pilot (xem "Tình trạng").
+**Official run** (this section): ERA5 downloaded from the Copernicus CDS, 13 variables, hourly 2015–2025, 47.5 million
+cell-hours. The earlier pilot (Open-Meteo, 12 points, 2019–2025) is still in the code under `--profile pilot`;
+MapReduce on YARN and Spark SQL Q1–Q3 have so far been run on the pilot (see "Status").
 
-## Kết quả chính (test 2024–2025, model chọn trên validation 2023)
+Team 1: Trần Quốc Việt (25MS23304) · Nguyễn Phạm Thành Luân (25MS23265) · Phạm Lê Tấn Thịnh (25MS23273).
 
-| | PR-AUC test | Ghi chú |
+## Main results (test 2024–2025; algorithm and threshold chosen on validation 2023)
+
+| | Test PR-AUC | Note |
 |---|---|---|
-| Đoán ngẫu nhiên | 0,012 | = tỷ lệ mưa lớn |
-| Persistence (24 h qua > 50 mm) | 0,147 | baseline |
-| Random Forest M1 (thời tiết tại chỗ) | 0,361 | |
-| **Random Forest M4 (+ khí quyển), model cuối** | **0,420** | KTC 95% 0,34–0,49; recall 46%, precision 44% ở ngưỡng 0,932 |
-| Logistic regression / GBT (cùng M4) | 0,368 / 0,412 | RF chọn theo PR-AUC validation |
+| Random guess | 0.012 | = heavy-rain rate |
+| Persistence (last 24 h > 50 mm) | 0.147 | baseline |
+| Random Forest M1 (local weather) | 0.361 | |
+| **Random Forest M4 (+ atmosphere), final model** | **0.420** | 95% CI 0.34–0.49; recall 46%, precision 44% at threshold 0.932 |
+| Logistic regression / GBT (same M4 features) | 0.368 / 0.412 | RF chosen on validation PR-AUC |
 
-Streaming (Kafka → Spark → MongoDB, có dữ liệu rác + tắt Spark giữa chừng): 125.939/125.939 bản tin đọc đúng,
-0 dự báo trùng, stream = batch trên 79.993 ô-giờ (`reports/streaming/stream_report.md`).
+Streaming (Kafka → Spark → MongoDB, with injected junk data and Spark killed mid-run): 125,939/125,939 messages
+read exactly once, 0 duplicate forecasts, stream = batch on 81,710 cell-hours and on 21,714 feature values
+(`reports/streaming/stream_report.md`).
 
-## Cấu trúc
+## Layout
 
 ```
-configs/ablation.yaml              split, feature, model, seed=42, bootstrap; profile official/pilot
-data/reference/cells_land.csv      493 ô đất liền → tỉnh cũ / tỉnh mới / vùng (build_cell_map)
-src/ingest/cds_jobs.py             gửi và tải request ERA5 từ Copernicus CDS (nhiều tài khoản)
-src/ingest/build_cell_map.py       gán ô → tỉnh: 5×5 điểm mẫu / ô so với đa giác 63 tỉnh, rồi tra 63 → 34
-src/pipeline/cds_bronze.py         NetCDF (zip) → bronze Parquet, chỉ 493 ô, giữ nguyên đơn vị CDS và UTC
-src/pipeline/cds_silver.py         bronze → silver: đổi đơn vị, giờ VN, khoảng hợp lệ, báo cáo chất lượng
-src/pipeline/cds_gold.py           silver → gold: nhãn, split theo năm, 33 feature (M1 + khí quyển)
-src/pipeline/cds_neighbors.py      feature ô lân cận (M3)
-src/features/                      local_weather (M1, nhãn, split), atmos (M4) — dùng chung batch + streaming
-src/analytics/eda_official.py      EDA trên silver/gold → reports/official/eda
-src/experiments/official_ablation.py   ablation M1–M4 (RF), bootstrap theo ngày
-src/experiments/model_compare.py       Logistic regression vs Random Forest vs GBT trên M4
-src/experiments/official_threshold.py  chọn ngưỡng cảnh báo theo F1 / recall / precision trên 2023
-src/experiments/perf_official.py       thí nghiệm hiệu năng: shuffle partitions, broadcast vs sort-merge
+configs/ablation.yaml              split, features, model, seed=42, bootstrap; profiles official/pilot
+data/reference/cells_land.csv      493 land cells → old province / new province / region (build_cell_map)
+src/ingest/cds_jobs.py             submit and download ERA5 requests from the Copernicus CDS (several accounts)
+src/ingest/build_cell_map.py       cell → province: 5×5 sample points per cell vs 63 province polygons, then 63 → 34 lookup
+src/pipeline/cds_bronze.py         NetCDF (zip) → bronze Parquet, 493 cells only, CDS units and UTC unchanged
+src/pipeline/cds_silver.py         bronze → silver: unit conversion, Vietnam time, valid ranges, quality report
+src/pipeline/cds_gold.py           silver → gold: label, split by year, 33 features (M1 + atmosphere)
+src/pipeline/cds_neighbors.py      neighbouring-cell features (M3)
+src/features/                      local_weather (M1, label, split), atmos (M4) — shared by batch and streaming
+src/analytics/eda_official.py      EDA on silver/gold → reports/official/eda
+src/experiments/official_ablation.py   ablation M1–M4 (RF), daily block bootstrap
+src/experiments/model_compare.py       logistic regression vs Random Forest vs GBT on M4
+src/experiments/official_threshold.py  alert threshold by F1 / recall / precision on 2023
+src/experiments/perf_official.py       performance experiment: shuffle partitions, broadcast vs sort-merge
 src/mapreduce/                     Hadoop Streaming: climatology (mapper, combiner, reducer), export/validate
-src/analytics/spark_sql_queries.py 3 truy vấn Spark SQL + query plan
-src/streaming/kafka_producer.py    phát lại silver vào Kafka + chèn dữ liệu rác có kiểm soát
-src/streaming/kafka_stream.py      Structured Streaming: kiểm tra, watermark 6 h, khử trùng, M4, MongoDB
-src/streaming/stream_report.py     đo lường + parity stream vs batch
-src/web/                           FastAPI + bản đồ Leaflet (http://localhost:8000)
+src/analytics/spark_sql_queries.py 3 Spark SQL queries + query plans
+src/streaming/kafka_producer.py    replays silver into Kafka + injects controlled junk data
+src/streaming/kafka_stream.py      Structured Streaming: checks, 6 h watermark, dedup, M4, MongoDB
+src/streaming/stream_report.py     measurements + stream vs batch parity
+src/web/                           FastAPI + Leaflet map (http://localhost:8000)
 docker/                            Dockerfile.spark, Dockerfile.stream, stream-compose.yml
-deck/                              mã nguồn slide (pptxgenjs) → BDA501_Heavy_Rain_Forecast.pptx
-evidence/session9/                 bằng chứng cho Session 9 (A–I)
-tests/                             chống rò rỉ, metric, MapReduce, parity
+deck/                              slide source (pptxgenjs) → BDA501_Heavy_Rain_Forecast.pptx
+report/                            final report (build_report.py → BDA501_Final_Report.docx/.md)
+evidence/session9/                 Session 9 evidence (A–I, MANIFEST.md, team_audit/)
+tests/                             leakage, metrics, MapReduce, parity
 ```
 
-Dữ liệu lớn nằm ngoài repo: `D:/BDA501_data/` (`raw/`, `lake/{bronze,silver,gold,models}`), được mount vào
-container thành `/data`. Đổi bằng biến `BDA_DATA_HOST`.
+Large data lives outside the repository in `D:/BDA501_data/` (`raw/`, `lake/{bronze,silver,gold,models}`), mounted
+into the containers as `/data`. Change it with `BDA_DATA_HOST`.
 
-## Phiên bản
+## Versions
 
-Spark 4.2.0 (Scala 2.13, Java 17), Python 3.11, image `bda501-rain-spark:1` (từ image Spark của bài lab);
+Spark 4.2.0 (Scala 2.13, Java 17), Python 3.11, image `bda501-rain-spark:1` (built from the lab's Spark image);
 streaming: `bda501-rain-stream:1` (+ connector `spark-sql-kafka-0-10_2.13:4.2.0`, kafka-python-ng, FastAPI),
-Kafka `apache/kafka:3.9.1` (KRaft, 1 broker), MongoDB `mongo:7`. Thư viện Python: `requirements.txt`. Seed 42.
+Kafka `apache/kafka:3.9.1` (KRaft, 1 broker), MongoDB `mongo:7`. Python libraries: `requirements.txt`. Seed 42.
 
-## Cài đặt
+## Setup
 
 ```bash
 docker build -t bda501-rain-spark:1 -f docker/Dockerfile.spark docker
-bash scripts/stream_demo.sh build                     # image streaming
+bash scripts/stream_demo.sh build                     # streaming image
 ```
 
-Tải CDS cần tài khoản Copernicus và file `~/.cdsapirc` (không đưa vào repo).
+Downloading from CDS needs a Copernicus account and a `~/.cdsapirc` file (never committed).
 
-## Chạy lại kết quả chính thức (từ dữ liệu thô)
+## Reproduce the official results (from raw data)
 
 ```bash
-# 1. Tải ERA5 từ CDS: gửi request rồi tải khi CDS xử lý xong (mỗi request = khung VN × 2 tháng × 13 biến)
+# 1. Download ERA5 from CDS: submit requests, then download when CDS has processed them (one request = Vietnam box × 2 months × 13 variables)
 python -m src.ingest.cds_jobs submit --years 2015 2025 --months-per-request 2 --manifest jobs_main.csv
 python -m src.ingest.cds_jobs download --manifest jobs_main.csv
-# 2. Gán ô → tỉnh, địa hình
+# 2. Cell → province mapping, terrain
 python -m src.ingest.build_cell_map
 python -m src.ingest.collect_geography --profile official
-# 3. Lake: bronze → silver → gold (+ ô lân cận), EDA
+# 3. Lake: bronze → silver → gold (+ neighbours), EDA
 python -m src.pipeline.cds_bronze --profile official
 scripts/run_in_spark.sh src.pipeline.cds_silver --profile official
 scripts/run_in_spark.sh src.pipeline.cds_gold --profile official
 scripts/run_in_spark.sh src.pipeline.cds_neighbors --profile official
 scripts/run_in_spark.sh src.analytics.eda_official --profile official
-scripts/hdfs_put_official.sh                          # raw + bronze lên HDFS (cụm lab)
-# 4. Model: ablation, so sánh thuật toán, chọn ngưỡng, hiệu năng
+scripts/hdfs_put_official.sh                          # raw + bronze to HDFS (lab cluster)
+# 4. Model: ablation, algorithm comparison, threshold, performance
 scripts/run_in_spark.sh src.experiments.official_ablation --profile official
 scripts/run_in_spark.sh src.experiments.model_compare --profile official
 scripts/run_in_spark.sh src.experiments.official_threshold --profile official
 scripts/run_in_spark.sh src.experiments.perf_official --profile official
-# 5. Kiểm thử
+# 5. Tests
 scripts/run_in_spark.sh pytest -q tests
 ```
 
-Kết quả: `reports/official/` (chất lượng, EDA, model, hiệu năng). Model lưu ở `lake/models/official/<run_id>/`.
+Outputs: `reports/official/` (quality, EDA, model, performance). Models are saved in `lake/models/official/<run_id>/`.
 
-## Streaming (Kafka) và web
+## Streaming (Kafka) and web
 
 ```bash
-bash scripts/stream_demo.sh up       # Kafka, MongoDB, Spark, web; producer phát dồn 72 giờ làm nóng rồi chờ
-# mở http://localhost:8000 → bấm "▶ Bắt đầu stream" (1 giờ dữ liệu / 5 giây; Spark micro-batch 10 giây)
-bash scripts/stream_demo.sh reset    # xóa topic, checkpoint, MongoDB để chạy lại từ đầu
+bash scripts/stream_demo.sh up       # Kafka, MongoDB, Spark, web; the producer sends a 72-hour warm-up, then waits
+# open http://localhost:8000 → click "▶ Start stream" (1 data hour every 5 s; Spark micro-batch every 10 s)
+bash scripts/stream_demo.sh reset    # delete topic, checkpoints and MongoDB to start again
 bash scripts/stream_demo.sh down
 
-bash scripts/stream_scenarios.sh     # kịch bản đo: dữ liệu rác + tắt Spark giữa chừng → reports/streaming/
+bash scripts/stream_scenarios.sh     # measured scenario: junk data + Spark killed mid-run → reports/streaming/
 ```
 
-Đây là **phát lại dữ liệu lịch sử (hindcast)**: ERA5 công bố trễ khoảng 5 ngày nên không dùng được để cảnh báo
-thật; vận hành thật cần nguồn dự báo số (xem `evidence/session9/H_project_card.md`).
+This is a **replay of historical data (hindcast)**: ERA5 is published about 5 days late, so it cannot drive real
+warnings; operation needs a numerical forecast source (see `evidence/session9/H_project_card.md`).
 
-## MapReduce và Spark SQL (hiện trên dữ liệu pilot)
+## MapReduce and Spark SQL (pilot data)
 
 ```bash
 scripts/run_in_spark.sh src.mapreduce.mr_io export --profile pilot
-scripts/run_mapreduce.sh                              # cần cụm BDA501-Hadoop-Lab
+scripts/run_mapreduce.sh                              # needs the BDA501-Hadoop-Lab cluster
 scripts/run_in_spark.sh src.mapreduce.mr_io validate --profile pilot
 scripts/run_in_spark.sh src.analytics.spark_sql_queries --profile pilot
 ```
 
-## Slide
+The same mapper/combiner/reducer were also run locally on the full official training set
+(`evidence/session9/team_audit/`: 34,561,272 rows, 5,916 keys, 0 differences).
+
+## Slides and report
 
 ```bash
 cd deck && npm install
-DECK_NAME=BDA501_Heavy_Rain_Forecast.pptx NODE_PATH=$PWD/node_modules PPTX_SKILL=<thư mục skill pptx> node build_bilingual.js
+DECK_NAME=BDA501_Heavy_Rain_Forecast.pptx NODE_PATH=$PWD/node_modules PPTX_SKILL=<pptx skill folder> node build_bilingual.js
+python report/build_report.py
 ```
 
-## Chống rò rỉ (kiểm thử trong `tests/`)
+## Leakage controls (tested in `tests/`)
 
-- Feature tại t dùng cửa sổ (t−k, t] theo event time, phân vùng theo ô; thiếu giờ thì null, không coi là 0.
-- Nhãn dùng mưa trong (t, t+24h]; dòng có cửa sổ nhãn vượt ranh giới split bị loại.
-- Chia train 2015–2022 / validation 2023 / test 2024–2025; trọng số lớp tính trên train; model và ngưỡng chọn
-  trên validation, khóa trước khi chấm test.
-- Streaming dùng chung hàm feature với batch; parity kiểm tra trên toàn bộ ô-giờ của lượt chạy.
+- Features at t use the window (t−k, t] in event time, partitioned by cell; a missing hour gives null, never 0.
+- The label uses rain in (t, t+24h]; rows whose label window crosses a split boundary are dropped.
+- Split train 2015–2022 / validation 2023 / test 2024–2025; class weights from train; algorithm and threshold chosen
+  on validation and frozen before scoring test. The feature-set rule was applied on test; validation alone gives
+  the same choice (M4).
+- Streaming uses the same feature functions as batch; parity is checked on every cell-hour of the run.
 
-## Tình trạng
+## Status
 
-| Hạng mục | Trạng thái |
+| Item | Status |
 |---|---|
-| Thu thập CDS, lake, EDA, ablation, so sánh model, ngưỡng, streaming + web | đã chạy trên dữ liệu chính thức |
-| MapReduce, Spark SQL | đã chạy và kiểm chứng trên **pilot**; chưa chạy lại trên dữ liệu chính thức |
-| Triển khai cụm/cloud (YARN, Kafka nhiều broker) | **thiết kế** |
+| CDS download, lake, EDA, ablation, model comparison, threshold, streaming + web | run on the official data |
+| MapReduce on YARN, Spark SQL Q1–Q3 | run and validated on the **pilot**; MapReduce also run locally on the official training set |
+| Cluster/cloud deployment (YARN, multi-broker Kafka) | **design** |
 
-## Nguồn dữ liệu
+## Data sources
 
-| Dữ liệu | Nguồn | Giấy phép |
+| Data | Source | Licence |
 |---|---|---|
-| ERA5 single levels theo giờ | Copernicus Climate Data Store | Copernicus licence (ghi nguồn C3S/ECMWF) |
-| Ranh giới tỉnh | geoBoundaries ADM1 | CC BY 4.0 |
-| Độ cao | OpenTopoData (SRTM 90 m) | theo điều khoản SRTM |
-| Trạm đo mưa đối chiếu | NOAA GHCN-Daily | công cộng |
+| ERA5 hourly single levels | Copernicus Climate Data Store | Copernicus licence (credit C3S/ECMWF) |
+| Province boundaries | geoBoundaries ADM1 | CC BY 4.0 |
+| Elevation | OpenTopoData (SRTM 90 m) | SRTM terms |
+| Reference rain gauges | NOAA GHCN-Daily | public domain |

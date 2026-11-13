@@ -1,5 +1,5 @@
-input (map input records): 34,561,272 dòng train chính thức, 493 ô, 8 split (mỗi năm 2015-2022 = 1 mapper)
+input (map input records): 34,561,272 official training rows, 493 cells, 8 splits (each year 2015-2022 = 1 mapper)
 map output records: 34,561,272; combine output records: 47,328; reduce output keys: 5,916
 keys numpy: 5,916; missing_or_extra: 0; mismatches: 0 []
 rows MR: 34,561,272; rows numpy: 34,561,272; heavy hours MR: 313,169
-thời gian: 286s (Python cục bộ, KHÔNG phải Hadoop/YARN)
+time: 286s (local Python, NOT Hadoop/YARN)

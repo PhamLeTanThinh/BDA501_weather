@@ -1,11 +1,11 @@
-"""Session 9 - chạy mapper/combiner/reducer THẬT của repo (src/mapreduce) trên TOÀN BỘ train chính thức (493 ô, 2015-2022),
-mô phỏng Hadoop Streaming cục bộ (không có Hadoop/YARN ở máy kiểm toán):
-  input  = location_id,month,label,precipitation dựng bằng numpy từ raw CDS (cùng định nghĩa như gold, đã được
-           s9_raw_label_check.py xác nhận khớp Spark lệch 0)
-  map + combiner trên từng "split" (mỗi năm train = 1 split, như một mapper), sort/shuffle, reduce --final
-So với groupby numpy (known answer) với cùng dung sai như src/mapreduce/mr_io.validate (mean 1e-5, max 0,051).
+"""Session 9 - run the repo's REAL mapper/combiner/reducer (src/mapreduce) on the FULL official training set (493 cells, 2015-2022),
+simulating Hadoop Streaming locally (no Hadoop/YARN on the audit machine):
+  input  = location_id,month,label,precipitation built with numpy from raw CDS (same definition as gold, confirmed by
+           s9_raw_label_check.py to match Spark with 0 difference)
+  map + combiner per "split" (each training year = 1 split, like one mapper), sort/shuffle, reduce --final
+Compared with a numpy groupby (known answer) using the same tolerances as src/mapreduce/mr_io.validate (mean 1e-5, max 0.051).
 
-    python -I evidence/session9/scripts/s9_mr_official_local.py <thư mục raw era5_cds> <cells_land.csv> <thư mục tạm>
+    python -I evidence/session9/scripts/s9_mr_official_local.py <raw era5_cds folder> <cells_land.csv> <temp folder>
 """
 import csv
 import subprocess
@@ -66,7 +66,7 @@ def main():
     vn = (times + 7 * H).astype("datetime64[s]")
     month = vn.astype("datetime64[M]").astype("int64") % 12 + 1
     year = vn.astype("datetime64[Y]").astype("int64") + 1970
-    print(f"đã nạp raw: {time.time() - t0:.0f}s; train giờ {int(train.sum())}", flush=True)
+    print(f"raw loaded: {time.time() - t0:.0f}s; training hours {int(train.sum())}", flush=True)
 
     combined, map_out, map_in = [], 0, 0
     for y in sorted(set(year[train].tolist())):
@@ -85,7 +85,7 @@ def main():
                             capture_output=True, text=True, check=True)
         combined += [l for l in cb.stdout.splitlines() if l]
         split_file.unlink()
-        print(f"split {y}: {len(rows) * len(ids):,} dòng -> combiner {len(cb.stdout.splitlines())} bản ghi, {time.time() - t0:.0f}s", flush=True)
+        print(f"split {y}: {len(rows) * len(ids):,} rows -> combiner {len(cb.stdout.splitlines())} records, {time.time() - t0:.0f}s", flush=True)
     red = subprocess.run([sys.executable, "-I", str(MR / "clim_reducer.py"), "--final"], input="\n".join(sorted(combined)) + "\n",
                          capture_output=True, text=True, check=True)
     mr = {}
@@ -94,7 +94,7 @@ def main():
         n, h, rate, mean_p, max_p = v.split(",")
         mr[k] = (int(n), int(h), float(mean_p), float(max_p))
 
-    # known answer numpy (giá trị đã làm tròn 6 chữ số như input MR)
+    # numpy known answer (values rounded to 6 digits like the MR input)
     Pr = np.round(P, 6)
     ref = {}
     for j, g in enumerate(ids):
@@ -104,12 +104,12 @@ def main():
             ref[f"{g}|{m:02d}"] = (int(sel.sum()), int(label[sel, j].sum()), float(v.mean()), float(np.round(v.max(), 1)))
     mism = [k for k in ref if k not in mr or mr[k][:2] != ref[k][:2] or abs(mr[k][2] - ref[k][2]) > 1e-5
             or abs(mr[k][3] - ref[k][3]) > 0.051]
-    lines = [f"input (map input records): {map_in:,} dòng train chính thức, {len(ids)} ô, 8 split (mỗi năm 2015-2022 = 1 mapper)",
+    lines = [f"input (map input records): {map_in:,} official training rows, {len(ids)} cells, 8 splits (each year 2015-2022 = 1 mapper)",
              f"map output records: {map_out:,}; combine output records: {len(combined):,}; reduce output keys: {len(mr):,}",
              f"keys numpy: {len(ref):,}; missing_or_extra: {len(set(ref) ^ set(mr))}; mismatches: {len(mism)} {mism[:5]}",
              f"rows MR: {sum(v[0] for v in mr.values()):,}; rows numpy: {sum(v[0] for v in ref.values()):,}; "
              f"heavy hours MR: {sum(v[1] for v in mr.values()):,}",
-             f"thời gian: {time.time() - t0:.0f}s (Python cục bộ, KHÔNG phải Hadoop/YARN)"]
+             f"time: {time.time() - t0:.0f}s (local Python, NOT Hadoop/YARN)"]
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "mapreduce_official_local.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))

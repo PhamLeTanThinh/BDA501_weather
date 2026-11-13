@@ -20,9 +20,9 @@ raw + bronze also on the lab HDFS.
 
 | Check | Status | Evidence |
 |---|---|---|
-| Software versions recorded | [x] | README "Phiên bản": Spark 4.2.0, Java 17, Python 3.11, Kafka 3.9.1, Mongo 7; `environment.json` of perf run |
+| Software versions recorded | [x] | README "Versions": Spark 4.2.0, Java 17, Python 3.11, Kafka 3.9.1, Mongo 7; `environment.json` of perf run |
 | Dependencies / configuration recorded | [x] | `requirements.txt`, `docker/Dockerfile.spark`, `docker/Dockerfile.stream`, `docker/stream-compose.yml`, `configs/ablation.yaml` |
-| Exact run commands | [x] | README "Chạy lại kết quả chính thức", "Streaming" |
+| Exact run commands | [x] | README "Reproduce the official results", "Streaming (Kafka) and web" |
 | Deterministic seed | [x] | `seed: 42` (sampling, RF, GBT, bootstrap, producer junk) |
 | README starts from raw data | [x] | step 1 = CDS submit/download |
 | Key output reproducible without hidden steps | [~] | yes for lake → model → stream; CDS download needs personal accounts and queue time (hours); MapReduce needs the lab Hadoop cluster |
