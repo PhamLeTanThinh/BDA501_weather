@@ -90,6 +90,8 @@ which late events survive; correctness of the outputs is protected by recomputat
   threshold (`province_risk` collection: `p_max`, `alert_cells / cells`). This answers "is any part of the province at risk",
   not "is the whole province wet"; large provinces (e.g. Gia Lai 26 cells, Lâm Đồng 35) will alert more often than small ones.
 - **MapReduce equivalence:** 0 / 144 differences vs Spark SQL is measured on the **pilot sample** (12 cities, 2019–2022),
-  not on the full official data.
+  not on the full official data. **Update for the final (18/11/2026):** the same job ran on Hadoop/YARN on the full
+  official training set — 34,561,272 rows, 8 map + 2 reduce tasks, 5,916 keys, 0 differences vs Spark SQL
+  (`reports/official/mapreduce/validation.json`, `job.log`).
 
 Card result: **[x] Verified** (E2, E3) · **[x] Design-only** (operational inputs, E1) · Evidence: this file, `F_serving_stream.md`.

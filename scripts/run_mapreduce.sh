@@ -2,10 +2,13 @@
 # Chạy job climatology bằng Hadoop Streaming trên cụm lab (HDFS + YARN, container bda501-client).
 # Cần: cụm BDA501-Hadoop-Lab đang chạy; đã chạy `src.mapreduce.mr_io export`.
 #   scripts/run_mapreduce.sh            → data/mr/output/part-*, reports/mapreduce/job.log
+#   SPLIT_BYTES=134217728 LOG_DIR=reports/official/mapreduce scripts/run_mapreduce.sh   (official data, ~12 mappers)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 C=bda501-client
 HD=/rain-forecast/mr
+SPLIT_BYTES="${SPLIT_BYTES:-4194304}"
+LOG_DIR="$ROOT/${LOG_DIR:-reports/mapreduce}"
 RUNAS="$(docker exec $C id -un)"
 # docker cp ghi file với quyền root: dọn và trả quyền bằng root
 MSYS_NO_PATHCONV=1 docker exec -u root $C bash -c "rm -rf /tmp/mrjob /tmp/mrout && mkdir -p /tmp/mrjob"
@@ -13,7 +16,7 @@ docker cp "$ROOT/data/mr/input" "$C:/tmp/mrjob/"
 docker cp "$ROOT/src/mapreduce/clim_mapper.py" "$C:/tmp/mrjob/"
 docker cp "$ROOT/src/mapreduce/clim_reducer.py" "$C:/tmp/mrjob/"
 MSYS_NO_PATHCONV=1 docker exec -u root $C chown -R "$RUNAS" /tmp/mrjob
-mkdir -p "$ROOT/reports/mapreduce"
+mkdir -p "$LOG_DIR"
 MSYS_NO_PATHCONV=1 docker exec $C bash -c "
 set -e
 cd /tmp/mrjob
@@ -25,14 +28,14 @@ hdfs dfs -ls -h $HD/input
 time hadoop jar /opt/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.5.0.jar \
   -D mapreduce.job.name=rain_climatology_location_month \
   -D mapreduce.job.reduces=2 \
-  -D mapreduce.input.fileinputformat.split.maxsize=4194304 \
+  -D mapreduce.input.fileinputformat.split.maxsize=$SPLIT_BYTES \
   -files clim_mapper.py,clim_reducer.py \
   -mapper 'python3 clim_mapper.py' \
   -combiner 'python3 clim_reducer.py' \
   -reducer 'python3 clim_reducer.py --final' \
   -input $HD/input -output $HD/output
 hdfs dfs -ls $HD/output
-" 2>&1 | tee "$ROOT/reports/mapreduce/job.log"
+" 2>&1 | tee "$LOG_DIR/job.log"
 rm -rf "$ROOT/data/mr/output"
 MSYS_NO_PATHCONV=1 docker exec $C bash -c "hdfs dfs -get $HD/output /tmp/mrout"
 docker cp "$C:/tmp/mrout" "$ROOT/data/mr/output"

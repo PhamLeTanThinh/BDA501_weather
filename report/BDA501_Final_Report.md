@@ -10,7 +10,7 @@ We built an end-to-end Big Data system that forecasts, for every 0.25° ERA5 gri
 - Model: Random Forest on 33 features (local weather + atmospheric moisture/instability, "M4"). On the held-out years 2024–2025 it reaches PR-AUC 0.420 (95 % CI 0.34–0.49) versus 0.147 for persistence and 0.012 for random guessing.
 - Feature and algorithm choices are evidence-based: atmosphere features add +0.059 PR-AUC (CI 0.029–0.086), terrain and neighbouring cells add nothing; Random Forest beats logistic regression (+0.052, CI above 0) and ties with gradient-boosted trees.
 - Streaming was tested against injected dirty data and a mid-run crash: all 125,939 Kafka messages read exactly once, all duplicates and broken records caught, 0 duplicate forecasts, and the stream produced exactly the same forecasts and feature vectors as batch.
-- Main limitations, stated openly: recall is 46 % at the F1 threshold (decision support, not a stand-alone warning); ERA5 is published ~5 days late, so the streaming demo is a replay (hindcast); infrastructure runs on one laptop; MapReduce and the three Spark SQL queries were validated on the pilot data only.
+- Main limitations, stated openly: recall is 46 % at the F1 threshold (decision support, not a stand-alone warning); ERA5 is published ~5 days late, so the streaming demo is a replay (hindcast); infrastructure runs on one laptop (Hadoop/YARN and Spark in containers), so cluster-scale performance is designed, not measured.
 
 | Member | Main technical responsibility |
 |---|---|
@@ -63,7 +63,7 @@ The province definition matters: on the test years there are 20,138 positive pro
 
 ## 3. Architecture
 
-Figure 2 shows the implemented system. Every component is tagged [I] implemented, [I*] implemented on the pilot data, or [P] design only (dashed). Figures 3 and 4 detail the batch and streaming lanes.
+Figure 2 shows the implemented system. Every component is tagged [I] implemented on the official data or [P] design only (dashed). Figures 3 and 4 detail the batch and streaming lanes.
 
 ![Figure 2. Architecture overview with implementation status.](fig/arch_overview.png)
 
@@ -75,7 +75,7 @@ Figure 2 shows the implemented system. Every component is tagged [I] implemented
 | Data lake raw / bronze | [I] local disk + HDFS (lab cluster) | NetCDF zip, Parquet |
 | Data lake silver / gold / models | [I] local Spark volume; on HDFS = [P] | Parquet partitioned by year |
 | Cleaning, EDA, features, training | [I] | PySpark DataFrames, Spark SQL, Spark ML |
-| MapReduce climatology | [I*] pilot data | Hadoop Streaming on YARN (lab cluster) |
+| MapReduce climatology | [I] official data | Hadoop Streaming on YARN (lab cluster) |
 | Streaming | [I] | Kafka 3.9 (KRaft, 1 broker), Spark Structured Streaming |
 | Serving | [I] | MongoDB 7, FastAPI + Leaflet web map |
 | Live data source, cluster deployment | [P] | NWP analysis/forecast API; YARN/Kubernetes, 3 Kafka brokers, Mongo replica set |
@@ -126,13 +126,27 @@ Figure 2 shows the implemented system. Every component is tagged [I] implemented
 
 ## 6. MapReduce and Spark SQL
 
-Hadoop Streaming job (Python mapper/combiner/reducer on YARN) computing the climatology table: for each location × month, hours, heavy hours, heavy-rain rate, mean and maximum hourly rain over the training years. Map emits key location|month with (1, label, rain, rain); the combiner sums and takes the max inside each map task — safe because sum and max are associative and the rate/mean are computed only in the reducer; shuffle groups each key on one of 2 reducers. On the pilot data: 420,480 input rows, 4 map and 2 reduce tasks, the combiner cut shuffled records from 420,480 to 576 (730 ×), 144 output keys, and an independent Spark SQL computation agrees on 144/144 keys with 0 differences. The output feeds MongoDB (collection climatology) for look-up; it is not an input to the model (the evaluation baseline is recomputed in Spark). The same mapper/combiner/reducer were also run locally in Python on the full official train set: 34,561,272 rows → 47,328 combined records → 5,916 keys, 0 differences.
+Hadoop Streaming job (Python mapper/combiner/reducer on YARN) computing the climatology table: for each cell × month, hours, heavy hours, heavy-rain rate, mean and maximum hourly rain over the training years 2015–2022. Map emits key cell|month with (1, label, rain, rain); the combiner sums and takes the max inside each map task — safe because sum and max are associative and the rate/mean are computed only in the reducer; shuffle groups each key on one of 2 reducers. The input is the official training set exported from gold to CSV on HDFS (1.1 GB, 4 files, 128 MB splits).
 
-![Figure 8. MapReduce flow (pilot run).](fig/mapreduce.png)
+| Counter (job job_1795013623254_0001) | Value |
+|---|---|
+| Map / reduce tasks | 8 / 2 (all succeeded, 48 s elapsed) |
+| Map input records | 34,561,272 |
+| Map output bytes | 1.67 GB |
+| Records reaching the reducers (after the combiner) | 32,304 — about 1,070 × fewer than map output |
+| Reduce shuffle bytes | 1.7 MB |
+| Reduce output records | 5,916 = 493 cells × 12 months |
+| Check against Spark SQL on the same rows | 5,916 / 5,916 keys, 0 differences, 34,561,272 = 34,561,272 rows |
 
-*Figure 8. MapReduce flow (pilot run).*
+*Table 6. MapReduce on the official training data (reports/official/mapreduce/).*
 
-Spark SQL: three analytical queries (pilot data) — heavy-rain rate by region × month (GROUP BY, one shuffle), heavy-rain days by province × year joined with location and terrain tables (broadcast joins), top-5 wettest 24 h periods per location (window function, shuffle by location then sort). On the official gold we ran the province × year query and inspected its formatted plan (Section 9): two Exchanges (by cell-day, then by province-year) and a BroadcastHashJoin with the 493-row cell table; Parquet column pruning reads 3 of 51 columns.
+Example: cell g16.25_108.00 (Huế) in October has 692 heavy hours out of 5,952 — about one hour in nine is followed by more than 50 mm. The output feeds MongoDB (collection climatology) for look-up; it is not an input to the model (the evaluation baseline is recomputed in Spark). The same job on the 12-point pilot gave 144/144 keys, 0 differences.
+
+![Figure 8. MapReduce on Hadoop/YARN, official data.](fig/mapreduce.png)
+
+*Figure 8. MapReduce on Hadoop/YARN, official data.*
+
+Spark SQL: three analytical queries on the official gold (47.5 M cell-hours, reports/official/spark_sql/), each with its formatted plan. Q1 heavy-rain rate by region × month (GROUP BY → hash Exchange): the highest is the south-central coast in November, 5.7 % of hours, then the north-central coast in October (5.6 %). Q2 heavy-rain days per province × year with elevation (daily sums, then two joins with the 493-row cell and terrain tables → BroadcastHashJoin, no SortMergeJoin): the wettest cell-year has 36 days above 50 mm (Quảng Trị, 2025). Q3 the five wettest 24-hour periods per cell (window row_number → Exchange by cell + sort): the national maximum is 537 mm in 24 h at g18.25_106.25 (Hà Tĩnh) on 19 October 2020; consecutive hours of one storm fill the top 5, so an event-level version would first group hours into events. Parquet column pruning reads only the columns each query needs.
 
 ## 7. Machine learning
 
@@ -157,7 +171,7 @@ Spark SQL: three analytical queries (pilot data) — heavy-rain rate by region �
 | M3 | M2 + 4 neighbour-cell features | 0.363 | +0.002 (−0.005, +0.008) |
 | M4 | M1 + 9 atmosphere features | 0.420 | +0.059 (+0.029, +0.086) |
 
-*Table 6. Ablation on 483 cells (10 edge cells lack two land neighbours), test 2024–2025, 8.46 M cell-hours.*
+*Table 7. Ablation on 483 cells (10 edge cells lack two land neighbours), test 2024–2025, 8.46 M cell-hours.*
 
 Only the atmosphere group passes the rule "CI above zero"; terrain also made things worse at unseen locations in the pilot leave-one-location-out test. The most important M4 features are 6-hour moisture convergence (15 %), rain in the last 3 h (15 %) and 6-hour cloud cover (11 %); windowed features carry 65–71 % of the importance. M4 gains most in the central regions (north-central coast 0.49 → 0.58, south-central 0.38 → 0.46, highlands 0.17 → 0.26) and stays weak in the south (0.03), where heavy rain is rare and convective.
 
@@ -173,7 +187,7 @@ Only the atmosphere group passes the rule "CI above zero"; terrain also made thi
 | Random Forest (100 trees, depth 12) | 0.210 | 0.420 | — |
 | Gradient-boosted trees (100 rounds, depth 6) | 0.200 | 0.412 | 264 s |
 
-*Table 7. Algorithms compared; Random Forest kept on validation PR-AUC.*
+*Table 8. Algorithms compared; Random Forest kept on validation PR-AUC.*
 
 Random Forest beats logistic regression by +0.052 (CI +0.022 … +0.077); gradient-boosted trees are −0.006 (CI −0.027 … +0.013), a statistical tie. Random Forest is kept: best on validation, trains its trees in parallel and gives feature importance.
 
@@ -184,7 +198,7 @@ Random Forest beats logistic regression by +0.052 (CI +0.022 … +0.077); gradie
 | 0.932 — best F1 (reported) | 47,714 | 60,688 | 55,164 | 44.0 % | 46.4 % |
 | 0.739 — recall ≥ 60 % on 2023 | 75,687 | 331,316 | 27,191 | 18.6 % | 73.6 % |
 
-*Table 8. Warning trade-off on test 2024–2025 (102,878 heavy cell-hours).*
+*Table 9. Warning trade-off on test 2024–2025 (102,878 heavy cell-hours).*
 
 ![Figure 11. Final model versus baselines on the test years.](fig/e1.png)
 
@@ -204,7 +218,7 @@ The national recall of 46 % hides large differences between places. We scored th
 | Central Highlands | 78 | 10,722 | 28 % | 14 % |
 | South | 90 | 2,516 | 11 % | 4 % |
 
-*Table 9. Recall by region, test 2024–2025.*
+*Table 10. Recall by region, test 2024–2025.*
 
 - Recall follows how often heavy rain happens at a place: across the 441 cells with at least 20 heavy hours, cell recall and the 2015–2025 heavy-rain share have a Spearman correlation of 0.65. The central coast (Quảng Trị 73 %, Huế 63 %, Hà Tĩnh 59 %) is caught well; the South (Đồng Nai 2 %, TP. Hồ Chí Minh 0 %) and Lâm Đồng (9 %) are not. 129 cells have recall below 25 %, 84 above 60 %.
 - Province size does not explain recall: the number of cells per province is almost unrelated to province recall (Spearman −0.18) or precision (+0.04). Scoring at province level with the any-area rule (alert if ≥ 1 cell is alerted) gives recall 45.9 % and precision 50.6 %, close to the cell level (46.4 % / 44.0 %).
@@ -236,7 +250,7 @@ scripts/stream_scenarios.sh injects junk that carries no flag (Spark must detect
 | Broken records (4 types) | 1,883 | 1,883 quarantined | rejects query |
 | Missing hours (5 cells × 6 h) | 30 | no forecast for affected windows | never treated as 0 mm |
 
-*Table 10. Dirty-data handling (clean run, 125,939 messages).*
+*Table 11. Dirty-data handling (clean run, 125,939 messages).*
 
 - No loss, no double read: 125,939 messages in the topic = 125,939 read by each query, across the crash.
 - 0 duplicate forecasts in MongoDB; 0 duplicate rows reaching foreachBatch.
@@ -268,7 +282,7 @@ Controlled experiment on the official data (Spark 4.2 local[3], driver 4 GB, AQE
 | Province × year query, 47.5 M rows | SortMergeJoin | 30.4 s | 127 | 45.5 MB |
 |  | BroadcastHashJoin | 32.9 s | 111 | 23.2 MB |
 
-*Table 11. Measured performance.*
+*Table 12. Measured performance.*
 
 With 3 cores, 4 partitions are fastest: the shuffle volume is the same for every setting, more partitions only add task overhead. Broadcasting halves the shuffle but is not faster here, because the join happens after aggregation to ~2 M cell-days and reading 47.5 M rows dominates — our hypothesis was not confirmed for this query. On a cluster the best partition count grows with executor cores and data size (≈ 2–3 × cores, ~100–200 MB per partition); one laptop cannot prove production-scale performance.
 
@@ -287,10 +301,11 @@ With 3 cores, 4 partitions are fastest: the shuffle volume is the same for every
 | Label vs real gauges | 14 NOAA gauges: totals ratio 1.04; ERA5 reaches 50 mm on 25 % of gauge heavy days ⇒ the label is cell-average heavy rain |
 | Leakage | unit tests change future data and check past features are unchanged; exact label window; split purge; expver = ERA5 final (0001) for every hour 2015–2025, so no later revision mixes into training |
 | Labels from raw | recomputed with numpy from the NetCDF files: identical to Spark (train 313,169 / val 28,683 / test 104,439 positives) |
-| MapReduce vs Spark SQL | 144 / 144 keys, 0 differences (pilot, YARN); full official train set 34.6 M rows: 5,916 keys, 0 differences (local Python run of the same mapper/combiner/reducer) |
+| MapReduce vs Spark SQL | official train set on YARN: 5,916 / 5,916 keys, 0 differences, 34,561,272 rows on both sides (pilot: 144 / 144) |
+| Unit tests | 35 / 35 passed in the Spark container (leakage, metrics, MapReduce, stream parity) — reports/tests/pytest_full.txt |
 | Stream vs batch | 81,710 cell-hours and 21,714 feature values identical |
 
-*Table 12. Validation evidence (details in evidence/session9/).*
+*Table 13. Validation evidence (details in evidence/session9/).*
 
 ## 11. Deployment design and reproducibility
 
@@ -308,10 +323,9 @@ Reproducibility: the README runs the whole official pipeline from the raw CDS do
 | Label = ERA5 cell, not gauge | 25 % agreement on gauge heavy days | verify with more gauges or radar |
 | Year-to-year shift | threshold tuned on a dry year | periodic re-tuning and drift monitoring |
 | Single-node infrastructure | no proof of cluster scaling | YARN, 3 Kafka brokers, Mongo replica set; repeat the performance experiment |
-| MapReduce / Spark SQL on pilot data | not yet on the official data | rerun on official gold |
 | Hyper-parameters not tuned | RF and GBT may improve | small grid search on validation |
 
-*Table 13. Limitations.*
+*Table 14. Limitations.*
 
 ## 13. Conclusion
 
@@ -342,4 +356,28 @@ The system runs end to end on 47.5 million cell-hours: Copernicus CDS → HDFS-b
 | Presentation deck | deck/BDA501_Heavy_Rain_Forecast.pptx |
 | Full pipeline commands | README.md (official CDS pipeline, streaming demo, MapReduce) |
 
-*Table 14. Where to find the evidence.*
+*Table 15. Where to find the evidence.*
+
+## Appendix B. Demo evidence (screenshots)
+
+Captured on 18 November 2026 from the running system, in the order of the live demo (docs/DEMO.md). The same images are the fallback if the live demo fails (report/demo/).
+
+![Figure B1. HDFS NameNode: /rain-forecast holds raw, bronze and the MapReduce input/output.](fig/../demo/01_hdfs_browse.png)
+
+*Figure B1. HDFS NameNode: /rain-forecast holds raw, bronze and the MapReduce input/output.*
+
+![Figure B2. Job history: the climatology job on YARN, 8 map and 2 reduce tasks, succeeded.](fig/../demo/02_mapreduce_job.png)
+
+*Figure B2. Job history: the climatology job on YARN, 8 map and 2 reduce tasks, succeeded.*
+
+![Figure B3. Web map at 07/09/2024 04:00 during the Typhoon Yagi replay: alerts (red) over the North, injected junk vs what Spark caught, the Hải Phòng series and top provinces (page labels in Vietnamese).](fig/../demo/05_web_map.png)
+
+*Figure B3. Web map at 07/09/2024 04:00 during the Typhoon Yagi replay: alerts (red) over the North, injected junk vs what Spark caught, the Hải Phòng series and top provinces (page labels in Vietnamese).*
+
+![Figure B4. Spark UI of the streaming job: micro-batches every 10 s.](fig/../demo/05_spark_ui.png)
+
+*Figure B4. Spark UI of the streaming job: micro-batches every 10 s.*
+
+![Figure B5. One forecast document read back from MongoDB.](fig/../demo/05_mongo_readback.png)
+
+*Figure B5. One forecast document read back from MongoDB.*

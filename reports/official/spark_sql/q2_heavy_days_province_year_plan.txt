@@ -1,0 +1,143 @@
+== Physical Plan ==
+AdaptiveSparkPlan (23)
++- Sort (22)
+   +- Exchange (21)
+      +- HashAggregate (20)
+         +- Exchange (19)
+            +- HashAggregate (18)
+               +- Project (17)
+                  +- BroadcastHashJoin Inner BuildRight (16)
+                     :- Project (12)
+                     :  +- BroadcastHashJoin Inner BuildRight (11)
+                     :     :- HashAggregate (6)
+                     :     :  +- Exchange (5)
+                     :     :     +- HashAggregate (4)
+                     :     :        +- Project (3)
+                     :     :           +- Filter (2)
+                     :     :              +- Scan parquet  (1)
+                     :     +- BroadcastExchange (10)
+                     :        +- Project (9)
+                     :           +- Filter (8)
+                     :              +- Scan parquet  (7)
+                     +- BroadcastExchange (15)
+                        +- Filter (14)
+                           +- Scan csv  (13)
+
+
+(1) Scan parquet 
+Output [4]: [location_id#0, ts#9, precipitation#14, year#50]
+Batched: true
+Location: InMemoryFileIndex [file:/data/lake/gold/features_hourly]
+PushedFilters: [IsNotNull(location_id)]
+ReadSchema: struct<location_id:string,ts:timestamp,precipitation:double>
+
+(2) Filter
+Input [4]: [location_id#0, ts#9, precipitation#14, year#50]
+Condition : isnotnull(location_id#0)
+
+(3) Project
+Output [3]: [location_id#0, precipitation#14, cast(ts#9 as date) AS _groupingexpression#134]
+Input [4]: [location_id#0, ts#9, precipitation#14, year#50]
+
+(4) HashAggregate
+Input [3]: [location_id#0, precipitation#14, _groupingexpression#134]
+Keys [2]: [location_id#0, _groupingexpression#134]
+Functions [1]: [partial_sum(precipitation#14)]
+Aggregate Attributes [1]: [sum#142]
+Results [3]: [location_id#0, _groupingexpression#134, sum#143]
+
+(5) Exchange
+Input [3]: [location_id#0, _groupingexpression#134, sum#143]
+Arguments: hashpartitioning(location_id#0, _groupingexpression#134, 16), ENSURE_REQUIREMENTS, [plan_id=191]
+
+(6) HashAggregate
+Input [3]: [location_id#0, _groupingexpression#134, sum#143]
+Keys [2]: [location_id#0, _groupingexpression#134]
+Functions [1]: [sum(precipitation#14)]
+Aggregate Attributes [1]: [sum(precipitation#14)#130]
+Results [3]: [location_id#0, _groupingexpression#134 AS day#128, sum(precipitation#14)#130 AS rain_day_mm#129]
+
+(7) Scan parquet 
+Output [2]: [grid_id#51, new_province#56]
+Batched: true
+Location: InMemoryFileIndex [file:/data/lake/silver/cells]
+PushedFilters: [IsNotNull(grid_id)]
+ReadSchema: struct<grid_id:string,new_province:string>
+
+(8) Filter
+Input [2]: [grid_id#51, new_province#56]
+Condition : isnotnull(grid_id#51)
+
+(9) Project
+Output [2]: [grid_id#51 AS location_id#61, new_province#56]
+Input [2]: [grid_id#51, new_province#56]
+
+(10) BroadcastExchange
+Input [2]: [location_id#61, new_province#56]
+Arguments: HashedRelationBroadcastMode(List(input[0, string, true]),false), [plan_id=194]
+
+(11) BroadcastHashJoin
+Left keys [1]: [location_id#0]
+Right keys [1]: [location_id#61]
+Join type: Inner
+Join condition: None
+
+(12) Project
+Output [4]: [location_id#0, day#128, rain_day_mm#129, new_province#56]
+Input [5]: [location_id#0, day#128, rain_day_mm#129, location_id#61, new_province#56]
+
+(13) Scan csv 
+Output [2]: [location_id#79, elevation_m#80]
+Batched: false
+Location: InMemoryFileIndex [file:/app/data/reference/cells_geography.csv]
+PushedFilters: [IsNotNull(location_id)]
+ReadSchema: struct<location_id:string,elevation_m:double>
+
+(14) Filter
+Input [2]: [location_id#79, elevation_m#80]
+Condition : isnotnull(location_id#79)
+
+(15) BroadcastExchange
+Input [2]: [location_id#79, elevation_m#80]
+Arguments: HashedRelationBroadcastMode(List(input[0, string, false]),false), [plan_id=198]
+
+(16) BroadcastHashJoin
+Left keys [1]: [location_id#0]
+Right keys [1]: [location_id#79]
+Join type: Inner
+Join condition: None
+
+(17) Project
+Output [4]: [rain_day_mm#129, new_province#56, elevation_m#80, year(day#128) AS _groupingexpression#135]
+Input [6]: [location_id#0, day#128, rain_day_mm#129, new_province#56, location_id#79, elevation_m#80]
+
+(18) HashAggregate
+Input [4]: [rain_day_mm#129, new_province#56, elevation_m#80, _groupingexpression#135]
+Keys [3]: [new_province#56, knownfloatingpointnormalized(normalizenanandzero(elevation_m#80)) AS elevation_m#80, _groupingexpression#135]
+Functions [3]: [partial_count(1), partial_sum(CASE WHEN (rain_day_mm#129 > 50.0) THEN 1 ELSE 0 END), partial_max(rain_day_mm#129)]
+Aggregate Attributes [3]: [count#136L, sum#137L, max#138]
+Results [6]: [new_province#56, elevation_m#80, _groupingexpression#135, count#139L, sum#140L, max#141]
+
+(19) Exchange
+Input [6]: [new_province#56, elevation_m#80, _groupingexpression#135, count#139L, sum#140L, max#141]
+Arguments: hashpartitioning(new_province#56, elevation_m#80, _groupingexpression#135, 16), ENSURE_REQUIREMENTS, [plan_id=203]
+
+(20) HashAggregate
+Input [6]: [new_province#56, elevation_m#80, _groupingexpression#135, count#139L, sum#140L, max#141]
+Keys [3]: [new_province#56, elevation_m#80, _groupingexpression#135]
+Functions [3]: [count(1), sum(CASE WHEN (rain_day_mm#129 > 50.0) THEN 1 ELSE 0 END), max(rain_day_mm#129)]
+Aggregate Attributes [3]: [count(1)#131L, sum(CASE WHEN (rain_day_mm#129 > 50.0) THEN 1 ELSE 0 END)#133L, max(rain_day_mm#129)#132]
+Results [6]: [new_province#56, elevation_m#80, _groupingexpression#135 AS year#124, count(1)#131L AS days#125L, sum(CASE WHEN (rain_day_mm#129 > 50.0) THEN 1 ELSE 0 END)#133L AS heavy_days#126L, round(max(rain_day_mm#129)#132, 1) AS max_day_mm#127]
+
+(21) Exchange
+Input [6]: [new_province#56, elevation_m#80, year#124, days#125L, heavy_days#126L, max_day_mm#127]
+Arguments: rangepartitioning(new_province#56 ASC NULLS FIRST, year#124 ASC NULLS FIRST, 16), ENSURE_REQUIREMENTS, [plan_id=206]
+
+(22) Sort
+Input [6]: [new_province#56, elevation_m#80, year#124, days#125L, heavy_days#126L, max_day_mm#127]
+Arguments: [new_province#56 ASC NULLS FIRST, year#124 ASC NULLS FIRST], true, 0
+
+(23) AdaptiveSparkPlan
+Output [6]: [new_province#56, elevation_m#80, year#124, days#125L, heavy_days#126L, max_day_mm#127]
+Arguments: isFinalPlan=false
+

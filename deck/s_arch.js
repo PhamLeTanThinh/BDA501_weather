@@ -71,7 +71,7 @@ module.exports = [
   const tag = (x, y, k) => S.addText(k, { shape: "roundRect", rectRadius: 0.04, x, y, w: k.length > 3 ? 0.36 : 0.3, h: 0.2,
     fill: { color: k === "[P]" ? C.accent4 : k === "[I*]" ? C.accent2 : C.accent3 }, line: { color: C.background1, width: 0.5 },
     color: C.background1, fontSize: 7.5, bold: true, align: "center", valign: "middle", margin: 0 });
-  const kindOf = (name) => (/Forecast API/.test(name) ? "[P]" : /MapReduce/.test(name) ? "[I*]" : "[I]");
+  const kindOf = (name) => (/Forecast API/.test(name) ? "[P]" : /MapReduce/.test(name) && !D.mr_official ? "[I*]" : "[I]");
   const df = Object.assign({}, df0, {
     proc: (x, y, w, title, tech, proposed = false) => { df0.proc(x, y, w, title, tech, proposed); tag(x + w - 0.33, y - 0.08, proposed ? "[P]" : kindOf(String(title))); },
     store: (x, y, w, name, sub) => { df0.store(x, y, w, name, sub); tag(x + w - 0.33, y - 0.02, "[I]"); },
@@ -100,7 +100,7 @@ module.exports = [
   df.store(4.7, 3.9, 2.0, "Kafka", t("topic · 3 partitions", "topic · 3 partition"));
   // processing
   df.proc(7.15, 1.6, 3.0, t("Spark batch", "Spark batch"), t("clean · EDA · features · Spark SQL", "làm sạch · EDA · feature · Spark SQL"));
-  df.proc(7.15, 2.8, 1.45, "Spark ML", t("train RF M1–M4", "train RF M1–M4"));
+  df.proc(7.15, 2.8, 1.45, "Spark ML", t("RF M1–M4 · LR · GBT", "RF M1–M4 · LR · GBT"));
   df.proc(8.7, 2.8, 1.45, "MapReduce", "YARN · HDFS");
   df.proc(7.15, 4.0, 3.0, "Structured Streaming", t("watermark · dedup · M4", "watermark · khử trùng · M4"));
   // serving
@@ -130,7 +130,7 @@ module.exports = [
   df.flow(11.6, 3.2, 11.6, 3.65, "", ST);
   df.legend(5.4);
   S.addText([{ text: "[I] ", options: { bold: true, color: C.accent3 } }, { text: t("implemented   ", "đã làm   ") },
-    { text: "[I*] ", options: { bold: true, color: C.accent2 } }, { text: t("implemented on pilot data   ", "đã làm trên dữ liệu pilot   ") },
+    ...(D.mr_official ? [] : [{ text: "[I*] ", options: { bold: true, color: C.accent2 } }, { text: t("implemented on pilot data   ", "đã làm trên dữ liệu pilot   ") }]),
     { text: "[P] ", options: { bold: true, color: C.accent4 } }, { text: t("design only (dashed)", "chỉ thiết kế (nét đứt)") }],
     { x: 7.2, y: 5.85, w: W - MX - 7.2, h: 0.3, fontSize: 11, color: C.text1, align: "right", margin: 0, isTextBox: true });
   S.addText([{ text: "→ ", options: { color: C.accent2, bold: true } }, { text: t("batch: run on demand (daily ETL = design)   ", "batch: chạy khi cần (ETL hằng ngày = thiết kế)   ") },
@@ -417,10 +417,14 @@ module.exports = [
 (IC) => {
   const mr = D.mapreduce || {}, mv = mr.validation || {};
   const logv = (k) => { const l = (mr.log || []).find((x) => x.startsWith(k)); return l ? l.split("=").pop() : "–"; };
-  const cin = Number(logv("Combine input records")), cout = Number(logv("Combine output records"));
-  const S = slide("CONTENT", SEC(), t("MapReduce on Hadoop: heavy-rain hours per city and month", "MapReduce trên Hadoop: giờ mưa lớn theo thành phố, tháng"));
+  // rows in = map output; records that cross the network = reduce input (combiner may run several passes)
+  const cin = Number(logv("Map output records")), cout = Number(logv("Reduce input records"));
+  const OF = D.mr_official, U = OF ? t("cell", "ô") : t("city", "thành phố");
+  const S = slide("CONTENT", SEC(), OF ? t("MapReduce on Hadoop/YARN: heavy-rain hours per cell and month", "MapReduce trên Hadoop/YARN: giờ mưa lớn theo ô, tháng")
+    : t("MapReduce on Hadoop: heavy-rain hours per city and month", "MapReduce trên Hadoop: giờ mưa lớn theo thành phố, tháng"));
   // bài toán: một câu hỏi lớn, nhìn là hiểu
-  S.addText(t("For each city and each month: what share of hours is followed by > 50 mm of rain?",
+  S.addText(OF ? t("For each of the 493 cells and each month: what share of hours is followed by > 50 mm of rain?",
+    "Mỗi ô trong 493 ô, mỗi tháng: bao nhiêu % số giờ có mưa > 50 mm ngay sau đó?") : t("For each city and each month: what share of hours is followed by > 50 mm of rain?",
     "Mỗi thành phố, mỗi tháng: bao nhiêu % số giờ có mưa > 50 mm ngay sau đó?"),
     { x: MX, y: 1.2, w: W - 2 * MX, h: 0.6, fontSize: 22, bold: true, color: C.text2, margin: 0, isTextBox: true, fit: "shrink" });
   S.addText(t("→ a climatology table: the baseline the model must beat, and an EDA table of when and where heavy rain happens",
@@ -433,10 +437,10 @@ module.exports = [
       align: "center", valign: "bottom", margin: [0, 0.05, 0.12, 0.05], isTextBox: true });
   cyl(MX, "HDFS", t(`mr/ CSV · train years`, `mr/ CSV · các năm train`));
   const xs = [MX];
-  [["Map", t("each hourly row → key city|month, value (1, label, rain)", "mỗi dòng giờ → khóa thành phố|tháng, giá trị (1, nhãn, mưa)"), t(`${n(cin)} rows in`, `${n(cin)} dòng vào`)],
-   ["Combine", t("sum count, labels, rain and take max inside each map task", "cộng số giờ, nhãn, mưa và lấy max ngay trong mỗi map task"), t(`→ ${n(cout)} records (${Math.round(cin / cout)}× less)`, `→ ${n(cout)} bản ghi (giảm ${Math.round(cin / cout)} lần)`)],
+  [["Map", t(`each hourly row → key ${U}|month, value (1, label, rain)`, `mỗi dòng giờ → khóa ${U}|tháng, giá trị (1, nhãn, mưa)`), t(`${n(cin)} rows in`, `${n(cin)} dòng vào`)],
+   ["Combine", t("sum count, labels, rain and take max inside each map task", "cộng số giờ, nhãn, mưa và lấy max ngay trong mỗi map task"), t(`→ ${n(cout)} records shuffled (${n(Math.round(cin / cout))}× less)`, `→ ${n(cout)} bản ghi qua shuffle (giảm ${n(Math.round(cin / cout))} lần)`)],
    ["Shuffle", t("Hadoop groups all records of one key on one reducer", "Hadoop gom mọi bản ghi cùng khóa về một reducer"), t(`${logv("Launched map tasks")} map → ${logv("Launched reduce tasks")} reduce on YARN`, `${logv("Launched map tasks")} map → ${logv("Launched reduce tasks")} reduce trên YARN`)],
-   ["Reduce", t("add the parts, then rate = labels / hours, mean, max", "cộng các phần, rồi tỷ lệ = nhãn / số giờ, trung bình, max"), t(`${logv("Reduce output records")} rows · 12 cities × 12 mo.`, `${logv("Reduce output records")} dòng · 12 TP × 12 tháng`)],
+   ["Reduce", t("add the parts, then rate = labels / hours, mean, max", "cộng các phần, rồi tỷ lệ = nhãn / số giờ, trung bình, max"), OF ? t(`${n(Number(logv("Reduce output records")))} rows · 493 cells × 12 mo.`, `${n(Number(logv("Reduce output records")))} dòng · 493 ô × 12 tháng`) : t(`${logv("Reduce output records")} rows · 12 cities × 12 mo.`, `${logv("Reduce output records")} dòng · 12 TP × 12 tháng`)],
   ].forEach(([head, sub, num], i) => {
     const x = MX + sw + gap + i * (pw + gap);
     xs.push(x);
@@ -452,22 +456,22 @@ module.exports = [
   for (let i = 0; i < 5; i++) arrow(S, C, xs[i] + widths[i] + 0.03, y + hb / 2, xs[i + 1] - 0.03, y + hb / 2, { color: C.accent2, width: 1.75 });
   // kiểm chứng
   S.addText([{ text: t("Checked: ", "Kiểm chứng: "), options: { bold: true, color: C.accent3 } },
-    { text: t(`same table from Spark SQL — ${mv.keys_mapreduce}/${mv.keys_spark} keys, ${mv.mismatches} differences`,
-      `Spark SQL tính lại cùng bảng — ${mv.keys_mapreduce}/${mv.keys_spark} khóa, ${mv.mismatches} khác biệt`) }],
+    { text: t(`same table from Spark SQL — ${n(mv.keys_mapreduce)}/${n(mv.keys_spark)} keys, ${mv.mismatches} differences` + (OF ? `, ${n(mv.rows_mapreduce)} = ${n(mv.rows_spark)} rows (official train 2015–2022)` : " (pilot data)"),
+      `Spark SQL tính lại cùng bảng — ${n(mv.keys_mapreduce)}/${n(mv.keys_spark)} khóa, ${mv.mismatches} khác biệt` + (OF ? `, ${n(mv.rows_mapreduce)} = ${n(mv.rows_spark)} dòng (train chính thức 2015–2022)` : " (dữ liệu pilot)")) }],
     { x: MX, y: 5.4, w: W - 2 * MX, h: 0.45, fontSize: 15, color: C.text1, margin: 0, isTextBox: true });
   // ghi chú cho người trình bày: shuffle là gì + vì sao combiner vẫn đúng
   const nm = logv("Launched map tasks"), nr = logv("Launched reduce tasks"), nk = logv("Reduce output records");
   S.addNotes(t(
 `Shuffle (step 3) is done by Hadoop itself, not by our code: it moves and groups data over the network so that every record with the same key reaches one reducer.
-Why it is needed: the input is split across ${nm} mappers running in parallel, each reading part of the file, so the same key (e.g. HUE|10, Hue in October) appears in all ${nm} mappers. To compute Hue-October correctly, all its pieces must meet in one place.
+Why it is needed: the input is split across ${nm} mappers running in parallel, each reading part of the file, so the same key (e.g. one ${U}|October) appears in many of the ${nm} mappers. To compute that key correctly, all its pieces must meet in one place.
 What it does: (1) partition — decide which reducer gets each key, by hash(key) mod ${nr}, so a key always goes to the same reducer; (2) transfer — send the data from mapper machines to reducer machines over the network, the most expensive part of MapReduce; (3) sort — each reducer receives its records sorted by key and adds them up key by key.
-"${nm} map → ${nr} reduce on YARN": YARN ran ${nm} map tasks and ${nr} reduce tasks; shuffle carries data from the ${nm} on the left to the ${nr} on the right (${nk} keys in total = 12 cities × 12 months).
+"${nm} map → ${nr} reduce on YARN": YARN ran ${nm} map tasks and ${nr} reduce tasks; shuffle carries data from the ${nm} on the left to the ${nr} on the right (${nk} keys in total = ${OF ? "493 cells" : "12 cities"} × 12 months).
 Why the combiner matters: because each mapper adds up its own records first, shuffle only sends ${n(cout)} records instead of ${n(cin)} raw rows (${Math.round(cin / cout)}× less).
 Why the combiner is safe: adding and taking the max give the same answer whether done in parts or all at once. Rate and mean are computed only at the very end in the reducer — an average of averages would be wrong. A test runs the job with and without the combiner and gets identical output.`,
 `Shuffle (bước 3) do Hadoop tự làm, nhóm không viết code: chuyển và gom dữ liệu qua mạng sao cho mọi bản ghi cùng một khóa đến đúng một reducer.
-Vì sao cần: dữ liệu được chia cho ${nm} mapper chạy song song, mỗi mapper đọc một phần file, nên cùng một khóa (ví dụ HUE|10, Huế tháng 10) xuất hiện ở cả ${nm} mapper. Muốn tính đúng Huế tháng 10 thì phải gom mọi mảnh của khóa đó về một chỗ.
+Vì sao cần: dữ liệu được chia cho ${nm} mapper chạy song song, mỗi mapper đọc một phần file, nên cùng một khóa (ví dụ một ${U}|tháng 10) xuất hiện ở nhiều trong ${nm} mapper. Muốn tính đúng khóa đó thì phải gom mọi mảnh của khóa đó về một chỗ.
 Shuffle làm ba việc: (1) chia — quyết định khóa nào về reducer nào bằng hash(khóa) chia lấy dư cho ${nr}, cùng khóa luôn về cùng reducer; (2) chuyển — gửi dữ liệu từ máy chạy mapper sang máy chạy reducer qua mạng, đây là phần tốn kém nhất của MapReduce; (3) sắp xếp — mỗi reducer nhận dữ liệu đã xếp theo khóa và cộng dồn lần lượt từng khóa.
-"${nm} map → ${nr} reduce trên YARN": YARN chạy ${nm} task map và ${nr} task reduce; shuffle chuyển dữ liệu từ ${nm} task bên trái sang ${nr} task bên phải (tổng ${nk} khóa = 12 thành phố × 12 tháng).
+"${nm} map → ${nr} reduce trên YARN": YARN chạy ${nm} task map và ${nr} task reduce; shuffle chuyển dữ liệu từ ${nm} task bên trái sang ${nr} task bên phải (tổng ${nk} khóa = ${OF ? "493 ô" : "12 thành phố"} × 12 tháng).
 Vì sao cần combiner: nhờ mỗi mapper cộng sẵn phần của mình, shuffle chỉ gửi ${n(cout)} bản ghi thay vì ${n(cin)} dòng gốc (ít hơn ${Math.round(cin / cout)} lần).
 Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết quả dù làm từng phần hay làm một lần. Tỷ lệ và trung bình chỉ tính ở bước cuối trong reducer — lấy trung bình của các trung bình sẽ sai. Có test chạy job khi bật và tắt combiner, kết quả giống hệt.`));
 },
@@ -482,11 +486,12 @@ Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết 
   const sum = rows.reduce((a, r) => [a[0] + 1, a[1] + r.lab, a[2] + r.p, Math.max(a[3], r.p)], [0, 0, 0, 0]);
   const fin = outp.find((l) => l.startsWith(key)), [fk, fv] = fin ? fin.split("\t") : ["", ""];
   const [fn, fh, frate, fmean, fmax] = fv ? fv.split(",") : [];
-  const hue = outp.find((l) => l.startsWith("HUE|10"));
+  const HK = SM.mr_highlight ? SM.mr_highlight.key : "HUE|10", HN = SM.mr_highlight ? SM.mr_highlight.name : "Hue, October";
+  const hue = outp.find((l) => l.startsWith(HK));
   // một khóa thật đi qua từng bước, mỗi bước một khung, nối bằng mũi tên
   const boxes = [
-    [t("Input on HDFS", "Input trên HDFS"), inp.slice(0, 4).join("\n"), t("city, month, label, rain", "thành phố, tháng, nhãn, mưa")],
-    ["Map", rows.slice(0, 4).map((r) => `${key} → (1,${r.lab},${r.p},${r.p})`).join("\n"), t("key = city|month", "khóa = thành phố|tháng")],
+    [t("Input on HDFS", "Input trên HDFS"), inp.slice(0, 4).join("\n"), D.mr_official ? t("cell, month, label, rain", "ô, tháng, nhãn, mưa") : t("city, month, label, rain", "thành phố, tháng, nhãn, mưa")],
+    ["Map", rows.slice(0, 4).map((r) => `${key} → (1,${r.lab},${r.p},${r.p})`).join("\n"), D.mr_official ? t("key = cell|month", "khóa = ô|tháng") : t("key = city|month", "khóa = thành phố|tháng")],
     ["Combine", `${key} →\n(${sum[0]},${sum[1]},${f(sum[2], 1)},${sum[3]})`, t(`${rows.length} records → 1`, `${rows.length} bản ghi → 1`)],
     ["Shuffle", t(`every ${key}\n→ one reducer`, `mọi ${key}\n→ một reducer`), t("group by key", "gom theo khóa")],
     ["Reduce", fin ? t(`${fk} →\n${fn} h, ${fh} heavy\nmax ${fmax} mm/h`, `${fk} →\n${fn} giờ, ${fh} mưa lớn\nmax ${fmax} mm/giờ`) : "–", t("rate, mean, max", "tỷ lệ, trung bình, max")],
@@ -505,13 +510,13 @@ Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết 
   if (hue) {
     const [hk, hv] = hue.split("\t"), [hn, hh, hr] = hv.split(",");
     S.addText(`${pct(Number(hr), 1)}`, { x: MX, y: 4.55, w: 3.2, h: 1.0, fontSize: 60, bold: true, color: C.accent2, margin: 0, valign: "middle", isTextBox: true });
-    S.addText([{ text: t(`${hk}: in October at Hue, about 1 hour in 6 is followed by > 50 mm`, `${hk}: tháng 10 ở Huế, cứ khoảng 6 giờ có 1 giờ có mưa > 50 mm sau đó`), options: { bold: true, color: C.text2, fontSize: 18, breakLine: true } },
+    S.addText([{ text: t(`${hk}: ${HN} — about 1 hour in ${Math.round(1 / Number(hr))} is followed by > 50 mm`, `${hk}: ${HN} — cứ khoảng ${Math.round(1 / Number(hr))} giờ có 1 giờ có mưa > 50 mm sau đó`), options: { bold: true, color: C.text2, fontSize: 18, breakLine: true } },
       { text: t(`${n(Number(hh))} of ${n(Number(hn))} hours · one of the ${logv("Reduce output records")} rows the job writes`, `${n(Number(hh))} trên ${n(Number(hn))} giờ · một trong ${logv("Reduce output records")} dòng job ghi ra`), options: { color: C.text1, fontSize: 14 } }],
       { x: MX + 3.3, y: 4.55, w: W - 2 * MX - 3.3, h: 1.0, margin: 0, valign: "middle", isTextBox: true });
   }
   S.addNotes(t(
-    `Walk one key through the job. Input: each line is city, month, label (1 = more than 50 mm in the next 24 h) and rain that hour in mm. Map turns each line into key city|month and value (hours, heavy hours, rain sum, rain max). Combine adds the ${rows.length} records into one inside the same map task. Shuffle sends every record of ${key} from every map task to one reducer, grouped and sorted by key. Reduce adds the parts and only then computes rate, mean and max` + (fin ? ` — ${key}: ${n(Number(fn))} June hours in 2019–2022, ${fh} heavy, rate ${pct(Number(frate), 1)}, mean ${f(Number(fmean), 2)} mm/h, max ${fmax} mm/h.` : "."),
-    `Theo một khóa đi qua job. Input: mỗi dòng là thành phố, tháng, nhãn (1 = mưa trên 50 mm trong 24 h tới) và mưa giờ đó (mm). Map biến mỗi dòng thành khóa thành phố|tháng và giá trị (số giờ, giờ mưa lớn, tổng mưa, mưa max). Combine cộng ${rows.length} bản ghi thành 1 ngay trong cùng map task. Shuffle gửi mọi bản ghi ${key} từ mọi map task về một reducer, gom và sắp theo khóa. Reduce cộng các phần rồi mới tính tỷ lệ, trung bình, max` + (fin ? ` — ${key}: ${n(Number(fn))} giờ tháng 6 giai đoạn 2019–2022, ${fh} giờ mưa lớn, tỷ lệ ${pct(Number(frate), 1)}, trung bình ${f(Number(fmean), 2)} mm/giờ, max ${fmax} mm/giờ.` : ".")));
+    `Walk one key through the job. Input: each line is city, month, label (1 = more than 50 mm in the next 24 h) and rain that hour in mm. Map turns each line into key city|month and value (hours, heavy hours, rain sum, rain max). Combine adds the ${rows.length} records into one inside the same map task. Shuffle sends every record of ${key} from every map task to one reducer, grouped and sorted by key. Reduce adds the parts and only then computes rate, mean and max` + (fin ? ` — ${key}: ${n(Number(fn))} hours in the training years, ${fh} heavy, rate ${pct(Number(frate), 1)}, mean ${f(Number(fmean), 2)} mm/h, max ${fmax} mm/h.` : "."),
+    `Theo một khóa đi qua job. Input: mỗi dòng là thành phố, tháng, nhãn (1 = mưa trên 50 mm trong 24 h tới) và mưa giờ đó (mm). Map biến mỗi dòng thành khóa thành phố|tháng và giá trị (số giờ, giờ mưa lớn, tổng mưa, mưa max). Combine cộng ${rows.length} bản ghi thành 1 ngay trong cùng map task. Shuffle gửi mọi bản ghi ${key} từ mọi map task về một reducer, gom và sắp theo khóa. Reduce cộng các phần rồi mới tính tỷ lệ, trung bình, max` + (fin ? ` — ${key}: ${n(Number(fn))} giờ trong các năm train, ${fh} giờ mưa lớn, tỷ lệ ${pct(Number(frate), 1)}, trung bình ${f(Number(fmean), 2)} mm/giờ, max ${fmax} mm/giờ.` : ".")));
 },
 
 // Spark SQL — queries
@@ -531,17 +536,18 @@ Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết 
       q2 ? t(`top row: ${q2.new_province} ${q2.year} → ${q2.heavy_days} days > 50 mm (max ${f(q2.max_day_mm, 0)} mm/day)`,
         `dòng cao nhất: ${q2.new_province} ${q2.year} → ${q2.heavy_days} ngày > 50 mm (max ${f(q2.max_day_mm, 0)} mm/ngày)`) : "–",
       t("two joins with small tables → broadcast", "hai phép join với bảng nhỏ → broadcast")],
-    ["Q3", t("What were the 5 wettest 24-hour periods at each city?", "5 khoảng 24 giờ mưa nhiều nhất ở mỗi thành phố là khi nào?"),
+    ["Q3", D.sql_official ? t("What were the 5 wettest 24-hour periods in each cell?", "5 khoảng 24 giờ mưa nhiều nhất ở mỗi ô là khi nào?") : t("What were the 5 wettest 24-hour periods at each city?", "5 khoảng 24 giờ mưa nhiều nhất ở mỗi thành phố là khi nào?"),
       "row_number() OVER (PARTITION BY location ORDER BY rain DESC)",
       t("5 rows per city with time and amount", "5 dòng mỗi thành phố, kèm thời điểm và lượng mưa"),
       t("window → shuffle by city, then sort", "window → shuffle theo thành phố, rồi sắp xếp")],
   ];
   const big = [
     q1 ? [`${f(q1.heavy_pct, 1)}%`, t(`of hours · ${RN[q1.region] || q1.region}, month ${q1.month}`, `số giờ · ${RN[q1.region] || q1.region}, tháng ${q1.month}`)] : ["–", ""],
-    q2 ? [t(`${q2.heavy_days} days`, `${q2.heavy_days} ngày`), t(`> 50 mm · ${q2.new_province} ${q2.year}`, `> 50 mm · ${q2.new_province} ${q2.year}`)] : ["–", ""],
-    [t("Top 5", "Top 5"), t("wettest 24 h per city, with time", "24 h mưa nhiều nhất mỗi TP, kèm thời điểm")],
+    q2 ? [t(`${q2.heavy_days} days`, `${q2.heavy_days} ngày`), D.sql_official ? t(`> 50 mm · wettest cell (${f(q2.elevation_m, 0)} m), ${q2.new_province} ${q2.year}`, `> 50 mm · ô mưa nhiều nhất (${f(q2.elevation_m, 0)} m), ${q2.new_province} ${q2.year}`)
+      : t(`> 50 mm · ${q2.new_province} ${q2.year}`, `> 50 mm · ${q2.new_province} ${q2.year}`)] : ["–", ""],
+    [t("Top 5", "Top 5"), D.sql_official ? t("wettest 24 h per cell, with time · 2,465 rows", "24 h mưa nhiều nhất mỗi ô, kèm thời điểm · 2.465 dòng") : t("wettest 24 h per city, with time", "24 h mưa nhiều nhất mỗi TP, kèm thời điểm")],
   ];
-  const ops = [["GROUP BY", t("1 shuffle", "1 lần shuffle")], ["JOIN × 2", t("broadcast small tables", "broadcast bảng nhỏ")], ["WINDOW", t("shuffle by city, sort", "shuffle theo TP, sắp xếp")]];
+  const ops = [["GROUP BY", t("1 shuffle", "1 lần shuffle")], ["JOIN × 2", t("broadcast small tables", "broadcast bảng nhỏ")], ["WINDOW", D.sql_official ? t("shuffle by cell, sort", "shuffle theo ô, sắp xếp") : t("shuffle by city, sort", "shuffle theo TP, sắp xếp")]];
   qs.forEach(([id, q], i) => {
     const y = 1.4 + i * 1.65, h = 1.25, col = [C.accent1, C.accent5, C.accent2][i];
     S.addText(id, { shape: "ellipse", x: MX, y: y + 0.25, w: 0.75, h: 0.75, fill: { color: col }, color: C.background1,
@@ -555,7 +561,8 @@ Vì sao dùng combiner vẫn đúng: phép cộng và lấy max cho cùng kết 
     S.addText([{ text: big[i][0], options: { bold: true, fontSize: 30, color: C.accent2, breakLine: true } }, { text: big[i][1], options: { fontSize: 12, color: C.text1 } }],
       { x: 9.7, y, w: W - MX - 9.7, h, margin: 0, valign: "middle", isTextBox: true });
   });
-  source(S, C, t("Pilot data (12 cities).", "Dữ liệu pilot (12 thành phố)."));
+  source(S, C, D.sql_official ? t("Official gold: 47.5 M cell-hours, 493 cells, 2015–2025 · reports/official/spark_sql/", "Gold chính thức: 47,5 triệu ô-giờ, 493 ô, 2015–2025 · reports/official/spark_sql/")
+    : t("Pilot data (12 cities).", "Dữ liệu pilot (12 thành phố)."));
   S.addNotes(qs.map(([id, q, sql, res, plan]) => `${id}: ${q} — ${sql} — ${res}. ${t("Execution", "Cách chạy")}: ${plan}.`).join("\n"));
 },
 

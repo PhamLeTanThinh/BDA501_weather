@@ -5,8 +5,7 @@ exceed 50 mm (Decision 18/2021/QĐ-TTg)? Forecasts are made per cell and rolled 
 maximum probability over each province's cells.
 
 **Official run** (this section): ERA5 downloaded from the Copernicus CDS, 13 variables, hourly 2015–2025, 47.5 million
-cell-hours. The earlier pilot (Open-Meteo, 12 points, 2019–2025) is still in the code under `--profile pilot`;
-MapReduce on YARN and Spark SQL Q1–Q3 have so far been run on the pilot (see "Status").
+cell-hours. The earlier pilot (Open-Meteo, 12 points, 2019–2025) is still in the code under `--profile pilot`.
 
 Team 1: Trần Quốc Việt (25MS23304) · Nguyễn Phạm Thành Luân (25MS23265) · Phạm Lê Tấn Thịnh (25MS23273).
 
@@ -46,12 +45,14 @@ src/analytics/spark_sql_queries.py 3 Spark SQL queries + query plans
 src/streaming/kafka_producer.py    replays silver into Kafka + injects controlled junk data
 src/streaming/kafka_stream.py      Structured Streaming: checks, 6 h watermark, dedup, M4, MongoDB
 src/streaming/stream_report.py     measurements + stream vs batch parity
+src/analytics/province_recall.py   recall by cell, province and region on the test years
 src/web/                           FastAPI + Leaflet map (http://localhost:8000)
 docker/                            Dockerfile.spark, Dockerfile.stream, stream-compose.yml
 deck/                              slide source (pptxgenjs) → BDA501_Heavy_Rain_Forecast.pptx
 report/                            final report (build_report.py → BDA501_Final_Report.docx/.md)
 evidence/session9/                 Session 9 evidence (A–I, MANIFEST.md, team_audit/)
 tests/                             leakage, metrics, MapReduce, parity
+docs/DEMO.md                       final demo script; scripts/demo_check.sh = pre-demo check
 ```
 
 Large data lives outside the repository in `D:/BDA501_data/` (`raw/`, `lake/{bronze,silver,gold,models}`), mounted
@@ -113,24 +114,26 @@ bash scripts/stream_scenarios.sh     # measured scenario: junk data + Spark kill
 This is a **replay of historical data (hindcast)**: ERA5 is published about 5 days late, so it cannot drive real
 warnings; operation needs a numerical forecast source (see `evidence/session9/H_project_card.md`).
 
-## MapReduce and Spark SQL (pilot data)
+## MapReduce (Hadoop/YARN) and Spark SQL
 
 ```bash
-scripts/run_in_spark.sh src.mapreduce.mr_io export --profile pilot
-scripts/run_mapreduce.sh                              # needs the BDA501-Hadoop-Lab cluster
-scripts/run_in_spark.sh src.mapreduce.mr_io validate --profile pilot
-scripts/run_in_spark.sh src.analytics.spark_sql_queries --profile pilot
+scripts/run_in_spark.sh src.mapreduce.mr_io export --profile official          # gold train → data/mr/input (1.1 GB CSV)
+SPLIT_BYTES=134217728 LOG_DIR=reports/official/mapreduce scripts/run_mapreduce.sh   # needs the BDA501-Hadoop-Lab containers
+scripts/run_in_spark.sh src.mapreduce.mr_io validate --profile official        # vs Spark SQL → reports/official/mapreduce/validation.json
+scripts/run_in_spark.sh src.analytics.spark_sql_queries --profile official     # Q1–Q3 + plans → reports/official/spark_sql/
+scripts/run_in_spark.sh src.analytics.province_recall --profile official       # recall by cell/province/region
 ```
 
-The same mapper/combiner/reducer were also run locally on the full official training set
-(`evidence/session9/team_audit/`: 34,561,272 rows, 5,916 keys, 0 differences).
+Official run: 34,561,272 rows, 8 map + 2 reduce tasks on YARN, 5,916 keys, 0 differences vs Spark SQL.
 
-## Slides and report
+## Slides, report and demo
 
 ```bash
 cd deck && npm install
-DECK_NAME=BDA501_Heavy_Rain_Forecast.pptx NODE_PATH=$PWD/node_modules PPTX_SKILL=<pptx skill folder> node build_bilingual.js
+NODE_PATH=$PWD/node_modules PPTX_SKILL=<pptx skill folder> node build_final.js        # final presentation (English, ~25 slides + appendix)
+DECK_NAME=BDA501_Heavy_Rain_Forecast.pptx NODE_PATH=$PWD/node_modules PPTX_SKILL=<pptx skill folder> node build_bilingual.js   # full bilingual deck
 python report/build_report.py
+bash scripts/demo_check.sh            # before the demo: checks services and warms up the stream (docs/DEMO.md)
 ```
 
 ## Leakage controls (tested in `tests/`)
@@ -147,7 +150,8 @@ python report/build_report.py
 | Item | Status |
 |---|---|
 | CDS download, lake, EDA, ablation, model comparison, threshold, streaming + web | run on the official data |
-| MapReduce on YARN, Spark SQL Q1–Q3 | run and validated on the **pilot**; MapReduce also run locally on the official training set |
+| MapReduce on YARN, Spark SQL Q1–Q3 | run on the official data; MapReduce = Spark SQL on 5,916 keys |
+| Unit tests | 35 / 35 passed (`reports/tests/pytest_full.txt`) |
 | Cluster/cloud deployment (YARN, multi-broker Kafka) | **design** |
 
 ## Data sources

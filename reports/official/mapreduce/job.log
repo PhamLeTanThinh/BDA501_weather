@@ -1,0 +1,105 @@
+Found 4 items
+-rw-r--r--   1 hadoop supergroup    263.0 M 2026-11-18 14:55 /rain-forecast/mr/input/part-00000-0e6b2cd1-bb8f-444b-aa73-698b64d1b0e6-c000.csv
+-rw-r--r--   1 hadoop supergroup    263.0 M 2026-11-18 14:55 /rain-forecast/mr/input/part-00001-0e6b2cd1-bb8f-444b-aa73-698b64d1b0e6-c000.csv
+-rw-r--r--   1 hadoop supergroup    263.0 M 2026-11-18 14:55 /rain-forecast/mr/input/part-00002-0e6b2cd1-bb8f-444b-aa73-698b64d1b0e6-c000.csv
+-rw-r--r--   1 hadoop supergroup    263.0 M 2026-11-18 14:55 /rain-forecast/mr/input/part-00003-0e6b2cd1-bb8f-444b-aa73-698b64d1b0e6-c000.csv
+packageJobJar: [/tmp/hadoop-unjar10508216171183879872/] [] /tmp/streamjob13428614961809191718.jar tmpDir=null
+2026-11-18 14:55:53 INFO  DefaultNoHARMFailoverProxyProvider:64 - Connecting to ResourceManager at resourcemanager/172.18.0.4:8032
+2026-11-18 14:55:53 INFO  DefaultNoHARMFailoverProxyProvider:64 - Connecting to ResourceManager at resourcemanager/172.18.0.4:8032
+2026-11-18 14:55:54 INFO  JobResourceUploader:907 - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/hadoop/.staging/job_1795013623254_0001
+2026-11-18 14:55:54 INFO  FileInputFormat:267 - Total input files to process : 4
+2026-11-18 14:55:54 INFO  NetworkTopology:156 - Adding a new node: /default-rack/172.18.0.3:9866
+2026-11-18 14:55:55 INFO  JobSubmitter:203 - number of splits:8
+2026-11-18 14:55:55 INFO  JobSubmitter:299 - Submitting tokens for job: job_1795013623254_0001
+2026-11-18 14:55:55 INFO  JobSubmitter:300 - Executing with tokens: []
+2026-11-18 14:55:55 INFO  Configuration:2885 - resource-types.xml not found
+2026-11-18 14:55:55 INFO  ResourceUtils:476 - Unable to find 'resource-types.xml'.
+2026-11-18 14:55:55 INFO  YarnClientImpl:356 - Submitted application application_1795013623254_0001
+2026-11-18 14:55:56 INFO  Job:1681 - The url to track the job: http://resourcemanager:8088/proxy/application_1795013623254_0001/
+2026-11-18 14:55:56 INFO  Job:1726 - Running job: job_1795013623254_0001
+2026-11-18 14:56:02 INFO  Job:1747 - Job job_1795013623254_0001 running in uber mode : false
+2026-11-18 14:56:02 INFO  Job:1754 -  map 0% reduce 0%
+2026-11-18 14:56:19 INFO  Job:1754 -  map 28% reduce 0%
+2026-11-18 14:56:24 INFO  Job:1754 -  map 35% reduce 0%
+2026-11-18 14:56:25 INFO  Job:1754 -  map 40% reduce 0%
+2026-11-18 14:56:27 INFO  Job:1754 -  map 44% reduce 0%
+2026-11-18 14:56:28 INFO  Job:1754 -  map 63% reduce 0%
+2026-11-18 14:56:42 INFO  Job:1754 -  map 69% reduce 0%
+2026-11-18 14:56:43 INFO  Job:1754 -  map 82% reduce 0%
+2026-11-18 14:56:46 INFO  Job:1754 -  map 82% reduce 10%
+2026-11-18 14:56:47 INFO  Job:1754 -  map 89% reduce 10%
+2026-11-18 14:56:48 INFO  Job:1754 -  map 100% reduce 10%
+2026-11-18 14:56:49 INFO  Job:1754 -  map 100% reduce 50%
+2026-11-18 14:56:50 INFO  Job:1754 -  map 100% reduce 100%
+2026-11-18 14:56:51 INFO  Job:1765 - Job job_1795013623254_0001 completed successfully
+2026-11-18 14:56:51 INFO  Job:1772 - Counters: 55
+	File System Counters
+		FILE: Number of bytes read=5352033
+		FILE: Number of bytes written=10220178
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=1103036782
+		HDFS: Number of bytes written=279255
+		HDFS: Number of read operations=34
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=4
+		HDFS: Number of bytes read erasure-coded=0
+	Job Counters 
+		Killed map tasks=1
+		Launched map tasks=8
+		Launched reduce tasks=2
+		Rack-local map tasks=8
+		Total time spent by all maps in occupied slots (ms)=710168
+		Total time spent by all reduces in occupied slots (ms)=114978
+		Total time spent by all map tasks (ms)=177542
+		Total time spent by all reduce tasks (ms)=19163
+		Total vcore-milliseconds taken by all map tasks=177542
+		Total vcore-milliseconds taken by all reduce tasks=19163
+		Total megabyte-milliseconds taken by all map tasks=90901504
+		Total megabyte-milliseconds taken by all reduce tasks=14717184
+	Map-Reduce Framework
+		Map input records=34561272
+		Map output records=34561272
+		Map output bytes=1671838636
+		Map output materialized bytes=1704403
+		Input split bytes=1216
+		Combine input records=34630671
+		Combine output records=101703
+		Reduce input groups=5916
+		Reduce shuffle bytes=1704403
+		Reduce input records=32304
+		Reduce output records=5916
+		Spilled Records=134007
+		Shuffled Maps =16
+		Failed Shuffles=0
+		Merged Map outputs=16
+		GC time elapsed (ms)=771
+		CPU time spent (ms)=186260
+		Physical memory (bytes) snapshot=3344183296
+		Virtual memory (bytes) snapshot=23641292800
+		Total committed heap usage (bytes)=2000683008
+		Peak Map Physical memory (bytes)=392495104
+		Peak Map Virtual memory (bytes)=2357796864
+		Peak Reduce Physical memory (bytes)=243748864
+		Peak Reduce Virtual memory (bytes)=2548817920
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=1103035566
+	File Output Format Counters 
+		Bytes Written=279255
+2026-11-18 14:56:51 INFO  StreamJob:1029 - Output directory: /rain-forecast/mr/output
+
+real	1m6.398s
+user	0m5.518s
+sys	0m0.828s
+Found 3 items
+-rw-r--r--   1 hadoop supergroup          0 2026-11-18 14:56 /rain-forecast/mr/output/_SUCCESS
+-rw-r--r--   1 hadoop supergroup     138831 2026-11-18 14:56 /rain-forecast/mr/output/part-00000
+-rw-r--r--   1 hadoop supergroup     140424 2026-11-18 14:56 /rain-forecast/mr/output/part-00001

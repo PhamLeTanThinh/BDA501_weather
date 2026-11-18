@@ -1,0 +1,71 @@
+== Physical Plan ==
+AdaptiveSparkPlan (13)
++- Sort (12)
+   +- Exchange (11)
+      +- Filter (10)
+         +- Window (9)
+            +- WindowGroupLimit (8)
+               +- Sort (7)
+                  +- Exchange (6)
+                     +- WindowGroupLimit (5)
+                        +- Sort (4)
+                           +- Project (3)
+                              +- Filter (2)
+                                 +- Scan parquet  (1)
+
+
+(1) Scan parquet 
+Output [4]: [location_id#0, ts#9, rain_next_24h#15, year#50]
+Batched: true
+Location: InMemoryFileIndex [file:/data/lake/gold/features_hourly]
+PushedFilters: [IsNotNull(rain_next_24h)]
+ReadSchema: struct<location_id:string,ts:timestamp,rain_next_24h:double>
+
+(2) Filter
+Input [4]: [location_id#0, ts#9, rain_next_24h#15, year#50]
+Condition : isnotnull(rain_next_24h#15)
+
+(3) Project
+Output [3]: [location_id#0, ts#9, rain_next_24h#15]
+Input [4]: [location_id#0, ts#9, rain_next_24h#15, year#50]
+
+(4) Sort
+Input [3]: [location_id#0, ts#9, rain_next_24h#15]
+Arguments: [location_id#0 ASC NULLS FIRST, rain_next_24h#15 DESC NULLS LAST], false, 0
+
+(5) WindowGroupLimit
+Input [3]: [location_id#0, ts#9, rain_next_24h#15]
+Arguments: [location_id#0], [rain_next_24h#15 DESC NULLS LAST], row_number(), 5, Partial
+
+(6) Exchange
+Input [3]: [location_id#0, ts#9, rain_next_24h#15]
+Arguments: hashpartitioning(location_id#0, 16), ENSURE_REQUIREMENTS, [plan_id=515]
+
+(7) Sort
+Input [3]: [location_id#0, ts#9, rain_next_24h#15]
+Arguments: [location_id#0 ASC NULLS FIRST, rain_next_24h#15 DESC NULLS LAST], false, 0
+
+(8) WindowGroupLimit
+Input [3]: [location_id#0, ts#9, rain_next_24h#15]
+Arguments: [location_id#0], [rain_next_24h#15 DESC NULLS LAST], row_number(), 5, Final
+
+(9) Window
+Input [3]: [location_id#0, ts#9, rain_next_24h#15]
+Arguments: [row_number() windowspecdefinition(location_id#0, rain_next_24h#15 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rk#160], [location_id#0], [rain_next_24h#15 DESC NULLS LAST]
+
+(10) Filter
+Input [4]: [location_id#0, ts#9, rain_next_24h#15, rk#160]
+Condition : (rk#160 <= 5)
+
+(11) Exchange
+Input [4]: [location_id#0, ts#9, rain_next_24h#15, rk#160]
+Arguments: rangepartitioning(location_id#0 ASC NULLS FIRST, rk#160 ASC NULLS FIRST, 16), ENSURE_REQUIREMENTS, [plan_id=521]
+
+(12) Sort
+Input [4]: [location_id#0, ts#9, rain_next_24h#15, rk#160]
+Arguments: [location_id#0 ASC NULLS FIRST, rk#160 ASC NULLS FIRST], true, 0
+
+(13) AdaptiveSparkPlan
+Output [4]: [location_id#0, ts#9, rain_next_24h#15, rk#160]
+Arguments: isFinalPlan=false
+

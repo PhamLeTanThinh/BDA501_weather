@@ -13,6 +13,25 @@ if (fs.existsSync(OFF)) {
   if (e0) { D.noaa = e0.noaa; D.samples.e0_noaa_vs_era5 = e0.samples; }
   D.official_ablation = JSON.parse(fs.readFileSync(OFF, "utf8")).ablation || null;
 }
+// MapReduce (Hadoop/YARN) and Spark SQL on the official data: replace the pilot numbers when the official run exists
+const OMR = path.join(ROOT, "reports", "official", "mapreduce");
+D.mr_official = false;
+if (fs.existsSync(path.join(OMR, "validation.json")) && fs.existsSync(path.join(OMR, "samples.json"))) {
+  const log = fs.readFileSync(path.join(OMR, "job.log"), "utf8").split(/\r?\n/).map((l) => l.trim()).filter((l) => /^[A-Za-z][A-Za-z ()-]+=\d+$/.test(l));
+  const sm = JSON.parse(fs.readFileSync(path.join(OMR, "samples.json"), "utf8"));
+  D.mapreduce = { log, validation: JSON.parse(fs.readFileSync(path.join(OMR, "validation.json"), "utf8")) };
+  D.samples.mr_input = sm.mr_input; D.samples.mr_output = sm.mr_output; D.samples.mr_highlight = sm.highlight;
+  D.mr_official = true;
+}
+const OSQL = path.join(ROOT, "reports", "official", "spark_sql");
+const csvRows = (p) => { const [h, ...r] = fs.readFileSync(p, "utf8").trim().split(/\r?\n/); const k = h.split(",");
+  return r.map((l) => Object.fromEntries(l.split(",").map((v, i) => [k[i], isNaN(+v) || v === "" ? v : +v]))); };
+D.sql_official = false;
+if (fs.existsSync(path.join(OSQL, "q1_heavy_rate_region_month_result.csv"))) {
+  D.eda_region_month = csvRows(path.join(OSQL, "q1_heavy_rate_region_month_result.csv"));
+  D.eda_province_year = csvRows(path.join(OSQL, "q2_heavy_days_province_year_result.csv"));
+  D.sql_official = true;
+}
 const { pres, C } = lib.newDeck();
 
 const f = (x, d = 3) => (x === null || x === undefined || Number.isNaN(x) ? "–" : Number(x).toFixed(d));

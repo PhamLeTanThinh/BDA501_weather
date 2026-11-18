@@ -57,7 +57,7 @@ services:
     depends_on:
       kafka: { condition: service_healthy }
       mongo: { condition: service_started }
-    restart: "no"
+    restart: on-failure:3   # retry if loading silver fails (e.g. memory pressure); a normal finish exits 0 and stays down
   web:
     <<: *app
     command: ["uvicorn", "src.web.app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -6,7 +6,7 @@
 |---|---|---|
 | Problem & Big Data justification | [x] | 47.5 M cell-hours × 33 features, 11 years, 493 cells; hourly velocity in the stream; NetCDF + Parquet + JSON + documents (deck "4V", README) |
 | End-to-end architecture, implemented vs proposed | [x] | deck slide "Architecture overview" with [I] / [I*] / [P] tags; `A_architecture.md` |
-| Project-related MapReduce | [~] | climatology on YARN, combiner, 0/144 diff vs Spark SQL — **pilot data** (labelled) |
+| Project-related MapReduce | [x] | climatology on YARN, combiner; official training set (final, 18/11): 34.6 M rows, 5,916 keys, 0 diff vs Spark SQL (pilot: 0/144) |
 | PySpark DataFrames / Spark SQL | [x] | silver/gold pipeline on Spark; 3 Spark SQL queries (pilot) + province × year query on official data (`C_query_plan.md`) |
 | Curated Parquet / columnar output | [x] | gold partitioned by year, float32 features; column pruning shown in plan |
 | ≥ 2 analytical queries + formatted plan | [x] | Q1–Q3 (pilot) + official province × year query; `C_query_plan_*.txt` |

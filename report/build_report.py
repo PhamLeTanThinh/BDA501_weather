@@ -48,8 +48,8 @@ UL("Pipeline: CDS download → raw/bronze (also on HDFS) → silver → gold on 
    "all duplicates and broken records caught, 0 duplicate forecasts, and the stream produced exactly the same "
    "forecasts and feature vectors as batch.",
    "Main limitations, stated openly: recall is 46 % at the F1 threshold (decision support, not a stand-alone warning); "
-   "ERA5 is published ~5 days late, so the streaming demo is a replay (hindcast); infrastructure runs on one laptop; "
-   "MapReduce and the three Spark SQL queries were validated on the pilot data only.")
+   "ERA5 is published ~5 days late, so the streaming demo is a replay (hindcast); infrastructure runs on one laptop "
+   "(Hadoop/YARN and Spark in containers), so cluster-scale performance is designed, not measured.")
 
 TB(["Member", "Main technical responsibility"],
    [["Trần Quốc Việt (25MS23304)", "Batch layer: ingestion, 63 → 34 province mapping, bronze → gold, cleaning rules, MapReduce, Spark SQL"],
@@ -100,15 +100,15 @@ FG("cells.png", "Figure 1. Assigning ERA5 cells to provinces (deck slide).")
 
 # ---------------------------------------------------------------- 3. architecture
 H1("3. Architecture")
-P("Figure 2 shows the implemented system. Every component is tagged [I] implemented, [I*] implemented on the pilot "
-  "data, or [P] design only (dashed). Figures 3 and 4 detail the batch and streaming lanes.")
+P("Figure 2 shows the implemented system. Every component is tagged [I] implemented on the official data or [P] "
+  "design only (dashed). Figures 3 and 4 detail the batch and streaming lanes.")
 FG("arch_overview.png", "Figure 2. Architecture overview with implementation status.")
 TB(["Component", "Status", "Technology"],
    [["Download + bronze", "[I]", "Python (cdsapi, xarray) — Spark cannot read NetCDF"],
     ["Data lake raw / bronze", "[I] local disk + HDFS (lab cluster)", "NetCDF zip, Parquet"],
     ["Data lake silver / gold / models", "[I] local Spark volume; on HDFS = [P]", "Parquet partitioned by year"],
     ["Cleaning, EDA, features, training", "[I]", "PySpark DataFrames, Spark SQL, Spark ML"],
-    ["MapReduce climatology", "[I*] pilot data", "Hadoop Streaming on YARN (lab cluster)"],
+    ["MapReduce climatology", "[I] official data", "Hadoop Streaming on YARN (lab cluster)"],
     ["Streaming", "[I]", "Kafka 3.9 (KRaft, 1 broker), Spark Structured Streaming"],
     ["Serving", "[I]", "MongoDB 7, FastAPI + Leaflet web map"],
     ["Live data source, cluster deployment", "[P]", "NWP analysis/forecast API; YARN/Kubernetes, 3 Kafka brokers, Mongo replica set"]],
@@ -147,21 +147,32 @@ FG("eda_year.png", "Figure 7. Heavy-rain share by year and split.", 15)
 
 # ---------------------------------------------------------------- 6. MapReduce + Spark SQL
 H1("6. MapReduce and Spark SQL")
-P("Hadoop Streaming job (Python mapper/combiner/reducer on YARN) computing the climatology table: for each location × "
-  "month, hours, heavy hours, heavy-rain rate, mean and maximum hourly rain over the training years. Map emits key "
-  "location|month with (1, label, rain, rain); the combiner sums and takes the max inside each map task — safe because "
+P("Hadoop Streaming job (Python mapper/combiner/reducer on YARN) computing the climatology table: for each cell × "
+  "month, hours, heavy hours, heavy-rain rate, mean and maximum hourly rain over the training years 2015–2022. Map emits "
+  "key cell|month with (1, label, rain, rain); the combiner sums and takes the max inside each map task — safe because "
   "sum and max are associative and the rate/mean are computed only in the reducer; shuffle groups each key on one of 2 "
-  "reducers. On the pilot data: 420,480 input rows, 4 map and 2 reduce tasks, the combiner cut shuffled records from "
-  "420,480 to 576 (730 ×), 144 output keys, and an independent Spark SQL computation agrees on 144/144 keys with 0 "
-  "differences. The output feeds MongoDB (collection climatology) for look-up; it is not an input to the model "
-  "(the evaluation baseline is recomputed in Spark). The same mapper/combiner/reducer were also run locally in "
-  "Python on the full official train set: 34,561,272 rows → 47,328 combined records → 5,916 keys, 0 differences.")
-FG("mapreduce.png", "Figure 8. MapReduce flow (pilot run).", 15)
-P("Spark SQL: three analytical queries (pilot data) — heavy-rain rate by region × month (GROUP BY, one shuffle), "
-  "heavy-rain days by province × year joined with location and terrain tables (broadcast joins), top-5 wettest 24 h "
-  "periods per location (window function, shuffle by location then sort). On the official gold we ran the province × "
-  "year query and inspected its formatted plan (Section 9): two Exchanges (by cell-day, then by province-year) and a "
-  "BroadcastHashJoin with the 493-row cell table; Parquet column pruning reads 3 of 51 columns.")
+  "reducers. The input is the official training set exported from gold to CSV on HDFS (1.1 GB, 4 files, 128 MB splits).")
+TB(["Counter (job job_1795013623254_0001)", "Value"],
+   [["Map / reduce tasks", "8 / 2 (all succeeded, 48 s elapsed)"],
+    ["Map input records", "34,561,272"],
+    ["Map output bytes", "1.67 GB"],
+    ["Records reaching the reducers (after the combiner)", "32,304 — about 1,070 × fewer than map output"],
+    ["Reduce shuffle bytes", "1.7 MB"],
+    ["Reduce output records", "5,916 = 493 cells × 12 months"],
+    ["Check against Spark SQL on the same rows", "5,916 / 5,916 keys, 0 differences, 34,561,272 = 34,561,272 rows"]],
+   "Table 6. MapReduce on the official training data (reports/official/mapreduce/).")
+P("Example: cell g16.25_108.00 (Huế) in October has 692 heavy hours out of 5,952 — about one hour in nine is followed by "
+  "more than 50 mm. The output feeds MongoDB (collection climatology) for look-up; it is not an input to the model "
+  "(the evaluation baseline is recomputed in Spark). The same job on the 12-point pilot gave 144/144 keys, 0 differences.")
+FG("mapreduce.png", "Figure 8. MapReduce on Hadoop/YARN, official data.", 15)
+P("Spark SQL: three analytical queries on the official gold (47.5 M cell-hours, reports/official/spark_sql/), each with "
+  "its formatted plan. Q1 heavy-rain rate by region × month (GROUP BY → hash Exchange): the highest is the south-central "
+  "coast in November, 5.7 % of hours, then the north-central coast in October (5.6 %). Q2 heavy-rain days per province × "
+  "year with elevation (daily sums, then two joins with the 493-row cell and terrain tables → BroadcastHashJoin, no "
+  "SortMergeJoin): the wettest cell-year has 36 days above 50 mm (Quảng Trị, 2025). Q3 the five wettest 24-hour periods "
+  "per cell (window row_number → Exchange by cell + sort): the national maximum is 537 mm in 24 h at g18.25_106.25 "
+  "(Hà Tĩnh) on 19 October 2020; consecutive hours of one storm fill the top 5, so an event-level version would first "
+  "group hours into events. Parquet column pruning reads only the columns each query needs.")
 
 # ---------------------------------------------------------------- 7. ML
 H1("7. Machine learning")
@@ -313,7 +324,8 @@ TB(["Check", "Result"],
     ["Label vs real gauges", "14 NOAA gauges: totals ratio 1.04; ERA5 reaches 50 mm on 25 % of gauge heavy days ⇒ the label is cell-average heavy rain"],
     ["Leakage", "unit tests change future data and check past features are unchanged; exact label window; split purge; expver = ERA5 final (0001) for every hour 2015–2025, so no later revision mixes into training"],
     ["Labels from raw", "recomputed with numpy from the NetCDF files: identical to Spark (train 313,169 / val 28,683 / test 104,439 positives)"],
-    ["MapReduce vs Spark SQL", "144 / 144 keys, 0 differences (pilot, YARN); full official train set 34.6 M rows: 5,916 keys, 0 differences (local Python run of the same mapper/combiner/reducer)"],
+    ["MapReduce vs Spark SQL", "official train set on YARN: 5,916 / 5,916 keys, 0 differences, 34,561,272 rows on both sides (pilot: 144 / 144)"],
+    ["Unit tests", "35 / 35 passed in the Spark container (leakage, metrics, MapReduce, stream parity) — reports/tests/pytest_full.txt"],
     ["Stream vs batch", "81,710 cell-hours and 21,714 feature values identical"]],
    "Table 11. Validation evidence (details in evidence/session9/).")
 
@@ -338,7 +350,6 @@ TB(["Limitation", "Impact", "Next step"],
     ["Label = ERA5 cell, not gauge", "25 % agreement on gauge heavy days", "verify with more gauges or radar"],
     ["Year-to-year shift", "threshold tuned on a dry year", "periodic re-tuning and drift monitoring"],
     ["Single-node infrastructure", "no proof of cluster scaling", "YARN, 3 Kafka brokers, Mongo replica set; repeat the performance experiment"],
-    ["MapReduce / Spark SQL on pilot data", "not yet on the official data", "rerun on official gold"],
     ["Hyper-parameters not tuned", "RF and GBT may improve", "small grid search on validation"]],
    "Table 12. Limitations.")
 
@@ -373,6 +384,15 @@ TB(["Item", "Location"],
     ["Presentation deck", "deck/BDA501_Heavy_Rain_Forecast.pptx"],
     ["Full pipeline commands", "README.md (official CDS pipeline, streaming demo, MapReduce)"]],
    "Table 13. Where to find the evidence.")
+
+H1("Appendix B. Demo evidence (screenshots)")
+P("Captured on 18 November 2026 from the running system, in the order of the live demo (docs/DEMO.md). The same "
+  "images are the fallback if the live demo fails (report/demo/).")
+FG("../demo/01_hdfs_browse.png", "Figure B1. HDFS NameNode: /rain-forecast holds raw, bronze and the MapReduce input/output.", 15)
+FG("../demo/02_mapreduce_job.png", "Figure B2. Job history: the climatology job on YARN, 8 map and 2 reduce tasks, succeeded.", 15)
+FG("../demo/05_web_map.png", "Figure B3. Web map at 07/09/2024 04:00 during the Typhoon Yagi replay: alerts (red) over the North, injected junk vs what Spark caught, the Hải Phòng series and top provinces (page labels in Vietnamese).", 16)
+FG("../demo/05_spark_ui.png", "Figure B4. Spark UI of the streaming job: micro-batches every 10 s.", 15)
+FG("../demo/05_mongo_readback.png", "Figure B5. One forecast document read back from MongoDB.", 14)
 
 
 # ======================================================================== writers

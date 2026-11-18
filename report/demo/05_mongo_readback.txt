@@ -1,0 +1,13 @@
+{
+  _id: 'g20.75_106.75|2024-09-06 19:00',
+  alert: true,
+  cell: 'g20.75_106.75',
+  model: 'rf_20261107T050443Z_official_ablation_M4',
+  p: 0.959,
+  province: 'Hải Phòng',
+  revisions: 1,
+  status: 'ok',
+  threshold: 0.9321423768997192,
+  ts: '2024-09-06 19:00'
+}
+documents: 43240  distinct _id = documents (upsert by _id)

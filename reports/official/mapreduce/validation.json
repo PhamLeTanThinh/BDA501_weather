@@ -1,0 +1,9 @@
+{
+  "keys_spark": 5916,
+  "keys_mapreduce": 5916,
+  "missing_or_extra": 0,
+  "mismatches": 0,
+  "rows_spark": 34561272,
+  "rows_mapreduce": 34561272,
+  "examples": []
+}

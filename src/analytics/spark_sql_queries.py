@@ -49,7 +49,12 @@ QUERIES = {
 def register(spark, cfg):
     lake = path(cfg, "lake")
     spark.read.parquet(str(lake / "gold" / "features_hourly")).createOrReplaceTempView("gold")
-    spark.read.parquet(str(lake / "silver" / "locations")).createOrReplaceTempView("locations")
+    loc = lake / "silver" / "locations"
+    if loc.exists():   # pilot: one row per point
+        spark.read.parquet(str(loc)).createOrReplaceTempView("locations")
+    else:              # official: silver/cells (493 land cells), same columns under the pilot names
+        (spark.read.parquet(str(lake / "silver" / "cells")).withColumnRenamed("grid_id", "location_id")
+         .createOrReplaceTempView("locations"))
     spark.read.csv(str(path(cfg, "geography")), header=True, inferSchema=True).createOrReplaceTempView("geo")
 
 

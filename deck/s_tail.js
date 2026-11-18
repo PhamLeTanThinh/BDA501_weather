@@ -473,7 +473,7 @@ limits: (IC) => {
   const S = slide("CONTENT", SE(), t("Limitations and next steps", "Giới hạn và bước tiếp theo"));
   S.addText(t("Limitation", "Giới hạn"), { x: MX, y: 1.25, w: 5.6, h: 0.4, fontSize: 16, bold: true, color: C.accent6, margin: 0, isTextBox: true });
   S.addText(t("Next step", "Bước tiếp theo"), { x: 7.0, y: 1.25, w: 5.7, h: 0.4, fontSize: 16, bold: true, color: C.accent1, margin: 0, isTextBox: true });
-  [[t(`Recall ${pct(m4.recall)}, target 60%`, `Recall ${pct(m4.recall)}, mục tiêu 60%`), t("pick the threshold for recall; calibrate probabilities", "chọn ngưỡng ưu tiên recall; hiệu chỉnh xác suất")],
+  [[t(`Recall ${pct(m4.recall)} (63% central coast, 11% South)`, `Recall ${pct(m4.recall)} (63% duyên hải miền Trung, 11% Nam Bộ)`), t("new inputs for the North and South (upwind moisture, radar); a per-region threshold is only a trade-off", "thêm dữ liệu cho miền Bắc và Nam (ẩm đầu gió, radar); ngưỡng riêng từng vùng chỉ là đánh đổi")],
    [t("Rain after landfall is missed", "Bỏ sót mưa sau khi bão vào bờ"), t("add upwind / 100–300 km context", "thêm thông tin đầu gió / 100–300 km")],
    [t(`Label = ERA5 on a 25 km cell (hits ${pct(no.hit / no.heavy_days)} of gauge heavy days)`, `Nhãn = ERA5 trên ô 25 km (trúng ${pct(no.hit / no.heavy_days)} ngày mưa lớn tại trạm)`), t("check against more rain gauges", "đối chiếu thêm nhiều trạm đo mưa")],
    [t("Kafka has one broker; Spark runs locally", "Kafka chỉ một broker; Spark chạy local"), t("3 brokers with replication; Spark on YARN", "3 broker có nhân bản; Spark trên YARN")],
@@ -503,7 +503,7 @@ conclusions: (IC) => {
       fontSize: 12, bold: true, color: C.text2, align: "center", valign: "middle", margin: 0 });
     if (i < chain.length - 1) arrow(S, C, x + cw + 0.02, 1.55, x + cw + gap - 0.02, 1.55, { color: C.accent2, width: 1.5 });
   });
-  S.addText(t("end to end on 493 cells × 11 years, plus MapReduce and Spark SQL on the same lake", "chạy trọn trên 493 ô × 11 năm, kèm MapReduce và Spark SQL trên cùng lake"),
+  S.addText(t("end to end on 493 cells × 11 years, plus MapReduce (YARN) and Spark SQL on the same official data", "chạy trọn trên 493 ô × 11 năm, kèm MapReduce (YARN) và Spark SQL trên cùng dữ liệu chính thức"),
     { x: MX, y: 1.85, w: W - 2 * MX, h: 0.3, fontSize: 12, italic: true, color: C.text1, margin: 0, isTextBox: true });
   const cw3 = (W - 2 * MX) / 3;
   big(S, MX, 2.35, cw3 - 0.2, f(m4.pr_auc), t(`PR-AUC of the final model M4, vs ${f(per.pr_auc)} for persistence`, `PR-AUC của model cuối M4, so với ${f(per.pr_auc)} của persistence`), C.accent2, 44);
@@ -514,7 +514,7 @@ conclusions: (IC) => {
     { x: MX, y: 3.85, w: W - 2 * MX, h: 0.45, fontSize: 17, bold: true, color: C.text2, margin: 0, isTextBox: true });
   // phân công
   [["V", t("Mr. Viet", "Mr. Việt"), t("Batch layer", "Batch layer"), t("ingestion, 63 → 34 mapping, bronze → gold, MapReduce, Spark SQL", "thu thập, ánh xạ 63 → 34, bronze → gold, MapReduce, Spark SQL")],
-   ["L", t("Mr. Luan", "Mr. Luân"), t("ML & evaluation", "ML & đánh giá"), t("EDA, NOAA check, features, RF + ablation, performance plan", "EDA, đối chiếu NOAA, feature, RF + ablation, kế hoạch hiệu năng")],
+   ["L", t("Mr. Luan", "Mr. Luân"), t("ML & evaluation", "ML & đánh giá"), t("EDA, NOAA check, features, RF + ablation, recall by province, performance experiment", "EDA, đối chiếu NOAA, feature, RF + ablation, recall theo tỉnh, thí nghiệm hiệu năng")],
    ["T", t("Mr. Thinh", "Mr. Thịnh"), t("Streaming & serving", "Streaming & phục vụ"), t("Kafka producer + junk tests, Structured Streaming, MongoDB, web dashboard", "producer Kafka + kiểm thử dữ liệu rác, Structured Streaming, MongoDB, web dashboard")]].forEach(([ini, who, role, what], i) => {
     const x = MX + i * cw3, y = 4.55;
     S.addText(ini, { shape: "ellipse", x, y: y + 0.1, w: 0.8, h: 0.8, fill: { color: "EAF3F4" }, line: { color: "EAF3F4" }, color: C.text2,
