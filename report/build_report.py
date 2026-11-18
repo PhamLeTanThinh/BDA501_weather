@@ -210,6 +210,37 @@ P("No threshold reaches recall ≥ 60 % and precision ≥ 30 % at the same time.
   "false alarms, so recall-first is justified only if one miss costs more than about ten false alarms. We propose two "
   "levels: watch at p ≥ 0.739, warning at p ≥ 0.932. The 0.932 threshold is a score cut-off, not a 93 % probability: "
   "the rebalanced training sample inflates scores and Random Forest probabilities are not calibrated.")
+H2("7.5 Where recall is lost: the 493 cells and the 34 provinces")
+P("The national recall of 46 % hides large differences between places. We scored the saved M4 probabilities of every "
+  "test cell-hour against the frozen 0.932 threshold and grouped them by cell, province and region "
+  "(src/analytics/province_recall.py). 483 of the 493 cells are scored; the other 10 (in Lai Châu, Lào Cai, Cao Bằng, "
+  "Quảng Ninh, Nghệ An, Đà Nẵng, An Giang and Cà Mau) lie on the border or coast and have fewer than two land neighbours, "
+  "so they left the ablation cohort; they still receive forecasts in the stream.")
+TB(["Region", "Cells", "Heavy cell-hours (test)", "Recall at 0.932", "Share of all misses"],
+   [["North-central coast", "77", "28,464", "63 %", "19 %"],
+    ["South-central coast", "66", "16,864", "58 %", "13 %"],
+    ["North (incl. mountains)", "172", "44,312", "37 %", "50 %"],
+    ["Central Highlands", "78", "10,722", "28 %", "14 %"],
+    ["South", "90", "2,516", "11 %", "4 %"]],
+   "Table 9. Recall by region, test 2024–2025.")
+UL("Recall follows how often heavy rain happens at a place: across the 441 cells with at least 20 heavy hours, cell "
+   "recall and the 2015–2025 heavy-rain share have a Spearman correlation of 0.65. The central coast (Quảng Trị 73 %, "
+   "Huế 63 %, Hà Tĩnh 59 %) is caught well; the South (Đồng Nai 2 %, TP. Hồ Chí Minh 0 %) and Lâm Đồng (9 %) are not. "
+   "129 cells have recall below 25 %, 84 above 60 %.",
+   "Province size does not explain recall: the number of cells per province is almost unrelated to province recall "
+   "(Spearman −0.18) or precision (+0.04). Scoring at province level with the any-area rule (alert if ≥ 1 cell is "
+   "alerted) gives recall 45.9 % and precision 50.6 %, close to the cell level (46.4 % / 44.0 %).",
+   "Most missed heavy rain is in the northern mountains, not in the South: half of all 55,164 missed cell-hours are in "
+   "the North, and ten provinces (Lào Cai 10 %, Tuyên Quang, Đà Nẵng, Điện Biên, Quảng Ngãi, Nghệ An, Gia Lai, Phú Thọ, "
+   "Sơn La, Quảng Trị) hold 61 % of them. The South has the lowest recall but only 4 % of the misses because heavy "
+   "rain there is rare (2 % of test events) and short, convective and local — the kind of rain a 25 km reanalysis "
+   "cell and local features describe least well.",
+   "A regional threshold is not a free improvement. Choosing one F1 threshold per region on validation 2023 only and "
+   "applying it to the test years raises national recall from 46.4 % to 50.1 % but lowers precision from 44.0 % to "
+   "38.9 %; it mostly lowers the threshold in the North (recall 37 → 48 %) and the South (11 → 22 %, precision 5 %). "
+   "The ranking skill (PR-AUC) is unchanged; better recall in the North and South needs new information "
+   "(upwind/large-scale moisture, radar or station rain), not a different cut-off.")
+FG("province_recall.png", "Figure 12. Recall per cell (left) and per province against the heavy-rain share (right).", 16)
 
 # ---------------------------------------------------------------- 8. streaming + serving
 H1("8. Streaming and NoSQL serving")
@@ -445,7 +476,21 @@ def write_md(path):
     Path(path).write_text("\n".join(out), encoding="utf-8")
 
 
+def renumber():
+    """Number tables and figures in order of appearance, so inserted sections never break the sequence."""
+    import re
+    n = {"table": 0, "fig": 0}
+    for i, b in enumerate(C):
+        if b[0] == "table" and b[3]:
+            n["table"] += 1
+            C[i] = (b[0], b[1], b[2], re.sub(r"^Table \d+\.", f"Table {n['table']}.", b[3]))
+        elif b[0] == "fig":
+            n["fig"] += 1
+            C[i] = (b[0], b[1], re.sub(r"^Figure \d+\.", f"Figure {n['fig']}.", b[2]), b[3])
+
+
 if __name__ == "__main__":
+    renumber()
     write_docx(HERE / "BDA501_Final_Report.docx")
     write_md(HERE / "BDA501_Final_Report.md")
     print("written", HERE / "BDA501_Final_Report.docx")

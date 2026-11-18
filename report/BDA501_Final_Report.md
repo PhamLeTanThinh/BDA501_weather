@@ -192,6 +192,29 @@ Random Forest beats logistic regression by +0.052 (CI +0.022 … +0.077); gradie
 
 No threshold reaches recall ≥ 60 % and precision ≥ 30 % at the same time. The F1 threshold misses about half of the heavy-rain cell-hours, so the safe claim is decision support for forecasters; the recall-first threshold halves the misses at the cost of about 5.5 × more false alarms: each extra heavy-rain cell-hour caught costs 9.7 extra false alarms, so recall-first is justified only if one miss costs more than about ten false alarms. We propose two levels: watch at p ≥ 0.739, warning at p ≥ 0.932. The 0.932 threshold is a score cut-off, not a 93 % probability: the rebalanced training sample inflates scores and Random Forest probabilities are not calibrated.
 
+### 7.5 Where recall is lost: the 493 cells and the 34 provinces
+
+The national recall of 46 % hides large differences between places. We scored the saved M4 probabilities of every test cell-hour against the frozen 0.932 threshold and grouped them by cell, province and region (src/analytics/province_recall.py). 483 of the 493 cells are scored; the other 10 (in Lai Châu, Lào Cai, Cao Bằng, Quảng Ninh, Nghệ An, Đà Nẵng, An Giang and Cà Mau) lie on the border or coast and have fewer than two land neighbours, so they left the ablation cohort; they still receive forecasts in the stream.
+
+| Region | Cells | Heavy cell-hours (test) | Recall at 0.932 | Share of all misses |
+|---|---|---|---|---|
+| North-central coast | 77 | 28,464 | 63 % | 19 % |
+| South-central coast | 66 | 16,864 | 58 % | 13 % |
+| North (incl. mountains) | 172 | 44,312 | 37 % | 50 % |
+| Central Highlands | 78 | 10,722 | 28 % | 14 % |
+| South | 90 | 2,516 | 11 % | 4 % |
+
+*Table 9. Recall by region, test 2024–2025.*
+
+- Recall follows how often heavy rain happens at a place: across the 441 cells with at least 20 heavy hours, cell recall and the 2015–2025 heavy-rain share have a Spearman correlation of 0.65. The central coast (Quảng Trị 73 %, Huế 63 %, Hà Tĩnh 59 %) is caught well; the South (Đồng Nai 2 %, TP. Hồ Chí Minh 0 %) and Lâm Đồng (9 %) are not. 129 cells have recall below 25 %, 84 above 60 %.
+- Province size does not explain recall: the number of cells per province is almost unrelated to province recall (Spearman −0.18) or precision (+0.04). Scoring at province level with the any-area rule (alert if ≥ 1 cell is alerted) gives recall 45.9 % and precision 50.6 %, close to the cell level (46.4 % / 44.0 %).
+- Most missed heavy rain is in the northern mountains, not in the South: half of all 55,164 missed cell-hours are in the North, and ten provinces (Lào Cai 10 %, Tuyên Quang, Đà Nẵng, Điện Biên, Quảng Ngãi, Nghệ An, Gia Lai, Phú Thọ, Sơn La, Quảng Trị) hold 61 % of them. The South has the lowest recall but only 4 % of the misses because heavy rain there is rare (2 % of test events) and short, convective and local — the kind of rain a 25 km reanalysis cell and local features describe least well.
+- A regional threshold is not a free improvement. Choosing one F1 threshold per region on validation 2023 only and applying it to the test years raises national recall from 46.4 % to 50.1 % but lowers precision from 44.0 % to 38.9 %; it mostly lowers the threshold in the North (recall 37 → 48 %) and the South (11 → 22 %, precision 5 %). The ranking skill (PR-AUC) is unchanged; better recall in the North and South needs new information (upwind/large-scale moisture, radar or station rain), not a different cut-off.
+
+![Figure 12. Recall per cell (left) and per province against the heavy-rain share (right).](fig/province_recall.png)
+
+*Figure 12. Recall per cell (left) and per province against the heavy-rain share (right).*
+
 ## 8. Streaming and NoSQL serving
 
 ### 8.1 Design
@@ -213,24 +236,24 @@ scripts/stream_scenarios.sh injects junk that carries no flag (Spark must detect
 | Broken records (4 types) | 1,883 | 1,883 quarantined | rejects query |
 | Missing hours (5 cells × 6 h) | 30 | no forecast for affected windows | never treated as 0 mm |
 
-*Table 9. Dirty-data handling (clean run, 125,939 messages).*
+*Table 10. Dirty-data handling (clean run, 125,939 messages).*
 
 - No loss, no double read: 125,939 messages in the topic = 125,939 read by each query, across the crash.
 - 0 duplicate forecasts in MongoDB; 0 duplicate rows reaching foreachBatch.
 - Parity: recomputing in batch on exactly the rows the stream accepted gives identical probabilities for 81,710 / 81,710 cell-hours and 0 alert differences; for 4 sample cells, 658 cell-hours × 33 features = 21,714 feature values identical (Card E check E3).
 - Watermark semantics: Spark's watermark is the maximum event time of previous micro-batches minus 6 h, so during bursts some messages more than 6 h late are still accepted; Spark guarantees to keep data < 6 h late, not to drop everything older. Correctness relies on recomputation + upsert.
 
-![Figure 12. Streaming robustness results.](fig/stream_test.png)
+![Figure 13. Streaming robustness results.](fig/stream_test.png)
 
-*Figure 12. Streaming robustness results.*
+*Figure 13. Streaming robustness results.*
 
 ### 8.3 What the stream predicted for Typhoon Yagi
 
 For the Hải Phòng and Quảng Ninh cells the probability crossed the threshold on the evening of 5 September, about a day before landfall, and stayed above it through the 6–7 September peak (up to 196 mm in 24 h). In these two cells 59 of 79 alerts were followed by heavy rain and 59 of 123 heavy-rain hours were caught; over all cells from 4 to 9 September recall was 70 % and precision 74 %. Much of the rain after landfall (8–9 September) was missed: local features see a weakening system — the motivation for upwind features.
 
-![Figure 13. Stream forecasts and observed rain during Typhoon Yagi.](fig/yagi.png)
+![Figure 14. Stream forecasts and observed rain during Typhoon Yagi.](fig/yagi.png)
 
-*Figure 13. Stream forecasts and observed rain during Typhoon Yagi.*
+*Figure 14. Stream forecasts and observed rain during Typhoon Yagi.*
 
 ## 9. Performance experiment
 
@@ -245,13 +268,13 @@ Controlled experiment on the official data (Spark 4.2 local[3], driver 4 GB, AQE
 | Province × year query, 47.5 M rows | SortMergeJoin | 30.4 s | 127 | 45.5 MB |
 |  | BroadcastHashJoin | 32.9 s | 111 | 23.2 MB |
 
-*Table 10. Measured performance.*
+*Table 11. Measured performance.*
 
 With 3 cores, 4 partitions are fastest: the shuffle volume is the same for every setting, more partitions only add task overhead. Broadcasting halves the shuffle but is not faster here, because the join happens after aggregation to ~2 M cell-days and reading 47.5 M rows dominates — our hypothesis was not confirmed for this query. On a cluster the best partition count grows with executor cores and data size (≈ 2–3 × cores, ~100–200 MB per partition); one laptop cannot prove production-scale performance.
 
-![Figure 14. Performance experiment.](fig/perf.png)
+![Figure 15. Performance experiment.](fig/perf.png)
 
-*Figure 14. Performance experiment.*
+*Figure 15. Performance experiment.*
 
 ## 10. Validation
 
@@ -267,7 +290,7 @@ With 3 cores, 4 partitions are fastest: the shuffle volume is the same for every
 | MapReduce vs Spark SQL | 144 / 144 keys, 0 differences (pilot, YARN); full official train set 34.6 M rows: 5,916 keys, 0 differences (local Python run of the same mapper/combiner/reducer) |
 | Stream vs batch | 81,710 cell-hours and 21,714 feature values identical |
 
-*Table 11. Validation evidence (details in evidence/session9/).*
+*Table 12. Validation evidence (details in evidence/session9/).*
 
 ## 11. Deployment design and reproducibility
 
@@ -288,7 +311,7 @@ Reproducibility: the README runs the whole official pipeline from the raw CDS do
 | MapReduce / Spark SQL on pilot data | not yet on the official data | rerun on official gold |
 | Hyper-parameters not tuned | RF and GBT may improve | small grid search on validation |
 
-*Table 12. Limitations.*
+*Table 13. Limitations.*
 
 ## 13. Conclusion
 
@@ -319,4 +342,4 @@ The system runs end to end on 47.5 million cell-hours: Copernicus CDS → HDFS-b
 | Presentation deck | deck/BDA501_Heavy_Rain_Forecast.pptx |
 | Full pipeline commands | README.md (official CDS pipeline, streaming demo, MapReduce) |
 
-*Table 13. Where to find the evidence.*
+*Table 14. Where to find the evidence.*

@@ -28,3 +28,18 @@ Sources: `reports/official/model/ablation_results.csv`, `ablation_deltas.csv`, `
 | Random Forest is the best of the three algorithms we tried | highest validation PR-AUC; beats logistic (CI > 0) | That RF beats tuned GBT or deep models — GBT is statistically tied, no tuning was done |
 | The model ranks risk far better than simple rules | PR-AUC 0.420 vs 0.147 persistence, 0.012 random | That it is a reliable stand-alone warning system (recall 46 % at F1 threshold) |
 | Stream gives the same forecasts as batch | 79,993 / 79,993 cell-hours identical, 0 alert differences; feature-vector check in `F_serving_stream.md` | Real-time performance with live data |
+
+## Recall by cell and province (measured, added for the final)
+
+`scripts/run_in_spark.sh src.analytics.province_recall` on the saved M4 test scores, threshold 0.932 frozen on 2023
+→ `reports/official/model/province_recall_{cells,provinces}.csv`, `province_recall_summary.json`, `fig_province_recall.png`.
+
+| Finding | Number |
+|---|---|
+| Recall by region | North-central coast 63 %, South-central 58 %, North 37 %, Central Highlands 28 %, South 11 % |
+| Cell recall vs heavy-rain share 2015–2025 | Spearman 0.65 (441 cells with ≥ 20 heavy hours) |
+| Province recall vs number of cells | Spearman −0.18 (size does not explain recall) |
+| Province-level (any-area) recall / precision | 45.9 % / 50.6 % vs cell level 46.4 % / 44.0 % |
+| Where misses are | North 50 % of 55,164 missed cell-hours; 10 provinces hold 61 % (Lào Cai alone 10 %); South only 4 % |
+| Regional F1 thresholds chosen on 2023 | recall 46.4 → 50.1 %, precision 44.0 → 38.9 % (a trade-off, PR-AUC unchanged) |
+| Cells not scored | 10 of 493 (border/coast, < 2 land neighbours) |

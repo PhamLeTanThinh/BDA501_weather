@@ -1,0 +1,192 @@
+{
+  "thresholds": {
+    "f1": 0.9321423768997192,
+    "recall60": 0.739384114742279
+  },
+  "cells_scored": 483,
+  "cells_in_map": 493,
+  "cell_hour_recall_f1": 0.46379206438694376,
+  "province_hour_recall_f1_any_area": 0.45868718153661703,
+  "province_hour_precision_f1_any_area": 0.506034720308625,
+  "spearman_cell_recall_vs_heavy_rate": 0.6494739798588443,
+  "spearman_cell_recall_vs_test_positives": 0.5565988849157995,
+  "spearman_prov_recall_vs_cells": -0.1768085900547307,
+  "spearman_prov_precision_vs_cells": 0.043475012619518194,
+  "spearman_prov_cell_recall_vs_cells": -0.20574090479095936,
+  "cells_with_ge20_positives": 441,
+  "cells_recall_below_25pct": 129,
+  "cells_recall_above_60pct": 84,
+  "share_of_missed_in_worst_10_provinces": 0.6115220071060837,
+  "by_region": [
+    {
+      "region": "Bac",
+      "cells": 172,
+      "positives": 44312,
+      "tp": 16615,
+      "fn": 27697,
+      "recall_f1": 0.3749548654991876
+    },
+    {
+      "region": "BacTrungBo",
+      "cells": 77,
+      "positives": 28464,
+      "tp": 18046,
+      "fn": 10418,
+      "recall_f1": 0.6339938167509837
+    },
+    {
+      "region": "Nam",
+      "cells": 90,
+      "positives": 2516,
+      "tp": 280,
+      "fn": 2236,
+      "recall_f1": 0.11128775834658187
+    },
+    {
+      "region": "NamTrungBo",
+      "cells": 66,
+      "positives": 16864,
+      "tp": 9734,
+      "fn": 7130,
+      "recall_f1": 0.5772058823529411
+    },
+    {
+      "region": "TayNguyen",
+      "cells": 78,
+      "positives": 10722,
+      "tp": 3039,
+      "fn": 7683,
+      "recall_f1": 0.28343592613318414
+    }
+  ],
+  "by_province_size": [
+    {
+      "cells_per_province": "1-5",
+      "provinces": 2,
+      "cell_recall": 0.5974451884120326,
+      "prov_recall": 0.6250869349230005,
+      "prov_precision": 0.5211520737327189
+    },
+    {
+      "cells_per_province": "6-10",
+      "provinces": 12,
+      "cell_recall": 0.36800994048231356,
+      "prov_recall": 0.42042820881388737,
+      "prov_precision": 0.3888826781356993
+    },
+    {
+      "cells_per_province": "11-20",
+      "provinces": 12,
+      "cell_recall": 0.31658045047783856,
+      "prov_recall": 0.33267255966180764,
+      "prov_precision": 0.4252432754696928
+    },
+    {
+      "cells_per_province": "21-40",
+      "provinces": 8,
+      "cell_recall": 0.4216992679570527,
+      "prov_recall": 0.4446807844882433,
+      "prov_precision": 0.47755328661705376
+    }
+  ],
+  "cells_not_scored": [
+    {
+      "grid_id": "g22.75_102.50",
+      "new_province": "Lai Châu",
+      "region": "Bac"
+    },
+    {
+      "grid_id": "g22.75_103.25",
+      "new_province": "Lai Châu",
+      "region": "Bac"
+    },
+    {
+      "grid_id": "g22.75_103.75",
+      "new_province": "Lào Cai",
+      "region": "Bac"
+    },
+    {
+      "grid_id": "g22.75_106.75",
+      "new_province": "Cao Bằng",
+      "region": "Bac"
+    },
+    {
+      "grid_id": "g21.50_107.75",
+      "new_province": "Quảng Ninh",
+      "region": "Bac"
+    },
+    {
+      "grid_id": "g19.25_104.00",
+      "new_province": "Nghệ An",
+      "region": "BacTrungBo"
+    },
+    {
+      "grid_id": "g15.75_107.25",
+      "new_province": "Đà Nẵng",
+      "region": "NamTrungBo"
+    },
+    {
+      "grid_id": "g10.50_104.50",
+      "new_province": "An Giang",
+      "region": "Nam"
+    },
+    {
+      "grid_id": "g10.25_104.00",
+      "new_province": "An Giang",
+      "region": "Nam"
+    },
+    {
+      "grid_id": "g8.75_104.75",
+      "new_province": "Cà Mau",
+      "region": "Nam"
+    }
+  ],
+  "regional_thresholds": [
+    {
+      "region": "Bac",
+      "threshold_val2023": 0.8967946171760559,
+      "test_recall": 0.4800279833905037,
+      "test_precision": 0.35984842076770823,
+      "test_recall_global_thr": 0.3749548654991876
+    },
+    {
+      "region": "BacTrungBo",
+      "threshold_val2023": 0.9327977895736694,
+      "test_recall": 0.6317804946599213,
+      "test_precision": 0.5015758792848576,
+      "test_recall_global_thr": 0.6339938167509837
+    },
+    {
+      "region": "Nam",
+      "threshold_val2023": 0.8749892711639404,
+      "test_recall": 0.21860095389507153,
+      "test_precision": 0.05132991133924405,
+      "test_recall_global_thr": 0.11128775834658187
+    },
+    {
+      "region": "NamTrungBo",
+      "threshold_val2023": 0.9471274018287659,
+      "test_recall": 0.5189160341555977,
+      "test_precision": 0.47215927484622855,
+      "test_recall_global_thr": 0.5772058823529411
+    },
+    {
+      "region": "TayNguyen",
+      "threshold_val2023": 0.9325489401817322,
+      "test_recall": 0.2821301995896288,
+      "test_precision": 0.35896523080574344,
+      "test_recall_global_thr": 0.28343592613318414
+    }
+  ],
+  "regional_threshold_total": {
+    "test_recall": 0.501370555415152,
+    "test_precision": 0.38887213510253316,
+    "tp": 51580,
+    "fp": 81060,
+    "fn": 51298,
+    "global_f1_threshold": {
+      "test_recall": 0.4638,
+      "test_precision": 0.4402
+    }
+  }
+}
