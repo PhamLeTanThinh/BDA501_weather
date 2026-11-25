@@ -25,6 +25,7 @@ for d in lake/gold/features_hourly lake/gold/m4_scores lake/silver/grid_weather 
 docker start bda501-namenode bda501-datanode bda501-resourcemanager bda501-nodemanager bda501-historyserver bda501-client >/dev/null 2>&1
 for i in $(seq 1 24); do docker exec bda501-client hdfs dfsadmin -safemode get 2>/dev/null | grep -q OFF && break; sleep 5; done
 docker exec bda501-client hdfs dfsadmin -safemode get 2>/dev/null | grep -q OFF && ok "HDFS up (safe mode off)" || bad "HDFS not ready → docker logs bda501-namenode"
+for i in $(seq 1 24); do docker exec bda501-client yarn node -list 2>/dev/null | grep -q RUNNING && break; sleep 5; done
 docker exec bda501-client yarn node -list 2>/dev/null | grep -q RUNNING && ok "YARN NodeManager running (UI http://localhost:8088)" || bad "YARN not ready → docker restart bda501-resourcemanager bda501-nodemanager"
 docker exec bda501-client hdfs dfs -test -e /rain-forecast/mr/output/_SUCCESS 2>/dev/null && ok "MapReduce output on HDFS (/rain-forecast/mr/output)" \
   || bad "no MapReduce output on HDFS → SPLIT_BYTES=134217728 LOG_DIR=reports/official/mapreduce bash scripts/run_mapreduce.sh"
